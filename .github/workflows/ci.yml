@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend-web:
+    name: frontend-web
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: QG-05 Formatação
+        run: npm run format:check
+
+      - name: QG-05 Lint
+        run: npm run lint
+
+      - name: QG-01 Construção
+        run: npm run build
+
+      - name: Guardar o resultado da construção
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-frontend-web
+          path: dist/
+          if-no-files-found: warn
