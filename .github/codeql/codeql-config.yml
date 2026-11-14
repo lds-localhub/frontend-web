@@ -1,0 +1,16 @@
+# Nome da configuração, mostrado nos resultados da análise
+name: LocalHub CodeQL
+# Conjuntos de regras usados
+queries:
+  # Regras de segurança alargadas (regulamento interno, secção 10.4)
+  - uses: security-extended
+# Pastas que não são analisadas, por não serem código-fonte do grupo
+paths-ignore:
+  # Bibliotecas de terceiros
+  - "**/node_modules/**"
+  # Resultado do build
+  - "**/dist/**"
+  # Relatórios gerados pelo Playwright
+  - "**/playwright-report/**"
+  # Resultados gerados pelos testes
+  - "**/test-results/**"
