@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# LocalHub — Frontend web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web do LocalHub (Visitante, Cliente, Prestador de Serviços e Administrador), feita com React 19, TypeScript 6 e Vite 8.
 
-Currently, two official plugins are available:
+## Pré-requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Node.js 24 (versão indicada em `.nvmrc`) e npm 11.
+- Backend do LocalHub a correr, por omissão em `http://localhost:5041` (ver o README do repositório `backend`).
 
-## React Compiler
+## Instalação
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+npm ci
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Configuração
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+Em desenvolvimento, os pedidos a `/api` são encaminhados pelo proxy do Vite para o backend. O endereço do backend configura-se sem alterar o código:
 
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+cp .env.example .env
+# editar BACKEND_URL, por exemplo BACKEND_URL=http://192.168.1.10:5041
 ```
+
+Sem `.env`, é usado `http://localhost:5041`.
+
+## Execução local
+
+```bash
+npm run dev
+```
+
+A aplicação fica disponível em `http://localhost:5173`.
+
+## Scripts
+
+| Script                 | O que faz                                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| `npm run dev`          | Servidor de desenvolvimento do Vite, com o proxy para o backend.                                      |
+| `npm run build`        | Verificação de tipos (`tsc -b`) e build de produção em `dist/`.                                       |
+| `npm run preview`      | Serve o build de `dist/` localmente.                                                                  |
+| `npm run lint`         | ESLint (regulamento interno, secção 10.4).                                                            |
+| `npm run format`       | Formata o código com o Prettier.                                                                      |
+| `npm run format:check` | Verifica a formatação sem alterar ficheiros (regulamento interno, secção 10.3).                       |
+| `npm run test:e2e`     | Testes de sistema com o Playwright (`e2e/`). Na primeira execução: `npx playwright install chromium`. |
+
+## Organização das pastas
+
+A estrutura segue o Modelo de Classes do frontend web v03:
+
+```
+src/
+  main.tsx           arranque da aplicação
+  api/               comunicação com o backend
+  hooks/             hooks partilhados
+  routes/            árvore de rotas, guardas e redirecionamento da rota /
+  components/
+    layout/          moldura de todas as páginas (AppLayout, Header)
+    ui/              componentes genéricos
+  pages/
+    public/          páginas sem sessão e páginas de erro
+    account/         páginas comuns aos três tipos de utilizador
+    client/          páginas do Cliente
+    provider/        páginas do Prestador de Serviços
+    admin/           páginas do Administrador
+  styles/            CSS global (tokens.css com as cores do protótipo e base.css)
+  utils/             funções sem React
+  assets/            imagens importadas no código
+```
+
+Os imports de outra pasta usam o alias `@/` (`src/`).
