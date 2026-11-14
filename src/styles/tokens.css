@@ -1,4 +1,12 @@
-/* Cores, tipos de letra e medidas do Protótipo de alta fidelidade v02 */
+/* Cores, tipos de letra e medidas da linha gráfica da aplicação, usadas por todos os componentes */
+
+/*
+  Breakpoints, só para mudanças de estrutura (ex.: a navegação passar a menu recolhido).
+  As variáveis CSS não funcionam dentro de @media, por isso cada @media escreve um destes valores:
+  - 48rem (768px): ecrãs estreitos, abaixo dos quais os painéis ficam um por baixo do outro;
+  - 64rem (1024px): ecrãs médios, abaixo dos quais a navegação do cabeçalho passa a menu recolhido.
+*/
+
 :root {
   --color-primary: #0f6b57;
   --color-primary-hover: #0c5848;
@@ -26,11 +34,11 @@
   --font-body: "Figtree", system-ui, "Segoe UI", sans-serif;
   --font-heading: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
 
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
+  --radius-sm: 0.625rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.125rem;
 
-  --header-height: 64px;
-  --content-max-width: 1200px;
-  --page-gutter: 32px;
+  --header-height: 4rem;
+  --content-max-width: 75rem;
+  --page-gutter: 2rem;
 }

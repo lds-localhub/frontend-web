@@ -13,7 +13,7 @@ body {
   min-height: 100vh;
   background: var(--color-bg);
   color: var(--color-text);
-  font: 15px/1.5 var(--font-body);
+  font: 0.9375rem/1.5 var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -27,16 +27,16 @@ h3 {
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 1.2;
 }
 
 h2 {
-  font-size: 22px;
+  font-size: 1.375rem;
 }
 
 h3 {
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 p {
