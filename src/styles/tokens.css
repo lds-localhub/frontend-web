@@ -10,6 +10,7 @@
 :root {
   --color-primary: #0f6b57;
   --color-primary-hover: #0c5848;
+  --color-on-primary: #ffffff;
   --color-primary-soft: #eaf1ee;
   --color-primary-soft-strong: #d6ece5;
 

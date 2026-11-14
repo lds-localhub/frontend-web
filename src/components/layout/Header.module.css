@@ -67,7 +67,7 @@
   padding: 0.625rem 1rem;
   border-radius: var(--radius-sm);
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
   font-size: 0.875rem;
 
   &:hover {
