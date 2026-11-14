@@ -1,46 +1,81 @@
+# Nome do workflow, como aparece no separador Actions e nas verificações dos Pull Requests
 name: CI
 
+# Eventos que iniciam a pipeline
 on:
+  # Qualquer push, em qualquer branch
   push:
+  # Pull Requests...
   pull_request:
+    # ...cujo destino é a branch master
     branches: [master]
 
+# Permissões do token usado pela pipeline
 permissions:
+  # Só pode ler o código do repositório; não pode escrever nada
   contents: read
 
+# Controlo de execuções simultâneas
 concurrency:
+  # Agrupa as execuções pela branch (ou Pull Request)
   group: ci-${{ github.ref }}
+  # Um push novo na mesma branch cancela a execução anterior, que ficou desatualizada
   cancel-in-progress: true
 
+# Trabalhos da pipeline
 jobs:
+  # Identificador do trabalho do frontend web
   frontend-web:
+    # Nome da verificação, usado como verificação obrigatória na proteção da master
     name: frontend-web
+    # Máquina virtual Linux limpa, fornecida pelo GitHub
     runs-on: ubuntu-latest
 
+    # Passos, executados por ordem; se um falhar, os seguintes não correm e a pipeline falha
     steps:
+      # Descarrega o código do commit a verificar
       - uses: actions/checkout@v4
 
+      # Instala o Node.js
       - uses: actions/setup-node@v4
+        # Opções da instalação
         with:
+          # Versão do Node lida do .nvmrc (24), a mesma usada pelo grupo
           node-version-file: .nvmrc
+          # Guarda a cache dos pacotes npm para acelerar as execuções seguintes
           cache: npm
 
+      # Nome do passo
       - name: Instalar dependências
+        # Instala exatamente as versões do package-lock.json, sem o alterar
         run: npm ci
 
+      # Nome do passo (quality gate QG-05)
       - name: QG-05 Formatação
+        # Prettier: falha se algum ficheiro não estiver formatado
         run: npm run format:check
 
-      - name: QG-05 Lint
+      # Nome do passo (quality gate QG-05)
+      - name: QG-05 Lint e análise estática (ESLint)
+        # ESLint: falha se existirem erros das regras recomendadas de JavaScript, TypeScript e React
         run: npm run lint
 
+      # Nome do passo (quality gate QG-01)
       - name: QG-01 Construção
+        # Verifica os tipos do TypeScript (tsc -b) e gera o build de produção em dist/ (vite build)
         run: npm run build
 
+      # Nome do passo
       - name: Guardar o resultado da construção
+        # Corre sempre, mesmo que um passo anterior tenha falhado
         if: always()
+        # Guarda ficheiros da execução como artefacto descarregável (evidência)
         uses: actions/upload-artifact@v4
+        # Opções do artefacto
         with:
+          # Nome do artefacto no separador Actions
           name: evidencias-frontend-web
+          # Pasta guardada: o resultado do build
           path: dist/
+          # Se o build falhou e não há dist/, mostra só um aviso em vez de falhar
           if-no-files-found: warn

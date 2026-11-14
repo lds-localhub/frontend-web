@@ -1,28 +1,51 @@
+# Nome do workflow, como aparece no separador Actions e nas verificações dos Pull Requests
 name: CodeQL
 
+# Eventos que iniciam a análise
 on:
+  # Qualquer push, em qualquer branch
   push:
+  # Pull Requests...
   pull_request:
+    # ...cujo destino é a branch master
     branches: [master]
 
+# Trabalhos do workflow
 jobs:
+  # Identificador do trabalho de análise
   analyze:
+    # Nome da verificação, usado na proteção da master
     name: Analyze (javascript-typescript)
+    # Máquina virtual Linux limpa, fornecida pelo GitHub
     runs-on: ubuntu-latest
+    # Permissões do token usado pela análise
     permissions:
+      # Ler o código do repositório
       contents: read
+      # Publicar os alertas em Security > Code scanning
       security-events: write
+      # Ler o estado da própria execução
       actions: read
 
+    # Passos, executados por ordem
     steps:
+      # Descarrega o código do commit a analisar
       - uses: actions/checkout@v4
 
+      # Prepara o CodeQL
       - uses: github/codeql-action/init@v4
+        # Opções da análise
         with:
+          # Linguagem analisada: JavaScript e TypeScript
           languages: javascript-typescript
+          # JavaScript e TypeScript são analisados sem compilar
           build-mode: none
+          # Ficheiro com o conjunto de regras e as pastas excluídas
           config-file: ./.github/codeql/codeql-config.yml
 
+      # Executa a análise e publica os alertas no GitHub
       - uses: github/codeql-action/analyze@v4
+        # Opções da publicação
         with:
+          # Categoria dos resultados, para os separar por linguagem
           category: "/language:javascript-typescript"
