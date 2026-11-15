@@ -1,6 +1,9 @@
 import { Navigate } from "react-router";
+import { useMe } from "@/hooks/useMe";
+import { homeOf } from "@/utils/homeOf";
 
-// Rota /: sem sessão, a entrada da aplicação é a pesquisa de Prestadores
+// Rota /: com sessão, o início do papel; sem sessão, a pesquisa de Prestadores
 export function RootRedirect() {
-  return <Navigate to="/pesquisa/prestadores" replace />;
+  const { data: me } = useMe();
+  return <Navigate to={me ? homeOf(me.role) : "/pesquisa/prestadores"} replace />;
 }

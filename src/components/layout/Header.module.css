@@ -37,6 +37,16 @@
   background: var(--color-primary);
 }
 
+.adminBadge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-primary-soft-strong);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
 .links {
   display: flex;
   gap: 1.75rem;
