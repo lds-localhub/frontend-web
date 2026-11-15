@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "./fixtures/test.ts";
 
 test("a página inicial abre a pesquisa de Prestadores", async ({ page }) => {
   await page.goto("/");

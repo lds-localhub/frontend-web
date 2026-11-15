@@ -30,7 +30,7 @@ export function uniqueEmail(prefix: string): string {
   return `${prefix}.${Date.now()}${suffix}@localhub.test`;
 }
 
-async function failIfNot(response: APIResponse, status: number) {
+export async function failIfNot(response: APIResponse, status: number) {
   if (response.status() !== status) {
     throw new Error(
       `${response.url()} devolveu ${response.status()} (esperado ${status}): ${await response.text()}`,
