@@ -80,3 +80,155 @@ jobs:
           # Se o build falhou e não há dist/, mostra só um aviso em vez de falhar
           if-no-files-found: warn
 
+  # Identificador do trabalho dos testes de sistema (I093, quality gate QG-06)
+  testes-sistema-web:
+    # Nome da verificação, usado como verificação obrigatória na proteção da master
+    name: testes-sistema-web
+    # Máquina virtual Linux limpa, fornecida pelo GitHub
+    runs-on: ubuntu-latest
+    # Limite de tempo: um passo pendurado não prende o trabalho durante horas
+    timeout-minutes: 30
+
+    # Serviços que acompanham o trabalho
+    services:
+      # PostgreSQL 18, a mesma versão do backend
+      postgres:
+        # Imagem oficial do PostgreSQL 18
+        image: postgres:18
+        # Configuração do servidor
+        env:
+          # Superutilizador, usado só para correr o script de criação da base de dados
+          POSTGRES_USER: postgres
+          # Palavra-passe guardada nos GitHub Secrets (regulamento interno §13.2)
+          POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+        # Porta do servidor acessível a partir do trabalho
+        ports:
+          - 5432:5432
+        # O trabalho só começa quando o servidor aceita ligações
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    # Variáveis comuns a todos os passos
+    env:
+      # Palavra-passe usada pelo psql (superutilizador postgres e utilizador localhub)
+      PGPASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+      # Tag do backend contra a qual os testes correm (versão em vigor)
+      BACKEND_TAG: v1.1.0
+
+    # Passos, executados por ordem; se um falhar, os seguintes não correm e a pipeline falha
+    steps:
+      # Descarrega o código do commit a verificar
+      - uses: actions/checkout@v4
+
+      # Descarrega o backend, só para leitura, na tag indicada
+      - name: Obter o backend ${{ env.BACKEND_TAG }}
+        # Ação oficial de checkout
+        uses: actions/checkout@v4
+        # Opções do checkout
+        with:
+          # Repositório público do backend
+          repository: lds-localhub/backend
+          # Versão do backend usada nos testes
+          ref: ${{ env.BACKEND_TAG }}
+          # Pasta temporária no runner; não faz parte do repositório do frontend
+          path: backend
+
+      # Nome do passo
+      - name: Criar e repor a base de dados de teste
+        # Cria o utilizador localhub e corre o script de referência do backend (RNF-19)
+        run: |
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -c "CREATE ROLE localhub WITH LOGIN PASSWORD '$PGPASSWORD';"
+          psql -h localhost -U postgres -d postgres -v dbname=localhub_e2e \
+            -f backend/database/repor-base-dados.sql
+
+      # Instala o .NET com a versão definida pelo backend
+      - uses: actions/setup-dotnet@v4
+        # Opções da instalação
+        with:
+          # Versão lida do global.json do backend
+          global-json-file: backend/global.json
+
+      # Nome do passo
+      - name: Compilar o backend
+        # Compila a API em Release
+        run: dotnet build backend/src/LocalHub.Api --configuration Release
+
+      # Nome do passo
+      - name: Arrancar o stub do Nominatim
+        # Geocodificador simulado em segundo plano; a saída fica num ficheiro para as evidências
+        run: |
+          mkdir -p logs
+          nohup node e2e/stubs/nominatim-stub.mjs > logs/nominatim-stub.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8089/status && exit 0
+            sleep 1
+          done
+          echo "O stub do Nominatim não arrancou" && cat logs/nominatim-stub.log && exit 1
+
+      # Nome do passo
+      - name: Arrancar o backend
+        # Configuração só por variáveis de ambiente; o backend não é alterado
+        env:
+          # Base de dados de teste criada no passo anterior
+          ConnectionStrings__LocalHub: Host=localhost;Port=5432;Database=localhub_e2e;Username=localhub;Password=${{ secrets.TEST_DB_PASSWORD }}
+          # Chave de assinatura dos tokens (mínimo 32 caracteres)
+          Jwt__SigningKey: ${{ secrets.JWT_SIGNING_KEY }}
+          # Palavra-passe exigida pelo seeder em Development
+          Seed__DefaultPassword: ${{ secrets.SEED_DEFAULT_PASSWORD }}
+          # Geocodificador simulado em vez do Nominatim público
+          Nominatim__BaseUrl: http://localhost:8089/
+        # Arranca em segundo plano (perfil http: porta 5041) e espera pelo /api/health
+        run: |
+          nohup dotnet run --project backend/src/LocalHub.Api --configuration Release \
+            --no-build --launch-profile http > logs/backend.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:5041/api/health && exit 0
+            sleep 2
+          done
+          echo "O backend não arrancou" && cat logs/backend.log && exit 1
+
+      # Instala o Node.js
+      - uses: actions/setup-node@v4
+        # Opções da instalação
+        with:
+          # Versão do Node lida do .nvmrc (24), a mesma usada pelo grupo
+          node-version-file: .nvmrc
+          # Guarda a cache dos pacotes npm para acelerar as execuções seguintes
+          cache: npm
+
+      # Nome do passo
+      - name: Instalar dependências
+        # Instala exatamente as versões do package-lock.json, sem o alterar
+        run: npm ci
+
+      # Nome do passo
+      - name: Instalar o Google Chrome
+        # Versão estável do Google Chrome, com as dependências do sistema (RNF-10)
+        run: npx playwright install --with-deps chrome
+
+      # Nome do passo (quality gate QG-06)
+      - name: QG-06 Testes de sistema (Playwright)
+        # Playwright no Google Chrome a 1920 × 1080; o Vite serve o frontend e reencaminha /api para o backend
+        run: npm run test:e2e
+
+      # Nome do passo
+      - name: Guardar o relatório dos testes de sistema
+        # Corre sempre, mesmo que os testes tenham falhado
+        if: always()
+        # Guarda ficheiros da execução como artefacto descarregável (evidência)
+        uses: actions/upload-artifact@v4
+        # Opções do artefacto
+        with:
+          # Nome do artefacto no separador Actions
+          name: evidencias-testes-sistema-web
+          # Relatório HTML (com a versão do Chrome), screenshots, vídeos, traces e registos do backend e do stub
+          path: |
+            playwright-report/
+            test-results/
+            logs/
+          # Se não houver ficheiros (falha antes dos testes), mostra só um aviso
+          if-no-files-found: warn
