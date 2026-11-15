@@ -1,6 +1,6 @@
 {
   "carla": {
-    "morada": "Rua das Flores Fictícia, 12, 4050-001 Porto",
+    "fullAddress": "Rua das Flores Fictícia, 12, 4050-001 Porto",
     "lat": "41.1496",
     "lon": "-8.6110",
     "address": {
@@ -11,7 +11,7 @@
     }
   },
   "hugo": {
-    "morada": "Avenida da Boavista Fictícia, 900, 4100-001 Porto",
+    "fullAddress": "Avenida da Boavista Fictícia, 900, 4100-001 Porto",
     "lat": "41.1579",
     "lon": "-8.6291",
     "address": {
@@ -22,7 +22,7 @@
     }
   },
   "gaia": {
-    "morada": "Rua do Teste Fictícia, 10, 4400-001 Vila Nova de Gaia",
+    "fullAddress": "Rua do Teste Fictícia, 10, 4400-001 Vila Nova de Gaia",
     "lat": "41.1239",
     "lon": "-8.6118",
     "address": {
@@ -33,7 +33,7 @@
     }
   },
   "matosinhos": {
-    "morada": "Avenida do Mar Fictícia, 20, 4450-001 Matosinhos",
+    "fullAddress": "Avenida do Mar Fictícia, 20, 4450-001 Matosinhos",
     "lat": "41.1820",
     "lon": "-8.6890",
     "address": {
@@ -44,7 +44,7 @@
     }
   },
   "maia": {
-    "morada": "Rua da Feira Fictícia, 30, 4470-001 Maia",
+    "fullAddress": "Rua da Feira Fictícia, 30, 4470-001 Maia",
     "lat": "41.2357",
     "lon": "-8.6199",
     "address": {
@@ -55,7 +55,7 @@
     }
   },
   "braga": {
-    "morada": "Rua do Castelo Fictícia, 40, 4700-001 Braga",
+    "fullAddress": "Rua do Castelo Fictícia, 40, 4700-001 Braga",
     "lat": "41.5454",
     "lon": "-8.4265",
     "address": {
@@ -66,7 +66,7 @@
     }
   },
   "aveiro": {
-    "morada": "Rua da Ria Fictícia, 50, 3800-001 Aveiro",
+    "fullAddress": "Rua da Ria Fictícia, 50, 3800-001 Aveiro",
     "lat": "40.6405",
     "lon": "-8.6538",
     "address": {
