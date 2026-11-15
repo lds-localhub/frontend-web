@@ -3,10 +3,8 @@ name: CodeQL
 
 # Eventos que iniciam a análise
 on:
-  # Push para a branch master (depois do merge de um Pull Request)
+  # Todos os pushes, em qualquer branch (regulamento interno §4: execução automática para todos os pushes)
   push:
-    # Só na master: nos Pull Requests a pipeline já corre pelo evento pull_request
-    branches: [master]
   # Pull Requests...
   pull_request:
     # ...cujo destino é a branch master
