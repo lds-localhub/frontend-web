@@ -76,7 +76,9 @@ const server = createServer((request, response) => {
     return;
   }
 
-  console.log(`${request.method} ${url.pathname}${url.search}`);
+  // O pedido vem de fora: sem quebras de linha, para não se poderem forjar linhas no registo
+  const logLine = `${request.method} ${url.pathname}${url.search}`.replace(/[\r\n]/g, "");
+  console.log(logLine);
   response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
   response.end(JSON.stringify(body));
 });
