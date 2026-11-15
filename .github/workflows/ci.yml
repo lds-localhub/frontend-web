@@ -3,10 +3,8 @@ name: CI
 
 # Eventos que iniciam a pipeline
 on:
-  # Push para a branch master (depois do merge de um Pull Request)
+  # Todos os pushes, em qualquer branch (regulamento interno §4: execução automática para todos os pushes)
   push:
-    # Só na master: nos Pull Requests a pipeline já corre pelo evento pull_request
-    branches: [master]
   # Pull Requests...
   pull_request:
     # ...cujo destino é a branch master
@@ -81,3 +79,4 @@ jobs:
           path: dist/
           # Se o build falhou e não há dist/, mostra só um aviso em vez de falhar
           if-no-files-found: warn
+
