@@ -29,12 +29,13 @@ export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (t: string) => localStorage.setItem(TOKEN_KEY, t);
 export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
 
-// Sessão expirada ou revogada: apaga o token e a cache e volta ao início de sessão.
-// Fora do React (chamada pelo api()), por isso navega com window.location, que também recarrega a aplicação.
+// Sessão expirada ou revogada: apaga o token e a cache e volta ao início de sessão, que explica o motivo.
+// Fora do React (chamada pelo api()), por isso navega com window.location, que também recarrega a aplicação
+// e perde o estado da navegação: o motivo vai no URL.
 export function onUnauthorized() {
   clearToken();
   queryClient.clear();
-  window.location.assign("/login");
+  window.location.assign("/login?sessao=terminada");
 }
 
 // Único ponto de acesso ao backend: nenhum componente chama fetch diretamente.

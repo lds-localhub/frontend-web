@@ -24,6 +24,16 @@ cp .env.example .env
 
 Sem `.env`, é usado `http://localhost:5041`.
 
+O `.env.example` tem também o contacto de suporte apresentado no início de sessão (`VITE_SUPPORT_EMAIL`, por omissão `suporte@localhub.test`).
+
+## Testes de sistema
+
+Os testes do Playwright precisam do backend a correr com a base de dados de referência (`database/repor-base-dados.sql` do backend). Os testes que entram como Administrador leem a palavra-passe da conta `ana.almeida@localhub.test` da variável `E2E_ADMIN_PASSWORD` (no CI, do secret com o mesmo nome):
+
+```bash
+E2E_ADMIN_PASSWORD=<palavra-passe> npm run test:e2e
+```
+
 ## Execução local
 
 ```bash
@@ -55,7 +65,7 @@ src/
   hooks/             hooks partilhados
   routes/            árvore de rotas, guardas e redirecionamento da rota /
   components/
-    layout/          moldura de todas as páginas (AppLayout, Header)
+    layout/          moldura de todas as páginas (AppLayout, Header, AccountMenu)
     ui/              componentes genéricos
   pages/
     public/          páginas sem sessão e páginas de erro

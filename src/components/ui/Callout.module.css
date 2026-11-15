@@ -1,0 +1,19 @@
+.callout {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+
+  img {
+    flex: none;
+    margin-top: 0.1875rem;
+  }
+
+  strong {
+    color: var(--color-primary);
+  }
+}

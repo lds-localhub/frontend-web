@@ -1,0 +1,24 @@
+import { Field } from "@base-ui/react/field";
+import type { ComponentProps } from "react";
+import styles from "./TextField.module.css";
+
+type Props = Omit<ComponentProps<"input">, "className"> & {
+  label: string;
+  hint?: string;
+  error?: string;
+};
+
+// Campo de texto com etiqueta, dica e mensagem de erro ligadas ao campo (anunciadas pelo leitor de ecrã).
+// Encaminha a ref para o <input>, por isso liga-se diretamente com o register do React Hook Form.
+export function TextField({ label, hint, error, ...inputProps }: Props) {
+  return (
+    <Field.Root className={styles.field} invalid={!!error}>
+      <Field.Label className={styles.label}>{label}</Field.Label>
+      <Field.Control {...inputProps} className={styles.input} />
+      {hint && <Field.Description className={styles.hint}>{hint}</Field.Description>}
+      <Field.Error className={styles.error} match={!!error}>
+        {error}
+      </Field.Error>
+    </Field.Root>
+  );
+}

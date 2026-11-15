@@ -220,6 +220,10 @@ jobs:
       - name: QG-06 Testes de sistema (Playwright)
         # Playwright no Google Chrome a 1920 × 1080; o Vite serve o frontend e reencaminha /api para o backend
         run: npm run test:e2e
+        # Variáveis dos testes
+        env:
+          # Palavra-passe do Administrador dos dados de referência, usada nos testes de acesso por papel
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
 
       # Nome do passo
       - name: Guardar o relatório dos testes de sistema
