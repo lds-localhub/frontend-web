@@ -33,6 +33,37 @@ jobs:
     # Máquina virtual Linux limpa, fornecida pelo GitHub
     runs-on: ubuntu-latest
 
+    # Serviços que arrancam antes dos passos (testes de sistema, I093)
+    services:
+      # Servidor PostgreSQL 18 para o backend real
+      postgres:
+        # Imagem oficial do PostgreSQL 18 (regulamento interno, secção 10.2)
+        image: postgres:18
+        # Configuração do servidor
+        env:
+          # Palavra-passe do superutilizador postgres, lida dos GitHub Secrets (nunca no repositório)
+          POSTGRES_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+        # Porta do servidor exposta na máquina da pipeline
+        ports:
+          - 5432:5432
+        # Espera que o servidor aceite ligações antes de começar os passos
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    # Variáveis comuns aos passos dos testes de sistema
+    env:
+      # Versão (tag) do backend contra a qual os testes de sistema correm
+      BACKEND_REF: v1.1.0
+      # Endereço do backend: usado pelo proxy do Vite e pelos helpers de preparação dos dados
+      BACKEND_URL: http://localhost:5041
+      # Base de dados dos testes de sistema, criada pelos scripts de referência do backend (RNF-19)
+      E2E_DB_NAME: localhub_e2e
+      # Porta do geocodificador simulado (stub do Nominatim)
+      NOMINATIM_STUB_PORT: 8089
+
     # Passos, executados por ordem; se um falhar, os seguintes não correm e a pipeline falha
     steps:
       # Descarrega o código do commit a verificar
@@ -80,4 +111,108 @@ jobs:
           # Pasta guardada: o resultado do build
           path: dist/
           # Se o build falhou e não há dist/, mostra só um aviso em vez de falhar
+          if-no-files-found: warn
+
+      # ----- Testes de sistema (QG-06, I093): frontend, backend real e PostgreSQL 18 -----
+
+      # Nome do passo
+      - name: Descarregar o backend
+        # Descarrega outro repositório (público) do GitHub
+        uses: actions/checkout@v4
+        # Opções do checkout
+        with:
+          # Repositório do backend do LocalHub
+          repository: lds-localhub/backend
+          # Versão indicada em BACKEND_REF
+          ref: ${{ env.BACKEND_REF }}
+          # Pasta onde fica (ignorada pelo Git, pelo Prettier e pelo ESLint)
+          path: .backend
+
+      # Instala o SDK do .NET indicado pelo backend
+      - uses: actions/setup-dotnet@v4
+        # Opções da instalação
+        with:
+          # Versão lida do global.json do backend
+          global-json-file: .backend/global.json
+
+      # Nome do passo
+      - name: Criar a base de dados com os scripts de referência
+        # Variáveis só deste passo
+        env:
+          # Palavra-passe do PostgreSQL, lida dos GitHub Secrets
+          PGPASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+        # Cria o utilizador localhub (dono da base) e cria/repõe a base com o script do backend
+        run: |
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -v pw="$PGPASSWORD" <<'SQL'
+          CREATE ROLE localhub WITH LOGIN PASSWORD :'pw';
+          SQL
+          psql -h localhost -U postgres -d postgres -v dbname="$E2E_DB_NAME" -f .backend/database/repor-base-dados.sql
+
+      # Nome do passo
+      - name: Arrancar o geocodificador simulado
+        # Stub do Nominatim em segundo plano (Node 24 executa o TypeScript); espera que responda
+        run: |
+          nohup node e2e/support/nominatim-stub.ts > nominatim-stub.log 2>&1 &
+          curl --retry 10 --retry-delay 1 --retry-all-errors -fsS "http://localhost:$NOMINATIM_STUB_PORT/status"
+
+      # Nome do passo
+      - name: Compilar o backend
+        # Compila a API do backend em modo Release
+        run: dotnet build .backend/src/LocalHub.Api --configuration Release
+
+      # Nome do passo
+      - name: Arrancar o backend
+        # Configuração do backend por variáveis de ambiente, sem alterar o código nem o repositório
+        env:
+          # Production: sem o DataSeeder; os dados vêm só dos scripts de referência
+          ASPNETCORE_ENVIRONMENT: Production
+          # Endereço onde o backend fica à escuta
+          ASPNETCORE_URLS: ${{ env.BACKEND_URL }}
+          # Ligação à base de dados dos testes, com a palavra-passe dos GitHub Secrets
+          ConnectionStrings__LocalHub: Host=localhost;Port=5432;Database=${{ env.E2E_DB_NAME }};Username=localhub;Password=${{ secrets.E2E_DB_PASSWORD }}
+          # Chave de assinatura dos tokens JWT, lida dos GitHub Secrets
+          Jwt__SigningKey: ${{ secrets.E2E_JWT_SIGNING_KEY }}
+          # O backend pede as coordenadas ao geocodificador simulado em vez do Nominatim público
+          Nominatim__BaseUrl: http://localhost:${{ env.NOMINATIM_STUB_PORT }}/
+        # Arranca o backend em segundo plano e espera que o /api/health responda (até cerca de 60 s)
+        run: |
+          nohup dotnet run --project .backend/src/LocalHub.Api --configuration Release --no-build --no-launch-profile > backend.log 2>&1 &
+          curl --retry 30 --retry-delay 2 --retry-all-errors -fsS "$BACKEND_URL/api/health"
+
+      # Nome do passo
+      - name: Registar a versão do Google Chrome
+        # Instala o Google Chrome só se não existir na máquina e guarda a versão como evidência (RNF-10)
+        run: |
+          command -v google-chrome || npx playwright install --with-deps chrome
+          google-chrome --version | tee chrome-version.txt
+          echo "**Navegador:** $(cat chrome-version.txt) · **Backend:** $BACKEND_REF" >> "$GITHUB_STEP_SUMMARY"
+
+      # Nome do passo (quality gate QG-06)
+      - name: QG-06 Testes de sistema (Playwright, Google Chrome 1920 × 1080)
+        # Variáveis só deste passo
+        env:
+          # Palavras-passe das contas da base de referência, para os helpers (GitHub Secrets)
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          E2E_DEMO_PASSWORD: ${{ secrets.E2E_DEMO_PASSWORD }}
+        # Playwright: falha se algum teste de sistema falhar
+        run: npm run test:e2e
+
+      # Nome do passo
+      - name: Guardar o relatório dos testes de sistema
+        # Corre sempre, para que haja evidência também quando os testes falham
+        if: always()
+        # Guarda ficheiros da execução como artefacto descarregável (evidência)
+        uses: actions/upload-artifact@v4
+        # Opções do artefacto
+        with:
+          # Nome do artefacto no separador Actions
+          name: relatorio-testes-sistema-frontend-web
+          # Relatório HTML do Playwright, falhas (capturas e traces), versão do Chrome e registos do backend e do stub
+          path: |
+            playwright-report/
+            test-results/
+            chrome-version.txt
+            backend.log
+            nominatim-stub.log
+          # Se os testes não chegaram a correr, mostra só um aviso
           if-no-files-found: warn

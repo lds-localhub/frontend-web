@@ -29,3 +29,6 @@ playwright-report
 test-results
 blob-report
 playwright/.cache
+
+# Backend descarregado pela pipeline (testes de sistema)
+.backend

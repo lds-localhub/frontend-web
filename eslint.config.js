@@ -7,7 +7,7 @@ import prettier from "eslint-config-prettier";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist", "node_modules", "playwright-report", "test-results"]),
+  globalIgnores(["dist", "node_modules", "playwright-report", "test-results", ".backend"]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
