@@ -138,10 +138,12 @@ jobs:
 
       # Nome do passo
       - name: Criar e repor a base de dados de teste
-        # Cria o utilizador localhub e corre o script de referência do backend (RNF-19)
+        # Cria o utilizador localhub e corre o script de referência do backend (RNF-19).
+        # A palavra-passe entra como variável do psql (:'pw', com escape); o psql só substitui
+        # variáveis em comandos lidos do stdin, não em -c.
         run: |
-          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
-            -c "CREATE ROLE localhub WITH LOGIN PASSWORD '$PGPASSWORD';"
+          echo "CREATE ROLE localhub WITH LOGIN PASSWORD :'pw';" \
+            | psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -v pw="$PGPASSWORD"
           psql -h localhost -U postgres -d postgres -v dbname=localhub_e2e \
             -f backend/database/repor-base-dados.sql
 
@@ -163,8 +165,11 @@ jobs:
         run: |
           mkdir -p logs
           nohup node e2e/stubs/nominatim-stub.mjs > logs/nominatim-stub.log 2>&1 &
+          pid=$!
           for i in $(seq 1 30); do
             curl -sf http://localhost:8089/status && exit 0
+            # Se o processo já terminou, não vale a pena esperar mais
+            kill -0 "$pid" 2>/dev/null || break
             sleep 1
           done
           echo "O stub do Nominatim não arrancou" && cat logs/nominatim-stub.log && exit 1
@@ -185,8 +190,11 @@ jobs:
         run: |
           nohup dotnet run --project backend/src/LocalHub.Api --configuration Release \
             --no-build --launch-profile http > logs/backend.log 2>&1 &
+          pid=$!
           for i in $(seq 1 60); do
             curl -sf http://localhost:5041/api/health && exit 0
+            # Se o processo já terminou (ex.: configuração inválida), não vale a pena esperar mais
+            kill -0 "$pid" 2>/dev/null || break
             sleep 2
           done
           echo "O backend não arrancou" && cat logs/backend.log && exit 1
