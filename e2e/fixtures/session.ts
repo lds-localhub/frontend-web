@@ -10,6 +10,12 @@ export async function loginViaUi(page: Page, email: string, password: string): P
   await page.getByRole("button", { name: "Entrar" }).click();
 }
 
+// Termina a sessão no menu da conta do cabeçalho, como o utilizador faria
+export async function logoutViaUi(page: Page): Promise<void> {
+  await page.getByRole("button", { name: /Menu da conta/ }).click();
+  await page.getByRole("menuitem", { name: "Terminar sessão" }).click();
+}
+
 // Abre a aplicação já com a sessão indicada: o token fica no localStorage antes de a página carregar,
 // como depois de um início de sessão
 export async function openWithSession(page: Page, token: string): Promise<void> {

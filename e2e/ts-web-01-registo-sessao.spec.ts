@@ -1,11 +1,11 @@
 import { registerAndLogin, TEST_PASSWORD, uniqueEmail } from "./fixtures/accounts.ts";
-import { loginViaUi, storedToken } from "./fixtures/session.ts";
+import { loginViaUi, logoutViaUi, storedToken } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
 // TS-WEB-01 — Registo, início e fim de sessão (RF-F001-01, RF-F001-02, RF-F001-04)
 
 test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
-  test("RF-F001-01 regista um Cliente e o início de sessão leva ao início do Cliente", async ({
+  test("RF-F001-01, RF-F001-02, RF-F001-04 regista um Cliente, inicia e termina sessão", async ({
     page,
   }) => {
     const email = uniqueEmail("ts01.cliente");
@@ -35,6 +35,12 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
       ).toBeVisible();
       await expect(page.getByRole("link", { name: "Os meus serviços" })).toBeVisible();
     });
+
+    await test.step("terminar sessão no menu da conta", async () => {
+      await logoutViaUi(page);
+      await expect(page).toHaveURL(/\/login$/);
+      await expect(page.getByRole("link", { name: "Iniciar sessão" })).toBeVisible();
+    });
   });
 
   test("RF-F001-01 regista um Prestador, que é encaminhado para criar o perfil", async ({
@@ -42,23 +48,29 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
   }) => {
     const email = uniqueEmail("ts01.prestador");
 
-    await page.goto("/registar");
-    await page.getByLabel("Nome").fill("Prestador TS-WEB-01");
-    await page.getByLabel("E-mail").fill(email);
-    await page.getByLabel("Palavra-passe").fill(TEST_PASSWORD);
-    await page.getByRole("radio", { name: "Prestador de Serviços" }).check();
-    await page.getByRole("button", { name: "Criar conta" }).click();
-    await expect(page).toHaveURL(/\/login$/);
+    await test.step("registar a conta de Prestador de Serviços (W02)", async () => {
+      await page.goto("/registar");
+      await page.getByLabel("Nome").fill("Prestador TS-WEB-01");
+      await page.getByLabel("E-mail").fill(email);
+      await page.getByLabel("Palavra-passe").fill(TEST_PASSWORD);
+      await page.getByRole("radio", { name: "Prestador de Serviços" }).check();
+      await page.getByRole("button", { name: "Criar conta" }).click();
+      await expect(page).toHaveURL(/\/login$/);
+    });
 
-    await loginViaUi(page, email, TEST_PASSWORD);
-    await expect(page).toHaveURL(/\/perfil\/criar$/);
-    await expect(page.getByRole("heading", { name: "Criar perfil profissional" })).toBeVisible();
+    await test.step("iniciar sessão (W03) leva à criação do perfil", async () => {
+      await loginViaUi(page, email, TEST_PASSWORD);
+      await expect(page).toHaveURL(/\/perfil\/criar$/);
+      await expect(page.getByRole("heading", { name: "Criar perfil profissional" })).toBeVisible();
+    });
   });
 
   test("RF-F001-01 mostra os erros de validação junto de cada campo", async ({ page, request }) => {
     const existing = await registerAndLogin(request, "CLIENT", "ts01.existente");
 
-    await page.goto("/registar");
+    await test.step("abrir o registo (W02)", async () => {
+      await page.goto("/registar");
+    });
 
     await test.step("campos vazios", async () => {
       await page.getByRole("button", { name: "Criar conta" }).click();
@@ -83,8 +95,7 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
       await page.getByRole("button", { name: "Criar conta" }).click();
       // A Documentação da API mostra «Este e-mail já está registado.»; o backend v1.1.0 responde
       // «Já existe uma conta com este e-mail.». O que se verifica é a mensagem do backend junto ao campo
-      const email = page.getByLabel("E-mail");
-      await expect(email).toHaveAttribute("aria-invalid", "true");
+      await expect(page.getByLabel("E-mail")).toHaveAttribute("aria-invalid", "true");
       await expect(
         page.getByText(/(já está registado|Já existe uma conta com este e-mail)\./),
       ).toBeVisible();
@@ -97,13 +108,16 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
     request,
   }) => {
     const account = await registerAndLogin(request, "CLIENT", "ts01.logout");
-    await loginViaUi(page, account.email, account.password);
-    await expect(page).toHaveURL(/\/cliente$/);
-    const token = await storedToken(page);
+    let token: string | null = null;
+
+    await test.step("iniciar sessão (W03)", async () => {
+      await loginViaUi(page, account.email, account.password);
+      await expect(page).toHaveURL(/\/cliente$/);
+      token = await storedToken(page);
+    });
 
     await test.step("terminar sessão no menu da conta", async () => {
-      await page.getByRole("button", { name: /Menu da conta/ }).click();
-      await page.getByRole("menuitem", { name: "Terminar sessão" }).click();
+      await logoutViaUi(page);
       await expect(page).toHaveURL(/\/login$/);
       await expect(page.getByRole("link", { name: "Iniciar sessão" })).toBeVisible();
     });

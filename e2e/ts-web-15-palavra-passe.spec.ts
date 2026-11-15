@@ -1,5 +1,5 @@
-import { login, registerAndLogin } from "./fixtures/accounts.ts";
-import { openWithSession } from "./fixtures/session.ts";
+import { registerAndLogin } from "./fixtures/accounts.ts";
+import { loginViaUi, logoutViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
 // TS-WEB-15 — Alterar a palavra-passe (RF-F001-07)
@@ -10,8 +10,14 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
     request,
   }) => {
     const account = await registerAndLogin(request, "CLIENT", "ts15");
-    await openWithSession(page, account.token);
-    await page.goto("/conta/palavra-passe");
+
+    await test.step("iniciar sessão (W03) e abrir a alteração da palavra-passe (W23)", async () => {
+      await loginViaUi(page, account.email, account.password);
+      await expect(page).toHaveURL(/\/cliente$/);
+      await page.getByRole("button", { name: /Menu da conta/ }).click();
+      await page.getByRole("menuitem", { name: "Alterar palavra-passe" }).click();
+      await expect(page).toHaveURL(/\/conta\/palavra-passe$/);
+    });
 
     const current = page.getByLabel("Palavra-passe atual");
     const next = page.getByLabel("Nova palavra-passe", { exact: true });
@@ -48,9 +54,17 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
       await expect(current).toHaveValue("");
     });
 
-    await test.step("só a nova palavra-passe inicia sessão", async () => {
-      const withNew = await login(request, account.email, "Nova2027ab");
-      expect(withNew.user.userId).toBe(account.user.userId);
+    await test.step("terminar sessão no menu da conta", async () => {
+      await logoutViaUi(page);
+      await expect(page).toHaveURL(/\/login$/);
+    });
+
+    await test.step("iniciar sessão (W03) com a nova palavra-passe", async () => {
+      await loginViaUi(page, account.email, "Nova2027ab");
+      await expect(page).toHaveURL(/\/cliente$/);
+    });
+
+    await test.step("a palavra-passe antiga é recusada", async () => {
       const withOld = await request.post("/api/auth/login", {
         data: { email: account.email, password: account.password, client: "WEB" },
       });
