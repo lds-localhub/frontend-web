@@ -3,6 +3,9 @@ import { failIfNot, registerAndLogin, type TestAccount } from "./accounts.ts";
 import { address, type AddressKey } from "./addresses.ts";
 
 // Preparação de Prestadores pela API documentada (E08, E12), sem acesso direto à base de dados.
+// Regra para os testes de pesquisa: a BD não é reposta entre testes nem entre novas tentativas, por isso
+// há sempre outros Prestadores na mesma zona (o Hugo dos dados de referência e os de outros testes).
+// Um teste procura o seu Prestador pelo nome (user.name, único) e nunca depende do total de resultados.
 
 export interface ProviderOptions {
   addressKey?: AddressKey;

@@ -24,10 +24,14 @@ export interface TestAccount {
 // Palavra-passe fictícia das contas criadas pelos testes (regra do E01: 8+ caracteres, letra e algarismo)
 export const TEST_PASSWORD = "Teste2026";
 
-// E-mail único por teste: <prefixo>.<instante><sufixo>@localhub.test
-export function uniqueEmail(prefix: string): string {
-  const suffix = Math.random().toString(36).slice(2, 6);
-  return `${prefix}.${Date.now()}${suffix}@localhub.test`;
+// Identificador único por conta: <instante><sufixo aleatório>
+function uniqueId(): string {
+  return `${Date.now()}${Math.random().toString(36).slice(2, 6)}`;
+}
+
+// E-mail único por teste: <prefixo>.<identificador>@localhub.test
+export function uniqueEmail(prefix: string, id: string = uniqueId()): string {
+  return `${prefix}.${id}@localhub.test`;
 }
 
 export async function failIfNot(response: APIResponse, status: number) {
@@ -57,8 +61,11 @@ export async function registerAndLogin(
   role: Role,
   prefix: string = role === "CLIENT" ? "cliente" : "prestador",
 ): Promise<TestAccount> {
-  const email = uniqueEmail(prefix);
-  const name = role === "CLIENT" ? "Cliente de Teste" : "Prestador de Teste";
+  // O nome também é único: a BD só é reposta uma vez por execução e os dados dos testes acumulam-se,
+  // por isso um teste identifica as suas contas pelo nome (ex.: filtro name da pesquisa E18)
+  const id = uniqueId();
+  const email = uniqueEmail(prefix, id);
+  const name = `${role === "CLIENT" ? "Cliente" : "Prestador"} ${id}`;
 
   const response = await request.post("/api/auth/register", {
     data: { name, email, password: TEST_PASSWORD, role },
