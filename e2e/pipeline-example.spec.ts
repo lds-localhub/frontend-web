@@ -10,7 +10,8 @@ test("exemplo: Prestador preparado pela API e aplicação aberta no Google Chrom
 }) => {
   await test.step("criar um Prestador com perfil pela API (morada convertida pelo stub)", async () => {
     const provider = await createProviderWithProfile(request, { addressKey: "maia" });
-    expect(provider.user.role).toBe("PROVIDER");
+    // ERRO INTENCIONAL (I093): o papel esperado está errado, para provar que a pipeline bloqueia o merge
+    expect(provider.user.role).toBe("CLIENT");
     expect(provider.professionalProfileId).toBeGreaterThan(0);
   });
 
