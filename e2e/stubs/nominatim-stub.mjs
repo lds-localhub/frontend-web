@@ -17,6 +17,14 @@ const REVERSE_MAX_DISTANCE_KM = 0.5;
 
 const normalize = (text) => text.trim().toLowerCase();
 
+// Morada como o backend a compõe a partir da resposta do /reverse ("{road} {house_number}, {postcode} {city}").
+// O /search aceita esta forma e a fullAddress, para "posição do dispositivo → guardar morada" funcionar.
+function composedAddress({ road, house_number: number, postcode, city }) {
+  const street = number ? `${road} ${number}` : road;
+  const place = [postcode, city].filter(Boolean).join(" ");
+  return place ? `${street}, ${place}` : street;
+}
+
 function distanceKm(lat1, lon1, lat2, lon2) {
   const rad = (degrees) => (degrees * Math.PI) / 180;
   const h =
@@ -26,7 +34,10 @@ function distanceKm(lat1, lon1, lat2, lon2) {
 }
 
 function search(query) {
-  const found = addresses.find((a) => normalize(a.fullAddress) === normalize(query ?? ""));
+  const wanted = normalize(query ?? "");
+  const found = addresses.find(
+    (a) => normalize(a.fullAddress) === wanted || normalize(composedAddress(a.address)) === wanted,
+  );
   return found ? [{ lat: found.lat, lon: found.lon }] : [];
 }
 
