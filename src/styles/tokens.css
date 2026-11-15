@@ -1,0 +1,45 @@
+/* Cores, tipos de letra e medidas da linha gráfica da aplicação, usadas por todos os componentes */
+
+/*
+  Breakpoints, só para mudanças de estrutura (ex.: a navegação passar a menu recolhido).
+  As variáveis CSS não funcionam dentro de @media, por isso cada @media escreve um destes valores:
+  - 48rem (768px): ecrãs estreitos, abaixo dos quais os painéis ficam um por baixo do outro;
+  - 64rem (1024px): ecrãs médios, abaixo dos quais a navegação do cabeçalho passa a menu recolhido.
+*/
+
+:root {
+  --color-primary: #0f6b57;
+  --color-primary-hover: #0c5848;
+  --color-on-primary: #ffffff;
+  --color-primary-soft: #eaf1ee;
+  --color-primary-soft-strong: #d6ece5;
+
+  --color-bg: #f3f6f5;
+  --color-surface: #ffffff;
+  --color-border: #e1e7e4;
+  --color-border-strong: #c9d2ce;
+
+  --color-text: #14201b;
+  --color-text-secondary: #2f3c37;
+  --color-text-muted: #55625d;
+
+  --color-danger: #a8261c;
+  --color-danger-bg: #fff8f7;
+  --color-danger-border: #f1d3cf;
+
+  --color-warning: #7a4300;
+  --color-warning-bg: #f7e3cc;
+  --color-info: #3b3f8f;
+  --color-info-bg: #e3e4f7;
+
+  --font-body: "Figtree", system-ui, "Segoe UI", sans-serif;
+  --font-heading: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
+
+  --radius-sm: 0.625rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.125rem;
+
+  --header-height: 4rem;
+  --content-max-width: 75rem;
+  --page-gutter: 2rem;
+}

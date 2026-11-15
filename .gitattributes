@@ -1,0 +1,7 @@
+# Fins de linha LF em todos os ficheiros de texto (exigido pelo Prettier)
+* text=auto eol=lf
+
+# Ficheiros binarios
+*.png binary
+*.jpg binary
+*.ico binary
