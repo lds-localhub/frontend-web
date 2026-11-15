@@ -3,8 +3,10 @@ name: CI
 
 # Eventos que iniciam a pipeline
 on:
-  # Qualquer push, em qualquer branch
+  # Push para a branch master (depois do merge de um Pull Request)
   push:
+    # Só na master: nos Pull Requests a pipeline já corre pelo evento pull_request
+    branches: [master]
   # Pull Requests...
   pull_request:
     # ...cujo destino é a branch master
