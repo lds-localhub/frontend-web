@@ -138,12 +138,10 @@ jobs:
 
       # Nome do passo
       - name: Criar e repor a base de dados de teste
-        # Cria o utilizador localhub e corre o script de referência do backend (RNF-19).
-        # A palavra-passe entra como variável do psql (:'pw', com escape); o psql só substitui
-        # variáveis em comandos lidos do stdin, não em -c.
+        # Cria o utilizador localhub e corre o script de referência do backend (RNF-19)
         run: |
-          echo "CREATE ROLE localhub WITH LOGIN PASSWORD :'pw';" \
-            | psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -v pw="$PGPASSWORD"
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -c "CREATE ROLE localhub WITH LOGIN PASSWORD '$PGPASSWORD';"
           psql -h localhost -U postgres -d postgres -v dbname=localhub_e2e \
             -f backend/database/repor-base-dados.sql
 
