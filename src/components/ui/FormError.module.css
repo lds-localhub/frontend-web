@@ -1,0 +1,17 @@
+.formError {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-danger-border);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  img {
+    flex: none;
+    margin-top: 0.125rem;
+  }
+}
