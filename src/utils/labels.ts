@@ -46,3 +46,11 @@ export const roleLabels: Record<Role, string> = {
   PROVIDER: "Prestador de Serviços",
   ADMIN: "Administrador",
 };
+
+// Tom com que o Badge mostra cada estado (cores do protótipo)
+export type Tone = "info" | "warning" | "success" | "danger" | "neutral" | "pending";
+
+export const activationStatusTone: Record<ActivationStatus, Tone> = {
+  ACTIVE: "success",
+  INACTIVE: "neutral",
+};

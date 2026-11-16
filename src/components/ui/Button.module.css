@@ -41,6 +41,25 @@
     }
   }
 
+  &[data-variant="danger"] {
+    background: var(--color-danger);
+    color: var(--color-on-primary);
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.9);
+    }
+  }
+
+  &[data-variant="danger-outline"] {
+    border-color: var(--color-danger-border);
+    background: var(--color-surface);
+    color: var(--color-danger);
+
+    &:hover:not(:disabled) {
+      background: var(--color-danger-bg);
+    }
+  }
+
   &[data-variant="text"] {
     padding-inline: 0.5rem;
     background: none;
