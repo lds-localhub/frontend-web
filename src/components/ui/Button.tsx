@@ -4,11 +4,12 @@ import { Link } from "react-router";
 import styles from "./Button.module.css";
 
 type Props = Omit<ComponentProps<"button">, "className"> & {
-  variant?: "primary" | "secondary" | "text";
+  variant?: "primary" | "secondary" | "danger" | "danger-outline" | "text";
   to?: string; // com destino, é uma ligação do router com o aspeto de botão (ex.: «Criar conta»)
 };
 
-// Botão com o aspeto do protótipo: principal (verde), secundário (contorno) ou só texto
+// Botão com o aspeto do protótipo: principal (verde), secundário (contorno), de perigo (vermelho,
+// cheio ou só com contorno) ou só texto
 export function Button({ variant = "primary", to, type = "button", ...rest }: Props) {
   if (to !== undefined) {
     return (

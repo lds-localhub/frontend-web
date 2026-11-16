@@ -31,6 +31,9 @@
   --color-warning-bg: #f7e3cc;
   --color-info: #3b3f8f;
   --color-info-bg: #e3e4f7;
+  --color-neutral-bg: #eceeed;
+  --color-overlay: rgb(20 32 27 / 0.45);
+  --shadow-dialog: 0 1.5rem 3rem rgb(20 32 27 / 0.25);
 
   --font-body: "Figtree", system-ui, "Segoe UI", sans-serif;
   --font-heading: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;

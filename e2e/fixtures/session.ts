@@ -22,8 +22,3 @@ export async function openWithSession(page: Page, token: string): Promise<void> 
   // Script em texto: corre no browser (os testes são compilados sem os tipos do DOM)
   await page.addInitScript({ content: `localStorage.setItem("token", ${JSON.stringify(token)});` });
 }
-
-// Token guardado pela aplicação depois do início de sessão
-export async function storedToken(page: Page): Promise<string | null> {
-  return page.evaluate<string | null>(`localStorage.getItem("token")`);
-}
