@@ -222,7 +222,7 @@ jobs:
         run: npm run test:e2e
         # Variáveis dos testes
         env:
-          # Palavra-passe do Administrador dos dados de referência, usada nos testes de acesso por papel
+          # Palavra-passe do Administrador dos dados de referência, usada no teste da gestão de categorias (TS-WEB-04)
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
 
       # Nome do passo
