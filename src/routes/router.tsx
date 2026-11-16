@@ -2,6 +2,7 @@ import { createBrowserRouter, createRoutesFromElements, Route } from "react-rout
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ChangePasswordPage } from "@/pages/account/ChangePasswordPage";
 import { AdminHomePage } from "@/pages/admin/AdminHomePage";
+import { CategoriesPage } from "@/pages/admin/CategoriesPage/CategoriesPage";
 import { ClientHomePage } from "@/pages/client/ClientHomePage";
 import { CreateProfilePage } from "@/pages/provider/CreateProfilePage";
 import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
@@ -41,6 +42,7 @@ export const router = createBrowserRouter(
 
           <Route element={<RequireRole roles={["ADMIN"]} />}>
             <Route path="/admin" element={<AdminHomePage />} />
+            <Route path="/admin/categorias" element={<CategoriesPage />} />
           </Route>
         </Route>
       </Route>
