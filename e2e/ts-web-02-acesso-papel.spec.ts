@@ -121,8 +121,8 @@ test.describe("TS-WEB-02 Credenciais inválidas e acesso por papel", () => {
     });
 
     await test.step("o cabeçalho tem as opções de gestão de contas e de categorias", async () => {
-      await expect(page.getByRole("link", { name: "Contas" })).toBeVisible();
-      await expect(page.getByRole("link", { name: "Categorias" })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Contas", exact: true })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Categorias", exact: true })).toBeVisible();
     });
 
     await test.step("as páginas do Cliente levam ao início do Administrador", async () => {

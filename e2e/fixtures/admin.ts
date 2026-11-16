@@ -33,40 +33,8 @@ export async function deactivateAccount(
   await failIfNot(response, 200);
 }
 
-export interface TestCategory {
-  serviceCategoryId: number;
-  name: string;
-  status: "ACTIVE" | "INACTIVE";
-}
-
 // Nome único de categoria (até 60 caracteres): a base de dados só é reposta uma vez por execução
 export function uniqueCategoryName(prefix: string): string {
   const suffix = Math.random().toString(36).slice(2, 6);
   return `${prefix} ${Date.now()}${suffix}`.slice(0, 60);
-}
-
-// E09: cria uma categoria ativa
-export async function createCategory(
-  request: APIRequestContext,
-  adminToken: string,
-  name: string,
-): Promise<TestCategory> {
-  const response = await request.post("/api/categories", {
-    headers: { Authorization: `Bearer ${adminToken}` },
-    data: { name },
-  });
-  await failIfNot(response, 201);
-  return response.json();
-}
-
-// E11: desativa uma categoria
-export async function deactivateCategory(
-  request: APIRequestContext,
-  adminToken: string,
-  serviceCategoryId: number,
-): Promise<void> {
-  const response = await request.post(`/api/categories/${serviceCategoryId}/deactivate`, {
-    headers: { Authorization: `Bearer ${adminToken}` },
-  });
-  await failIfNot(response, 200);
 }
