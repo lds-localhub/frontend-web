@@ -1,6 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from "react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ChangePasswordPage } from "@/pages/account/ChangePasswordPage";
+import { AccountsPage } from "@/pages/admin/AccountsPage/AccountsPage";
 import { AdminHomePage } from "@/pages/admin/AdminHomePage";
 import { CategoriesPage } from "@/pages/admin/CategoriesPage/CategoriesPage";
 import { ClientHomePage } from "@/pages/client/ClientHomePage";
@@ -42,6 +43,7 @@ export const router = createBrowserRouter(
 
           <Route element={<RequireRole roles={["ADMIN"]} />}>
             <Route path="/admin" element={<AdminHomePage />} />
+            <Route path="/admin/contas" element={<AccountsPage />} />
             <Route path="/admin/categorias" element={<CategoriesPage />} />
           </Route>
         </Route>

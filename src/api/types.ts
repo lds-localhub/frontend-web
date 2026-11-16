@@ -80,14 +80,11 @@ export type ChangePasswordInput = { currentPassword: string; newPassword: string
 // F002 — Gestão de contas
 // ---------------------------------------------------------------------------
 
-// Campos de cada alerta: só aparecem no tipo de alerta a que dizem respeito (secção 4.3)
-export type AccountAlert = {
-  type: "ASSIGNED_CANCELLATIONS" | "LOW_AVERAGE_RATING";
-  count?: number;
-  total?: number;
-  averageRating?: number;
-  reviewCount?: number;
-};
+// Cada alerta só traz os campos do seu tipo: depois de verificar o type,
+// o TypeScript sabe que campos existem
+export type AccountAlert =
+  | { type: "ASSIGNED_CANCELLATIONS"; count: number; total: number }
+  | { type: "LOW_AVERAGE_RATING"; averageRating: number; reviewCount: number };
 
 // E05
 export type Account = {
