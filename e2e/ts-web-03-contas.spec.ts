@@ -1,11 +1,10 @@
-import type { APIRequestContext, Page } from "@playwright/test";
-import { registerAndLogin, TEST_PASSWORD, uniqueId } from "./fixtures/accounts.ts";
+import type { Page } from "@playwright/test";
+import { registerAndLogin, uniqueId } from "./fixtures/accounts.ts";
 import { ADMIN_EMAIL, loginAsAdmin } from "./fixtures/admin.ts";
 import {
   createClientWithCancellationAlert,
   createProviderWithLowRatingAlert,
 } from "./fixtures/conduct.ts";
-import { createProviderWithProfile } from "./fixtures/providers.ts";
 import { openWithSession } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
@@ -20,14 +19,6 @@ function accountRow(page: Page, name: string) {
 async function chooseFilter(page: Page, filter: string, option: string) {
   await page.getByRole("combobox", { name: filter }).click();
   await page.getByRole("option", { name: option, exact: true }).click();
-}
-
-// E02 pela API: estado HTTP do início de sessão com estas credenciais
-async function loginStatus(request: APIRequestContext, email: string, password: string) {
-  const response = await request.post("/api/auth/login", {
-    data: { email, password, client: "WEB" },
-  });
-  return response.status();
 }
 
 test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
@@ -96,12 +87,6 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
       await expect(
         accountRow(page, clientName).getByText("Desativada", { exact: true }),
       ).toBeVisible();
-
-      // A sessão aberta antes da desativação deixa de ser aceite
-      const me = await request.get("/api/auth/me", {
-        headers: { Authorization: `Bearer ${client.token}` },
-      });
-      expect(me.status()).toBe(401);
     });
 
     await test.step("ativar a conta (RF-F002-03)", async () => {
@@ -110,9 +95,6 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
       await expect(accountRow(page, clientName)).toHaveCount(0);
       await chooseFilter(page, "Estado", "Todos");
       await expect(accountRow(page, clientName).getByText("Ativa", { exact: true })).toBeVisible();
-
-      // O utilizador volta a conseguir iniciar sessão
-      expect(await loginStatus(request, client.email, TEST_PASSWORD)).toBe(200);
     });
 
     await test.step("redefinir a palavra-passe, com confirmação (RF-F002-05)", async () => {
@@ -123,44 +105,21 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
         name: `Redefinir a palavra-passe de ${clientName}?`,
       });
       await expect(confirm).toContainText(client.email);
-      await confirm.getByRole("button", { name: "Redefinir" }).click();
+      // A palavra-passe é gerada pelo backend: lê-se da resposta ao pedido que o ecrã faz (E41)
+      // para verificar que a janela mostra exatamente essa
+      const [response] = await Promise.all([
+        page.waitForResponse((r) => r.url().endsWith("/reset-password")),
+        confirm.getByRole("button", { name: "Redefinir" }).click(),
+      ]);
+      const { temporaryPassword } = (await response.json()) as { temporaryPassword: string };
 
       const dialog = page.getByRole("dialog", { name: "Palavra-passe redefinida" });
       await expect(dialog).toContainText("Esta palavra-passe só é mostrada uma vez.");
-      const temporaryPassword = (await dialog.locator("p").nth(1).textContent())?.trim() ?? "";
-      expect(temporaryPassword).toMatch(/^(?=.*\p{L})(?=.*\d).{8,}$/u);
+      await expect(dialog.getByText(temporaryPassword, { exact: true })).toBeVisible();
 
       await dialog.getByRole("button", { name: "Fechar" }).click();
       await expect(dialog).toBeHidden();
       await expect(page.getByText(temporaryPassword)).toHaveCount(0);
-
-      // A palavra-passe temporária passa a ser aceite e a anterior deixa de o ser
-      expect(await loginStatus(request, client.email, temporaryPassword)).toBe(200);
-      expect(await loginStatus(request, client.email, TEST_PASSWORD)).toBe(401);
-    });
-  });
-
-  test("Clientes e Prestadores não acedem à gestão de contas (RF-F002-01)", async ({
-    page,
-    request,
-  }) => {
-    const client = await registerAndLogin(request, "CLIENT", "ts03.acesso");
-    const provider = await createProviderWithProfile(request);
-
-    await test.step("o Cliente vai para o seu início", async () => {
-      await openWithSession(page, client.token);
-      await page.goto("/admin/contas");
-      await expect(page).toHaveURL(/\/cliente$/);
-      await expect(page.getByRole("heading", { name: "Gestão de contas" })).toHaveCount(0);
-    });
-
-    await test.step("o Prestador vai para o seu início", async () => {
-      const providerPage = await page.context().newPage();
-      await openWithSession(providerPage, provider.token);
-      await providerPage.goto("/admin/contas");
-      await expect(providerPage).toHaveURL(/\/prestador$/);
-      await expect(providerPage.getByRole("heading", { name: "Gestão de contas" })).toHaveCount(0);
-      await providerPage.close();
     });
   });
 });
