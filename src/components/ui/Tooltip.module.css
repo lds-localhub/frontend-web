@@ -1,0 +1,21 @@
+.trigger {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: default;
+}
+
+.positioner {
+  z-index: 30;
+}
+
+.popup {
+  max-width: 24rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-text);
+  color: var(--color-on-primary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}

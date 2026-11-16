@@ -12,6 +12,8 @@ export interface ProviderOptions {
   serviceRadiusKm?: number;
   // nomes das categorias ativas dos dados de referência ("Canalização", "Eletricidade")
   categoryNames?: string[];
+  // nome da conta; sem ele, é gerado um nome único «Prestador …»
+  name?: string;
 }
 
 export interface TestProvider extends TestAccount {
@@ -41,9 +43,10 @@ export async function createProviderWithProfile(
     addressKey = "maia",
     serviceRadiusKm = 25,
     categoryNames = ["Canalização"],
+    name,
   }: ProviderOptions = {},
 ): Promise<TestProvider> {
-  const account = await registerAndLogin(request, "PROVIDER");
+  const account = await registerAndLogin(request, "PROVIDER", undefined, name);
 
   const response = await request.post("/api/profiles", {
     headers: { Authorization: `Bearer ${account.token}` },

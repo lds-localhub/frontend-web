@@ -16,4 +16,13 @@
   strong {
     color: var(--color-primary);
   }
+
+  &[data-tone="warning"] {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+
+    strong {
+      color: var(--color-warning);
+    }
+  }
 }
