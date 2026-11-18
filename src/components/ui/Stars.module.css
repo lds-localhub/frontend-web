@@ -1,0 +1,10 @@
+.stars {
+  display: inline-flex;
+  gap: 0.125rem;
+  color: var(--color-border-strong);
+
+  & svg[data-filled] {
+    color: #e09b2d;
+    fill: currentColor;
+  }
+}
