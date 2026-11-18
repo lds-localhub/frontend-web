@@ -4,11 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 import * as z from "zod";
+import { KeyRound, Mail } from "lucide-react";
 import { api, setToken } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import type { LoginInput, LoginResult } from "@/api/types";
-import keyIcon from "@/assets/key.svg";
-import mailIcon from "@/assets/mail.svg";
 import { Button } from "@/components/ui/Button";
 import { Callout } from "@/components/ui/Callout";
 import { Card } from "@/components/ui/Card";
@@ -122,7 +121,7 @@ export function LoginPage() {
               Esqueci-me da palavra-passe
             </button>
             {forgotOpen && (
-              <Callout icon={keyIcon} id="recuperar-acesso">
+              <Callout icon={KeyRound} id="recuperar-acesso">
                 Para recuperar o acesso, contacte <strong>{SUPPORT_EMAIL}</strong> a partir do
                 endereço de e-mail registado na conta. A administração redefine a palavra-passe e
                 responde com uma palavra-passe temporária, que pode alterar depois de iniciar
@@ -143,7 +142,7 @@ export function LoginPage() {
           </div>
         </form>
 
-        <Callout icon={mailIcon}>
+        <Callout icon={Mail}>
           Precisa de ajuda com a sua conta? Contacte o suporte: <strong>{SUPPORT_EMAIL}</strong>
         </Callout>
       </Card>

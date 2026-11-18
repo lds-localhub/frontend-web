@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Lock, LogOut, MapPin, User } from "lucide-react";
 import { api, clearToken } from "@/api/client";
 import type { Me } from "@/api/types";
 import { Avatar } from "@/components/ui/Avatar";
@@ -23,13 +24,16 @@ export function AccountMenu({ me }: Props) {
   });
 
   const items: MenuItem[] = [
-    ...(me.role === "CLIENT" ? [{ label: "A minha localização", to: "/conta/localizacao" }] : []),
-    ...(me.role === "PROVIDER" && me.professionalProfileId
-      ? [{ label: "O meu perfil", to: "/perfil" }]
+    ...(me.role === "CLIENT"
+      ? [{ label: "A minha localização", icon: MapPin, to: "/conta/localizacao" }]
       : []),
-    { label: "Alterar palavra-passe", to: "/conta/palavra-passe" },
+    ...(me.role === "PROVIDER" && me.professionalProfileId
+      ? [{ label: "O meu perfil", icon: User, to: "/perfil" }]
+      : []),
+    { label: "Alterar palavra-passe", icon: Lock, to: "/conta/palavra-passe" },
     {
       label: "Terminar sessão",
+      icon: LogOut,
       onClick: () => logout.mutate(),
       tone: "danger",
       disabled: logout.isPending,

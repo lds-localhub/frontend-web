@@ -17,8 +17,7 @@
 }
 
 .chevron {
-  line-height: 1;
-  transform: translateY(-0.2rem);
+  flex: none;
 }
 
 .positioner {
@@ -57,6 +56,7 @@
 .item {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   padding: 0.625rem 0.5rem;
   border-radius: var(--radius-sm);
   color: var(--color-primary);

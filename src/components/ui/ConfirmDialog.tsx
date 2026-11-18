@@ -1,6 +1,6 @@
 import { AlertDialog } from "@base-ui/react/alert-dialog";
+import { Check, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
-import warningIcon from "@/assets/warning.svg";
 import { Button } from "./Button";
 import styles from "./ConfirmDialog.module.css";
 
@@ -38,11 +38,13 @@ export function ConfirmDialog({
       <AlertDialog.Portal>
         <AlertDialog.Backdrop className={styles.backdrop} />
         <AlertDialog.Popup className={styles.popup}>
-          {danger && (
-            <span className={styles.icon}>
-              <img src={warningIcon} alt="" width={20} height={20} />
-            </span>
-          )}
+          <span className={styles.icon} data-danger={danger || undefined}>
+            {danger ? (
+              <TriangleAlert size={20} aria-hidden="true" />
+            ) : (
+              <Check size={20} aria-hidden="true" />
+            )}
+          </span>
           <AlertDialog.Title className={styles.title}>{title}</AlertDialog.Title>
           <AlertDialog.Description render={<div />} className={styles.description}>
             {children}
