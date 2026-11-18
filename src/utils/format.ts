@@ -67,3 +67,13 @@ export function formatRating(averageRating: number | null, reviewCount: number):
   if (averageRating === null) return "Sem avaliações";
   return `${oneDecimalFormat.format(averageRating)} (${reviewCount})`;
 }
+
+// 4.6 → "4,6"
+export function formatAverageRating(averageRating: number): string {
+  return oneDecimalFormat.format(averageRating);
+}
+
+// 1 → "1 avaliação"; 12 → "12 avaliações"
+export function formatReviewCount(count: number): string {
+  return `${count} ${count === 1 ? "avaliação" : "avaliações"}`;
+}
