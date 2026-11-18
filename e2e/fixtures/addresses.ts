@@ -9,3 +9,6 @@ export type AddressKey = keyof typeof table;
 export function address(key: AddressKey): string {
   return table[key].fullAddress;
 }
+
+// Morada que o stub do Nominatim não conhece: o backend não a converte em coordenadas e responde 400
+export const UNKNOWN_ADDRESS = "Rua Inexistente Fictícia, 1, 0000-000 Nenhures";
