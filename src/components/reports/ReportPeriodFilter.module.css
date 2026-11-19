@@ -1,0 +1,15 @@
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.date {
+  width: 11.5rem;
+}
+
+/* Alinha o botão com os campos, por baixo das etiquetas (altura da etiqueta + espaço até ao campo) */
+.apply {
+  padding-top: 1.6875rem;
+}
