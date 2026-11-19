@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { fileURLToPath, URL } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
@@ -23,6 +24,12 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
         },
       },
+    },
+    // Testes unitários (Vitest): só os de src/; os de e2e/ são os testes de sistema do Playwright
+    test: {
+      include: ["src/**/*.test.ts"],
+      // Fuso com hora negativa no inverno, onde uma data sem hora lida com new Date() dá a véspera
+      env: { TZ: "Atlantic/Azores" },
     },
   };
 });

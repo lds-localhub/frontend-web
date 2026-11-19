@@ -1,0 +1,5 @@
+#!/bin/sh
+# Testes unitários antes de cada push: os frontends não os correm na pipeline, por isso é aqui que
+# se garante que foram executados. Se algum falhar, o push é cancelado.
+# Ativação, uma vez por clone: git config core.hooksPath .githooks
+npm run test:unit
