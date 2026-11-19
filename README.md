@@ -34,6 +34,22 @@ Os testes do Playwright precisam do backend a correr com a base de dados de refe
 E2E_ADMIN_PASSWORD=<palavra-passe> npm run test:e2e
 ```
 
+## Testes unitários
+
+Os testes unitários (Vitest, ficheiros `src/**/*.test.ts`) verificam só a lógica pura com risco: a formatação das datas sem hora e do mês e a regra da palavra-passe nova (Plano de testes do frontend web, secção 5.3). Correm no fuso dos Açores, onde uma data sem hora lida com `new Date()` mudaria de dia. Não precisam do backend:
+
+```bash
+npm run test:unit
+```
+
+Não fazem parte da pipeline: correm localmente, antes de cada push, pelo hook versionado em `.githooks/pre-push`. O Git não ativa os hooks versionados sozinho; depois de clonar o repositório, corre uma vez:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Se algum teste falhar, o push é cancelado. No Pull Request, o Revisor confirma que os testes unitários foram executados.
+
 ## Execução local
 
 ```bash
@@ -52,6 +68,7 @@ A aplicação fica disponível em `http://localhost:5173`.
 | `npm run lint`         | ESLint (regulamento interno, secção 10.4).                                                            |
 | `npm run format`       | Formata o código com o Prettier.                                                                      |
 | `npm run format:check` | Verifica a formatação sem alterar ficheiros (regulamento interno, secção 10.3).                       |
+| `npm run test:unit`    | Testes unitários com o Vitest (`src/**/*.test.ts`).                                                   |
 | `npm run test:e2e`     | Testes de sistema com o Playwright (`e2e/`). Na primeira execução: `npx playwright install chromium`. |
 
 ## Organização das pastas
@@ -67,6 +84,7 @@ src/
   components/
     layout/          moldura de todas as páginas (AppLayout, Header, AccountMenu)
     ui/              componentes genéricos
+    reports/         componentes partilhados pelos relatórios do Cliente e do Prestador
   pages/
     public/          páginas sem sessão e páginas de erro
     account/         páginas comuns aos três tipos de utilizador
