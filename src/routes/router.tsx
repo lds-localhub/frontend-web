@@ -1,6 +1,6 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from "react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { ChangePasswordPage } from "@/pages/account/ChangePasswordPage";
+import { ChangePasswordPage } from "@/pages/account/ChangePasswordPage/ChangePasswordPage";
 import { AccountsPage } from "@/pages/admin/AccountsPage/AccountsPage";
 import { AdminHomePage } from "@/pages/admin/AdminHomePage";
 import { CategoriesPage } from "@/pages/admin/CategoriesPage/CategoriesPage";
