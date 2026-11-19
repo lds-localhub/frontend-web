@@ -5,8 +5,10 @@ import { AccountsPage } from "@/pages/admin/AccountsPage/AccountsPage";
 import { AdminHomePage } from "@/pages/admin/AdminHomePage";
 import { CategoriesPage } from "@/pages/admin/CategoriesPage/CategoriesPage";
 import { ClientHomePage } from "@/pages/client/ClientHomePage";
+import { ClientReportPage } from "@/pages/client/ClientReportPage";
 import { CreateProfilePage } from "@/pages/provider/CreateProfilePage";
 import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
+import { ProviderReportPage } from "@/pages/provider/ProviderReportPage/ProviderReportPage";
 import { LoginPage } from "@/pages/public/LoginPage";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
 import { ProviderSearchPage } from "@/pages/public/ProviderSearchPage";
@@ -35,10 +37,12 @@ export const router = createBrowserRouter(
         <Route element={<RequireProfile />}>
           <Route element={<RequireRole roles={["CLIENT"]} />}>
             <Route path="/cliente" element={<ClientHomePage />} />
+            <Route path="/cliente/relatorio" element={<ClientReportPage />} />
           </Route>
 
           <Route element={<RequireRole roles={["PROVIDER"]} />}>
             <Route path="/prestador" element={<ProviderHomePage />} />
+            <Route path="/prestador/relatorio" element={<ProviderReportPage />} />
           </Route>
 
           <Route element={<RequireRole roles={["ADMIN"]} />}>
