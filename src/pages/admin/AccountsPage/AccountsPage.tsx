@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { KeyRound } from "lucide-react";
 import { useState } from "react";
 import { api, toQueryString } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
@@ -227,6 +228,7 @@ export function AccountsPage() {
         open={confirming?.action === "reset" && confirmingAccount !== undefined}
         title={`Redefinir a palavra-passe de ${confirmingAccount?.name ?? ""}?`}
         confirmLabel="Redefinir"
+        icon={KeyRound}
         pending={reset.isPending}
         onConfirm={handleConfirm}
         onClose={() => setConfirming(null)}

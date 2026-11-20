@@ -1,3 +1,4 @@
+import { ChevronLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import styles from "./BackLink.module.css";
 
@@ -7,7 +8,8 @@ type Props = { children: ReactNode; onClick: () => void };
 export function BackLink({ children, onClick }: Props) {
   return (
     <button type="button" className={styles.backLink} onClick={onClick}>
-      <span aria-hidden="true">‹</span> {children}
+      <ChevronLeft size={16} aria-hidden="true" />
+      {children}
     </button>
   );
 }

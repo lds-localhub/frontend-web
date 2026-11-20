@@ -1,0 +1,7 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: min(100%, 52rem);
+  margin: 0 auto;
+}

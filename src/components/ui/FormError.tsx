@@ -1,4 +1,4 @@
-import alertIcon from "@/assets/alert.svg";
+import { CircleAlert } from "lucide-react";
 import styles from "./FormError.module.css";
 
 type Props = { message: string | undefined };
@@ -10,7 +10,7 @@ export function FormError({ message }: Props) {
   }
   return (
     <p className={styles.formError} role="alert">
-      <img src={alertIcon} alt="" />
+      <CircleAlert size={16} aria-hidden="true" />
       {message}
     </p>
   );

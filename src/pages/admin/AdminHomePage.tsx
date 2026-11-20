@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { LayoutGrid, Users } from "lucide-react";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import type { AdminSummary } from "@/api/types";
-import gridIcon from "@/assets/grid.svg";
-import usersIcon from "@/assets/users.svg";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Loading } from "@/components/ui/Loading";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -48,13 +47,13 @@ export function AdminHomePage() {
           to="/admin/contas"
           title="Gerir contas"
           description="Ativar ou desativar contas de Clientes e Prestadores"
-          icon={usersIcon}
+          icon={Users}
         />
         <ShortcutCard
           to="/admin/categorias"
           title="Gerir categorias"
           description="Criar, editar e desativar categorias de serviço"
-          icon={gridIcon}
+          icon={LayoutGrid}
           tone="warning"
         />
       </div>

@@ -1,4 +1,5 @@
 import { Select } from "@base-ui/react/select";
+import { ChevronDown } from "lucide-react";
 import styles from "./FilterSelect.module.css";
 
 export type FilterOption = { value: string; label: string };
@@ -25,7 +26,7 @@ export function FilterSelect({ label, items, value, onValueChange, disabled }: P
       <Select.Trigger className={styles.trigger} aria-label={label}>
         {label}: <Select.Value />
         <Select.Icon className={styles.icon} aria-hidden="true">
-          ⌄
+          <ChevronDown size={14} />
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
