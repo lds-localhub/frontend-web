@@ -1,5 +1,5 @@
 import { AlertDialog } from "@base-ui/react/alert-dialog";
-import { Check, TriangleAlert } from "lucide-react";
+import { Check, type LucideIcon, TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "./Button";
 import styles from "./ConfirmDialog.module.css";
@@ -12,6 +12,8 @@ type Props = {
   onClose: () => void;
   pending: boolean;
   danger?: boolean;
+  // Ícone por cima do título; por omissão, o aviso nas ações de perigo e o «✓» nas outras
+  icon?: LucideIcon;
   children: ReactNode;
 };
 
@@ -25,6 +27,7 @@ export function ConfirmDialog({
   onClose,
   pending,
   danger = false,
+  icon: Icon = danger ? TriangleAlert : Check,
   children,
 }: Props) {
   const handleOpenChange = (next: boolean) => {
@@ -39,11 +42,7 @@ export function ConfirmDialog({
         <AlertDialog.Backdrop className={styles.backdrop} />
         <AlertDialog.Popup className={styles.popup}>
           <span className={styles.icon} data-danger={danger || undefined}>
-            {danger ? (
-              <TriangleAlert size={20} aria-hidden="true" />
-            ) : (
-              <Check size={20} aria-hidden="true" />
-            )}
+            <Icon size={20} aria-hidden="true" />
           </span>
           <AlertDialog.Title className={styles.title}>{title}</AlertDialog.Title>
           <AlertDialog.Description render={<div />} className={styles.description}>
