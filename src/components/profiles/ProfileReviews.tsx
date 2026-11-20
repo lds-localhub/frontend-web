@@ -43,7 +43,18 @@ export function ProfileReviews({ professionalProfileId }: Props) {
     );
   }
 
-  const items = reviews.data.pages.flatMap((p) => p.items);
+  // Uma avaliação nova entre dois «Ver mais» empurra as outras uma posição: a mesma avaliação pode vir
+  // no fim de uma página e no início da seguinte
+  const seen = new Set<number>();
+  const items = reviews.data.pages
+    .flatMap((p) => p.items)
+    .filter((review) => {
+      if (seen.has(review.reviewId)) {
+        return false;
+      }
+      seen.add(review.reviewId);
+      return true;
+    });
   const remaining = reviews.data.pages[0].total - items.length;
 
   return (

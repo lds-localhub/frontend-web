@@ -1,5 +1,6 @@
 import { Field } from "@base-ui/react/field";
 import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
+import type { Ref } from "react";
 import styles from "./NumberField.module.css";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
   value: number | null;
   onValueChange: (value: number | null) => void;
   onBlur?: () => void;
+  inputRef?: Ref<HTMLInputElement>; // ex.: o field.ref do Controller, para o formulário pôr o foco no campo com erro
   min?: number;
   max?: number;
   step?: number;
@@ -28,6 +30,7 @@ export function NumberField({
   value,
   onValueChange,
   onBlur,
+  inputRef,
   min,
   max,
   step,
@@ -64,6 +67,7 @@ export function NumberField({
       >
         <BaseNumberField.Group className={styles.group}>
           <BaseNumberField.Input
+            ref={inputRef}
             className={styles.input}
             onBlur={onBlur}
             aria-required={required}

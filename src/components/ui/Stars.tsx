@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import { formatAverageRating } from "@/utils/format";
 import styles from "./Stars.module.css";
 
 type Props = { value: number };
@@ -7,7 +8,11 @@ type Props = { value: number };
 export function Stars({ value }: Props) {
   const filled = Math.round(value);
   return (
-    <span className={styles.stars} role="img" aria-label={`${value} em 5 estrelas`}>
+    <span
+      className={styles.stars}
+      role="img"
+      aria-label={`${formatAverageRating(value)} em 5 estrelas`}
+    >
       {[1, 2, 3, 4, 5].map((n) => (
         <Star key={n} size={14} data-filled={n <= filled || undefined} aria-hidden="true" />
       ))}

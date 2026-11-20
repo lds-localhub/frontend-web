@@ -2,6 +2,7 @@ import { Checkbox } from "@base-ui/react/checkbox";
 import { CheckboxGroup as BaseCheckboxGroup } from "@base-ui/react/checkbox-group";
 import { Fieldset } from "@base-ui/react/fieldset";
 import { Check, Plus } from "lucide-react";
+import { type Ref, useId } from "react";
 import styles from "./CheckboxGroup.module.css";
 
 type Option<T extends string> = { value: T; label: string; disabled?: boolean };
@@ -14,6 +15,7 @@ type Props<T extends string> = {
   required?: boolean;
   hint?: string;
   error?: string;
+  focusRef?: Ref<HTMLElement>; // ex.: o field.ref do Controller, para o formulário pôr o foco na primeira opção
 };
 
 // Escolha múltipla entre opções todas visíveis, desenhadas como etiquetas (ex.: as categorias do perfil)
@@ -25,7 +27,12 @@ export function CheckboxGroup<T extends string>({
   required,
   hint,
   error,
+  focusRef,
 }: Props<T>) {
+  const hintId = useId();
+  const errorId = useId();
+  const describedBy = [hint && !error && hintId, error && errorId].filter(Boolean).join(" ");
+
   return (
     <Fieldset.Root className={styles.fieldset}>
       <Fieldset.Legend className={styles.legend}>
@@ -40,10 +47,12 @@ export function CheckboxGroup<T extends string>({
         value={value}
         onValueChange={(v) => onValueChange(v as T[])}
         className={styles.group}
+        aria-describedby={describedBy || undefined}
       >
-        {options.map((option) => (
+        {options.map((option, index) => (
           <Checkbox.Root
             key={option.value}
+            ref={index === 0 ? focusRef : undefined}
             value={option.value}
             disabled={option.disabled}
             className={styles.chip}
@@ -57,8 +66,16 @@ export function CheckboxGroup<T extends string>({
           </Checkbox.Root>
         ))}
       </BaseCheckboxGroup>
-      {hint && !error && <p className={styles.hint}>{hint}</p>}
-      {error && <p className={styles.error}>{error}</p>}
+      {hint && !error && (
+        <p id={hintId} className={styles.hint}>
+          {hint}
+        </p>
+      )}
+      {error && (
+        <p id={errorId} className={styles.error}>
+          {error}
+        </p>
+      )}
     </Fieldset.Root>
   );
 }

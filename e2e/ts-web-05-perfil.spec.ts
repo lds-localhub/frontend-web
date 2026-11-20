@@ -1,24 +1,27 @@
 import { registerAndLogin } from "./fixtures/accounts.ts";
-import { address, UNKNOWN_ADDRESS } from "./fixtures/addresses.ts";
+import { ADDRESS_NOT_FOUND, address, UNKNOWN_ADDRESS } from "./fixtures/addresses.ts";
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
 // TS-WEB-05 — Criar, consultar e editar o perfil profissional
 // (RF-F004-01, RF-F004-02, RF-F004-03, RF-F004-04, RF-F015-01; RNF-08)
 
-// Mensagem do backend (errors.address do 400) quando não converte a morada em coordenadas
-const ADDRESS_NOT_FOUND = "Não foi possível encontrar esta morada. Confirme-a.";
-
 test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () => {
   test("criar o perfil, consultá-lo e acrescentar uma categoria", async ({ page, request }) => {
     const provider = await registerAndLogin(request, "PROVIDER", "ts05");
     const introduction = "Canalizador com equipa própria na área do Grande Porto.";
 
-    // Pedidos de criação do perfil (E12) feitos pela aplicação, para provar que a validação não os envia
+    // Pedidos de criação (E12) e de edição (E14) do perfil feitos pela aplicação, para provar que a
+    // validação não os envia
     let createRequests = 0;
+    let editRequests = 0;
     page.on("request", (r) => {
-      if (r.method() === "POST" && new URL(r.url()).pathname === "/api/profiles") {
+      const path = new URL(r.url()).pathname;
+      if (r.method() === "POST" && path === "/api/profiles") {
         createRequests++;
+      }
+      if (r.method() === "PUT" && path === "/api/profiles/me") {
+        editRequests++;
       }
     });
 
@@ -90,10 +93,20 @@ test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () =>
       await expect(page.getByText("Raio de atuação: 25 km")).toBeVisible();
     });
 
-    await test.step("6. «Editar perfil» → acrescentar «Eletricidade» → guardar", async () => {
+    await test.step("6. «Editar perfil» → desmarcar «Canalização», a única categoria → guardar", async () => {
       await page.getByRole("button", { name: "Editar perfil" }).click();
       await expect(page).toHaveURL(/\/perfil\/editar$/);
       await expect(plumbing).toBeChecked();
+      await plumbing.click();
+      await page.getByRole("button", { name: "Guardar" }).click();
+      // A remoção da única categoria é recusada pela aplicação, sem pedido ao backend (RF-F004-04)
+      await expect(page.getByText("Indique pelo menos uma categoria de serviços.")).toBeVisible();
+      expect(editRequests).toBe(0);
+      await expect(page).toHaveURL(/\/perfil\/editar$/);
+    });
+
+    await test.step("7. Voltar a marcar «Canalização» e acrescentar «Eletricidade» → guardar", async () => {
+      await plumbing.click();
       await electricity.click();
       await page.getByRole("button", { name: "Guardar" }).click();
       await expect(page).toHaveURL(/\/perfil$/);

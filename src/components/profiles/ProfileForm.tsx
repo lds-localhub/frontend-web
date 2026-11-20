@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CategoryRef, ProfileInput } from "@/api/types";
+import type { ProfileInput } from "@/api/types";
 import { applyServerErrors } from "@/utils/forms";
 import { Card } from "@/components/ui/Card";
 import { AddressField } from "@/components/ui/AddressField";
@@ -48,20 +48,13 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 type Props = {
   defaultValues?: ProfileFormValues;
-  currentCategories?: CategoryRef[];
   onSubmit: (body: ProfileInput) => Promise<unknown>;
   onCancel?: () => void;
   submitLabel: string;
 };
 
 // Formulário do perfil profissional, comum à criação e à edição; os erros do backend vão para os campos
-export default function ProfileForm({
-  defaultValues,
-  currentCategories = [],
-  onSubmit,
-  onCancel,
-  submitLabel,
-}: Props) {
+export function ProfileForm({ defaultValues, onSubmit, onCancel, submitLabel }: Props) {
   const categories = useCategories();
 
   const form = useForm({
@@ -108,15 +101,10 @@ export default function ProfileForm({
     );
   }
 
-  // Uma categoria do perfil desativada entretanto já não vem nas ativas, mas continua no perfil:
-  // aparece à mesma, para o Prestador a ver e a poder retirar
-  const activeIds = new Set(categories.data.items.map((c) => c.serviceCategoryId));
-  const categoryOptions = [
-    ...categories.data.items.map((c) => ({ value: String(c.serviceCategoryId), label: c.name })),
-    ...currentCategories
-      .filter((c) => !activeIds.has(c.serviceCategoryId))
-      .map((c) => ({ value: String(c.serviceCategoryId), label: `${c.name} (desativada)` })),
-  ];
+  const categoryOptions = categories.data.items.map((c) => ({
+    value: String(c.serviceCategoryId),
+    label: c.name,
+  }));
 
   return (
     <Card>
@@ -148,6 +136,7 @@ export default function ProfileForm({
               onValueChange={(values) => field.onChange(values.map(Number))}
               options={categoryOptions}
               error={fieldState.error?.message}
+              focusRef={field.ref}
             />
           )}
         />
@@ -177,6 +166,7 @@ export default function ProfileForm({
                 value={field.value ?? null}
                 onValueChange={field.onChange}
                 onBlur={field.onBlur}
+                inputRef={field.ref}
                 min={1}
                 max={100}
                 step={1}

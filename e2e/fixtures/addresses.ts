@@ -12,3 +12,6 @@ export function address(key: AddressKey): string {
 
 // Morada que o stub do Nominatim não conhece: o backend não a converte em coordenadas e responde 400
 export const UNKNOWN_ADDRESS = "Rua Inexistente Fictícia, 1, 0000-000 Nenhures";
+
+// Mensagem do backend (errors.address do 400) quando não converte a morada em coordenadas
+export const ADDRESS_NOT_FOUND = "Não foi possível encontrar esta morada. Confirme-a.";

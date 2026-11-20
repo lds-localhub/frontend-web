@@ -4,7 +4,7 @@ import { Info } from "lucide-react";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import type { ProfileInput } from "@/api/types";
-import ProfileForm from "@/components/profiles/ProfileForm";
+import { ProfileForm } from "@/components/profiles/ProfileForm";
 import { Callout } from "@/components/ui/Callout";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { toast } from "@/components/ui/Toast";

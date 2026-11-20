@@ -1,12 +1,9 @@
 import { registerAndLogin } from "./fixtures/accounts.ts";
-import { address, UNKNOWN_ADDRESS } from "./fixtures/addresses.ts";
+import { ADDRESS_NOT_FOUND, address, UNKNOWN_ADDRESS } from "./fixtures/addresses.ts";
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
 // TS-WEB-16 — Definir a localização do Cliente (RF-F015-02; RNF-08)
-
-// Mensagem do backend (errors.address do 400) quando não converte a morada em coordenadas
-const ADDRESS_NOT_FOUND = "Não foi possível encontrar esta morada. Confirme-a.";
 
 test.describe("TS-WEB-16 Definir a localização do Cliente", () => {
   test("definir a localização e manter a anterior quando a morada não é reconhecida", async ({

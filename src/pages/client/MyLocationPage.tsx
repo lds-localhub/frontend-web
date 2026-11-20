@@ -41,11 +41,12 @@ export function MyLocationPage() {
   const save = useMutation({
     mutationFn: (body: LocationInput) =>
       api<Me>("/users/me/location", { method: "PUT", body: JSON.stringify(body) }), // E16
-    onSuccess: () =>
-      Promise.all([
-        qc.invalidateQueries({ queryKey: queryKeys.me, refetchType: "all" }),
-        qc.invalidateQueries({ queryKey: queryKeys.searchProviders.all, refetchType: "all" }),
-      ]),
+    onSuccess: (me) => {
+      // O E16 devolve o utilizador já com a nova morada (a estrutura do E04): sem um segundo pedido ao
+      // E04, que, se falhasse, trocava a página inteira pelo erro logo a seguir a guardar
+      qc.setQueryData(queryKeys.me, me);
+      return qc.invalidateQueries({ queryKey: queryKeys.searchProviders.all, refetchType: "all" });
+    },
     onError: (e) => {
       if (!isApiError(e) || (e.status !== 400 && e.status !== 401 && !e.errors)) {
         toast(getErrorMessage(e));
