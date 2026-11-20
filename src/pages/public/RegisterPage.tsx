@@ -3,9 +3,9 @@ import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router";
 import * as z from "zod";
+import { House } from "lucide-react";
 import { api } from "@/api/client";
 import type { RegisterInput } from "@/api/types";
-import homeIcon from "@/assets/home.svg";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FormError } from "@/components/ui/FormError";
@@ -93,7 +93,7 @@ export function RegisterPage() {
     <div className={styles.page}>
       <title>Registar conta · LocalHub</title>
       <aside className={styles.panel}>
-        <img src={homeIcon} alt="" width={40} height={40} />
+        <House size={40} strokeWidth={1.75} aria-hidden="true" />
         <div className={styles.panelText}>
           <h2>Junte-se ao LocalHub</h2>
           <p>

@@ -9,4 +9,17 @@
   color: var(--color-warning);
   font-weight: 700;
   font-size: 0.75rem;
+
+  &[data-size="lg"] {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.375rem;
+  }
+
+  /* Nome (0,9375rem) e duas linhas de 0,8125rem, com a altura de linha de 1,5 do texto */
+  &[data-size="menu"] {
+    width: calc((0.9375rem + 2 * 0.8125rem) * 1.5);
+    height: calc((0.9375rem + 2 * 0.8125rem) * 1.5);
+    font-size: 1rem;
+  }
 }

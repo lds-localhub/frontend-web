@@ -1,0 +1,47 @@
+.area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.map {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px) 0 0 / 2rem 2rem,
+    linear-gradient(var(--color-border) 1px, transparent 1px) 0 0 / 2rem 2rem,
+    var(--color-primary-soft);
+}
+
+.radius {
+  display: grid;
+  place-items: center;
+  height: 80%;
+  aspect-ratio: 1;
+  border: 2px dashed var(--color-primary);
+  border-radius: 50%;
+  background: rgb(15 107 87 / 0.12);
+  align-content: center;
+  gap: 0.125rem;
+}
+
+.radiusLabel {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+.pin {
+  color: var(--color-primary);
+}
+
+.address {
+  font-weight: 600;
+}
+
+.details {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}

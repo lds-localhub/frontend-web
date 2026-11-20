@@ -10,11 +10,19 @@ type Props = Omit<ComponentProps<"input">, "className"> & {
 
 // Campo de texto com etiqueta, dica e mensagem de erro ligadas ao campo (anunciadas pelo leitor de ecrã).
 // Encaminha a ref para o <input>, por isso liga-se diretamente com o register do React Hook Form.
-export function TextField({ label, hint, error, ...inputProps }: Props) {
+// Com required, a etiqueta leva um asterisco; a validação é sempre a do formulário, não a do browser.
+export function TextField({ label, hint, error, required, ...inputProps }: Props) {
   return (
     <Field.Root className={styles.field} invalid={!!error}>
-      <Field.Label className={styles.label}>{label}</Field.Label>
-      <Field.Control {...inputProps} className={styles.input} />
+      <Field.Label className={styles.label}>
+        {label}
+        {required && (
+          <span className={styles.required} aria-hidden="true">
+            *
+          </span>
+        )}
+      </Field.Label>
+      <Field.Control {...inputProps} aria-required={required} className={styles.input} />
       {hint && <Field.Description className={styles.hint}>{hint}</Field.Description>}
       <Field.Error className={styles.error} match={!!error}>
         {error}

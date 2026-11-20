@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import { Link } from "react-router";
 import styles from "./ShortcutCard.module.css";
 
@@ -5,17 +6,17 @@ type Props = {
   to: string;
   title: string;
   description: string;
-  icon?: string;
+  icon?: LucideIcon;
   tone?: "primary" | "warning";
 };
 
 // Atalho dos inícios: cartão inteiro como ligação, com o ícone, o título e uma linha de descrição
-export function ShortcutCard({ to, title, description, icon, tone = "primary" }: Props) {
+export function ShortcutCard({ to, title, description, icon: Icon, tone = "primary" }: Props) {
   return (
     <Link to={to} className={styles.shortcutCard}>
-      {icon && (
+      {Icon && (
         <span className={styles.icon} data-tone={tone}>
-          <img src={icon} alt="" width={20} height={20} />
+          <Icon size={20} aria-hidden="true" />
         </span>
       )}
       <span className={styles.text}>

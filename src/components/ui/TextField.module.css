@@ -38,3 +38,8 @@
   font-weight: 600;
   font-size: 0.8125rem;
 }
+
+.required {
+  margin-left: 0.125rem;
+  color: var(--color-danger);
+}

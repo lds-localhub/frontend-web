@@ -5,7 +5,10 @@ import { AccountsPage } from "@/pages/admin/AccountsPage/AccountsPage";
 import { AdminHomePage } from "@/pages/admin/AdminHomePage";
 import { CategoriesPage } from "@/pages/admin/CategoriesPage/CategoriesPage";
 import { ClientHomePage } from "@/pages/client/ClientHomePage";
+import { MyLocationPage } from "@/pages/client/MyLocationPage";
 import { CreateProfilePage } from "@/pages/provider/CreateProfilePage";
+import { EditProfilePage } from "@/pages/provider/EditProfilePage";
+import { MyProfilePage } from "@/pages/provider/MyProfilePage";
 import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
 import { LoginPage } from "@/pages/public/LoginPage";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
@@ -35,10 +38,13 @@ export const router = createBrowserRouter(
         <Route element={<RequireProfile />}>
           <Route element={<RequireRole roles={["CLIENT"]} />}>
             <Route path="/cliente" element={<ClientHomePage />} />
+            <Route path="/conta/localizacao" element={<MyLocationPage />} />
           </Route>
 
           <Route element={<RequireRole roles={["PROVIDER"]} />}>
             <Route path="/prestador" element={<ProviderHomePage />} />
+            <Route path="/perfil" element={<MyProfilePage />} />
+            <Route path="/perfil/editar" element={<EditProfilePage />} />
           </Route>
 
           <Route element={<RequireRole roles={["ADMIN"]} />}>
