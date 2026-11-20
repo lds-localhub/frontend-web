@@ -3,14 +3,18 @@ import { Card } from "@/components/ui/Card";
 import { formatAverageRating, formatMonth, formatReviewCount } from "@/utils/format";
 import styles from "./RatingEvolution.module.css";
 
-type Props = { months: MonthlyRating[] };
+type Props = { months: MonthlyRating[]; hasPeriod: boolean };
 
-export function RatingEvolution({ months }: Props) {
+// Lista vazia (E34): sem período, o Prestador ainda não tem avaliações; com período, também pode ter
+// avaliações só depois do fim do período, que fica antes do mês da primeira avaliação
+export function RatingEvolution({ months, hasPeriod }: Props) {
   return (
     <Card>
       <h2 className={styles.title}>Evolução da classificação média</h2>
       {months.length === 0 ? (
-        <p className={styles.empty}>Sem avaliações no período escolhido.</p>
+        <p className={styles.empty}>
+          {hasPeriod ? "Sem avaliações no período escolhido." : "Ainda não tem avaliações."}
+        </p>
       ) : (
         <table className={styles.table}>
           <thead>

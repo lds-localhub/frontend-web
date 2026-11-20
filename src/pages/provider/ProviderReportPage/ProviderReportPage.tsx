@@ -20,6 +20,7 @@ import { RatingEvolution } from "./RatingEvolution";
 
 export function ProviderReportPage() {
   const { params, searchParams, setFilters } = useUrlParams(readReportParams);
+  const hasPeriod = params.startDate !== undefined || params.endDate !== undefined;
 
   const report = useQuery({
     queryKey: queryKeys.reports.provider(params),
@@ -71,7 +72,7 @@ export function ProviderReportPage() {
               }))}
             />
           </Card>
-          <RatingEvolution months={data.ratingEvolution} />
+          <RatingEvolution months={data.ratingEvolution} hasPeriod={hasPeriod} />
         </div>
       </>
     ) : (
@@ -79,7 +80,7 @@ export function ProviderReportPage() {
         <EmptyState>Sem atividade no período escolhido.</EmptyState>
         {data.ratingEvolution.length > 0 && (
           <div className={styles.cards}>
-            <RatingEvolution months={data.ratingEvolution} />
+            <RatingEvolution months={data.ratingEvolution} hasPeriod={hasPeriod} />
           </div>
         )}
       </>
