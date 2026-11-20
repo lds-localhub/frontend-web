@@ -1,15 +1,17 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from "react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { ChangePasswordPage } from "@/pages/account/ChangePasswordPage";
+import { ChangePasswordPage } from "@/pages/account/ChangePasswordPage/ChangePasswordPage";
 import { AccountsPage } from "@/pages/admin/AccountsPage/AccountsPage";
 import { AdminHomePage } from "@/pages/admin/AdminHomePage";
 import { CategoriesPage } from "@/pages/admin/CategoriesPage/CategoriesPage";
 import { ClientHomePage } from "@/pages/client/ClientHomePage";
+import { ClientReportPage } from "@/pages/client/ClientReportPage";
 import { MyLocationPage } from "@/pages/client/MyLocationPage";
 import { CreateProfilePage } from "@/pages/provider/CreateProfilePage";
 import { EditProfilePage } from "@/pages/provider/EditProfilePage";
 import { MyProfilePage } from "@/pages/provider/MyProfilePage";
 import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
+import { ProviderReportPage } from "@/pages/provider/ProviderReportPage/ProviderReportPage";
 import { LoginPage } from "@/pages/public/LoginPage";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
 import { ProviderSearchPage } from "@/pages/public/ProviderSearchPage";
@@ -38,11 +40,13 @@ export const router = createBrowserRouter(
         <Route element={<RequireProfile />}>
           <Route element={<RequireRole roles={["CLIENT"]} />}>
             <Route path="/cliente" element={<ClientHomePage />} />
+            <Route path="/cliente/relatorio" element={<ClientReportPage />} />
             <Route path="/conta/localizacao" element={<MyLocationPage />} />
           </Route>
 
           <Route element={<RequireRole roles={["PROVIDER"]} />}>
             <Route path="/prestador" element={<ProviderHomePage />} />
+            <Route path="/prestador/relatorio" element={<ProviderReportPage />} />
             <Route path="/perfil" element={<MyProfilePage />} />
             <Route path="/perfil/editar" element={<EditProfilePage />} />
           </Route>

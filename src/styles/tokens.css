@@ -32,6 +32,12 @@
   --color-info: #3b3f8f;
   --color-info-bg: #e3e4f7;
   --color-neutral-bg: #eceeed;
+
+  /* Barras dos relatórios: trilho e cor de cada estado do serviço */
+  --color-track: #e6ece8;
+  --color-bar-warning: #b6781f;
+  --color-bar-success: #2e7d4a;
+  --color-bar-neutral: #7d8783;
   --color-overlay: rgb(20 32 27 / 0.45);
   --shadow-dialog: 0 1.5rem 3rem rgb(20 32 27 / 0.25);
 

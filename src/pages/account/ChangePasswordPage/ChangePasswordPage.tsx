@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
-import * as z from "zod";
 import { api } from "@/api/client";
 import type { ChangePasswordInput } from "@/api/types";
 import { BackLink } from "@/components/ui/BackLink";
@@ -16,27 +15,7 @@ import { getErrorMessage, isApiError } from "@/utils/errors";
 import { applyServerErrors } from "@/utils/forms";
 import { homeOf } from "@/utils/homeOf";
 import styles from "./ChangePasswordPage.module.css";
-
-const passwordMessage =
-  "A palavra-passe tem de ter, no mínimo, 8 caracteres, com pelo menos uma letra e um algarismo.";
-
-const changePasswordSchema = z
-  .object({
-    currentPassword: z.string().min(1, "Indique a palavra-passe atual."),
-    newPassword: z
-      .string()
-      .min(8, passwordMessage)
-      .regex(/\p{L}/u, passwordMessage)
-      .regex(/\d/, passwordMessage),
-    confirmPassword: z.string(),
-  })
-  .refine((v) => v.newPassword === v.confirmPassword, {
-    error: "A confirmação não corresponde à nova palavra-passe.",
-    path: ["confirmPassword"],
-    when: () => true,
-  });
-
-type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
+import { changePasswordSchema, type ChangePasswordFormValues } from "./changePasswordSchema";
 
 export function ChangePasswordPage() {
   const { data: me } = useMe();

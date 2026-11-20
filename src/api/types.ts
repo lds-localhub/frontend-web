@@ -367,19 +367,23 @@ export type ReviewInput = { rating: number; comment?: string };
 export type CategoryCount = CategoryRef & { count: number };
 export type StatusCount = { status: Exclude<ServiceStatus, "OPEN">; count: number };
 
+export type CompletedServiceRow = {
+  serviceId: number;
+  actualCompletionDate: string;
+  serviceCategory: CategoryRef;
+  providerName: string;
+  amount: number;
+};
+
+export type MonthlyRating = { month: string; reviewCount: number; averageRating: number | null };
+
 // E33
 export type ClientReport = {
   contractedServices: number;
   byCategory: CategoryCount[];
   byStatus: StatusCount[];
   totalAcceptedAmount: number;
-  completedHistory: {
-    serviceId: number;
-    actualCompletionDate: string;
-    serviceCategory: CategoryRef;
-    providerName: string;
-    amount: number;
-  }[];
+  completedHistory: CompletedServiceRow[];
 };
 
 // E34
@@ -390,7 +394,7 @@ export type ProviderReport = {
   directRequestsReceived: number;
   proposals: { accepted: number; declined: number };
   totalAcceptedAmount: number;
-  ratingEvolution: { month: string; reviewCount: number; averageRating: number | null }[];
+  ratingEvolution: MonthlyRating[];
 };
 
 // ---------------------------------------------------------------------------

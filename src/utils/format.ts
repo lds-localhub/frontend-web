@@ -44,6 +44,27 @@ export function formatDay(day: string): string {
   return `${date}/${month}/${year}`;
 }
 
+const monthNames = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
+
+// Mês do relatório ("2026-07") → "Julho 2026". Tal como as datas sem hora, não passa por new Date().
+export function formatMonth(month: string): string {
+  const [year, monthNumber] = month.split("-");
+  return `${monthNames[Number(monthNumber) - 1]} ${year}`;
+}
+
 // Disponibilidade pedida: "13/10 a 19/10/2026" (intervalo) ou "08/10/2026" (data única)
 export function formatAvailability(start: string, end: string | null): string {
   if (!end) return formatDay(start);

@@ -1,0 +1,56 @@
+.title {
+  font-size: 1.125rem;
+}
+
+.empty {
+  color: var(--color-text-muted);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  thead th {
+    padding-top: 0;
+    padding-bottom: 0.5rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.8125rem;
+  }
+
+  tbody tr:last-child {
+    th,
+    td {
+      border-bottom: none;
+    }
+  }
+}
+
+.month {
+  display: block;
+  font-weight: 700;
+}
+
+.count {
+  display: block;
+  color: var(--color-text-muted);
+  font-weight: 400;
+  font-size: 0.8125rem;
+}
+
+.average {
+  text-align: right;
+
+  tbody & {
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+}
