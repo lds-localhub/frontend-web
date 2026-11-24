@@ -76,3 +76,16 @@ export async function registerAndLogin(
   const session = await login(request, email, TEST_PASSWORD);
   return { email, password: TEST_PASSWORD, ...session };
 }
+
+// E16: define a localização registada da conta (morada conhecida pelo stub do Nominatim)
+export async function setLocation(
+  request: APIRequestContext,
+  account: TestAccount,
+  address: string,
+): Promise<void> {
+  const response = await request.put("/api/users/me/location", {
+    headers: { Authorization: `Bearer ${account.token}` },
+    data: { address },
+  });
+  await failIfNot(response, 200);
+}
