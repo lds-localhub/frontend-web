@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type SubmitEvent } from "react";
 import type { ReportParams } from "@/api/types";
 import { Button } from "@/components/ui/Button";
 import { DateField } from "@/components/ui/DateField";
@@ -28,7 +28,7 @@ export function ReportPeriodFilter({ value, onApply }: Props) {
     setDateError(null);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const startDate = draft.startDate || undefined;
     const endDate = draft.endDate || undefined;

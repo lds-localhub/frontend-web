@@ -14,7 +14,7 @@ import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
 import { ProviderReportPage } from "@/pages/provider/ProviderReportPage/ProviderReportPage";
 import { LoginPage } from "@/pages/public/LoginPage";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
-import { ProviderSearchPage } from "@/pages/public/ProviderSearchPage";
+import { ProviderSearchPage } from "@/pages/public/ProviderSearchPage/ProviderSearchPage";
 import { RegisterPage } from "@/pages/public/RegisterPage";
 import { UnexpectedErrorPage } from "@/pages/public/UnexpectedErrorPage";
 import { RequireAuth, RequireProfile, RequireRole } from "./guards";
