@@ -11,13 +11,13 @@ export function CategoryField({ control }: Props) {
   const providers = useWatch({ control, name: "providers" });
 
   // Categorias comuns a todos os selecionados; sem selecionados, sem limite
-  const onlyIds =
-    providers.length > 0
-      ? providers.reduce(
-          (ids, p) => ids.filter((id) => p.serviceCategoryIds.includes(id)),
-          providers[0].serviceCategoryIds,
-        )
-      : undefined;
+  let onlyIds: number[] | undefined;
+  if (providers.length > 0) {
+    onlyIds = providers[0].serviceCategoryIds;
+    for (const p of providers) {
+      onlyIds = onlyIds.filter((id) => p.serviceCategoryIds.includes(id));
+    }
+  }
 
   return (
     <Controller
