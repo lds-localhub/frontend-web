@@ -62,7 +62,7 @@ export function Select({
           </BaseSelect.Positioner>
         </BaseSelect.Portal>
       </BaseSelect.Root>
-      {hint && <Field.Description className={styles.hint}>{hint}</Field.Description>}
+      {hint && !error && <Field.Description className={styles.hint}>{hint}</Field.Description>}
       <Field.Error className={styles.error} match={!!error}>
         {error}
       </Field.Error>
