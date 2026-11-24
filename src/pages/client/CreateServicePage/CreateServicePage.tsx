@@ -60,6 +60,9 @@ export function CreateServicePage() {
 
   const handleServiceSubmit = async (body: ServiceInput) => {
     const service = await create.mutateAsync(body);
+    // O E20 devolve a estrutura do E22: o detalhe aparece logo, sem «A carregar…» (com o staleTime 0,
+    // o E22 é pedido na mesma, em segundo plano)
+    qc.setQueryData(queryKeys.services.detail(service.serviceId), service);
     toast("Serviço criado.");
     navigate(`/servicos/${service.serviceId}`);
   };

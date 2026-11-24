@@ -1,0 +1,48 @@
+/* Cartão de uma solicitação ou de uma proposta: o Prestador à esquerda e a proposta (ou a mensagem
+   do estado) ao centro; num ecrã estreito, um por baixo do outro */
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+  gap: 1rem 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+
+  @media (max-width: 48rem) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.provider {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.rating {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.dates {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.message {
+  color: var(--color-text-secondary);
+}
