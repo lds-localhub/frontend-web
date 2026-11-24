@@ -32,6 +32,8 @@
   --color-info: #3b3f8f;
   --color-info-bg: #e3e4f7;
   --color-neutral-bg: #eceeed;
+  --color-pending: #5b3a8c;
+  --color-pending-bg: #ece5f6;
 
   /* Barras dos relatórios: trilho e cor de cada estado do serviço */
   --color-track: #e6ece8;
