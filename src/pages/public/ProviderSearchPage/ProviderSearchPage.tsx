@@ -68,8 +68,7 @@ export function ProviderSearchPage() {
     />
   );
 
-  // Desligada (sem categoria ou sem localização) → indicação; ligada → loading, erro ou resultados.
-  // A desligada verifica-se primeiro, porque fica com isPending a true para sempre (8.4).
+  // o que aparece nos resultados nas diferentes situações
   let content: ReactNode;
   if (!params) {
     content = <p className={styles.hint}>Escolha a categoria e a localização para pesquisar.</p>;
@@ -80,9 +79,7 @@ export function ProviderSearchPage() {
       <ErrorState error={results.error} onRetry={results.refetch} retrying={results.isFetching} />
     );
   } else if (results.data.total === 0) {
-    content = (
-      <EmptyState>Não foram encontrados Prestadores para esta categoria e localização.</EmptyState>
-    );
+    content = <EmptyState>Não foram encontrados Prestadores para esta categoria.</EmptyState>;
   } else {
     const { data } = results;
     content = (
