@@ -1,0 +1,65 @@
+/* Formulário à esquerda e Prestadores à direita, como no protótipo; num ecrã estreito, um por
+   baixo do outro */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(min(100%, 20rem), 1fr);
+  gap: 1.5rem;
+  align-items: start;
+
+  @media (max-width: 60rem) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.singleDate {
+  max-width: 18rem;
+}
+
+.dates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sideTitle {
+  font-size: 1.125rem;
+}
+
+.sideText {
+  color: var(--color-text-secondary);
+}
