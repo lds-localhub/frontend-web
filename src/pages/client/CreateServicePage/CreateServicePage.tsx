@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
@@ -14,6 +15,10 @@ import { parseId } from "@/utils/parseId";
 import { CreateServiceForm } from "./CreateServiceForm";
 import styles from "./CreateServicePage.module.css";
 
+function hasProviderNotFoundState(state: unknown): boolean {
+  return typeof state === "object" && state !== null && "providerNotFound" in state;
+}
+
 // W13 (solicitação direta) e W16 (aberto a propostas): um só formulário. Aberto a partir do W12, traz
 // o Prestador (?prestador) e a categoria da pesquisa (?categoria) (RF-F009-03, regras 4 e 5).
 export function CreateServicePage() {
@@ -25,6 +30,21 @@ export function CreateServicePage() {
   const categoriaId = parseId(searchParams.get("categoria"));
   const { data: me } = useMe();
   const preselected = useProfile(prestadorId ?? undefined);
+  // Prestador do URL que não existe (404): o formulário abre sem ele e o painel dos Prestadores diz
+  // porquê, no lugar dos erros desse campo
+  const providerNotFound = isApiError(preselected.error) && preselected.error.status === 404;
+  const providerMissing = providerNotFound || hasProviderNotFoundState(location.state);
+
+  // Tira o ID do URL (sem nova entrada no histórico), para um recarregar ou um link copiado não o
+  // voltarem a trazer. A indicação segue no estado da navegação, porque sem o ID deixa de haver 404.
+  useEffect(() => {
+    if (!providerNotFound) {
+      return;
+    }
+    const next = new URLSearchParams(searchParams);
+    next.delete("prestador");
+    navigate({ search: next.toString() }, { replace: true, state: { providerNotFound: true } });
+  }, [providerNotFound, searchParams, navigate]);
 
   const create = useMutation({
     mutationFn: (body: ServiceInput) =>
@@ -51,7 +71,7 @@ export function CreateServicePage() {
   if (prestadorId && preselected.isPending) {
     return <Loading />;
   }
-  if (prestadorId && preselected.isError) {
+  if (prestadorId && preselected.isError && !providerNotFound) {
     return (
       <ErrorState
         error={preselected.error}
@@ -70,7 +90,8 @@ export function CreateServicePage() {
       <PageHeader title="Criar serviço" />
       <CreateServiceForm
         defaultValues={{
-          proposalModel: provider ? "DIRECT_REQUEST" : "PUBLIC",
+          // Com Prestador no URL, mesmo que não exista, o Cliente queria uma solicitação direta
+          proposalModel: provider || providerMissing ? "DIRECT_REQUEST" : "PUBLIC",
           // A categoria da pesquisa só fica escolhida se for uma das do Prestador (RF-F009-03, regra 5)
           serviceCategoryId:
             categoriaId && providerCategoryIds.includes(categoriaId) ? categoriaId : undefined,
@@ -91,6 +112,7 @@ export function CreateServicePage() {
             : [],
         }}
         preselectedProviderId={provider?.professionalProfileId ?? null}
+        preselectedProviderMissing={providerMissing}
         onSubmit={handleServiceSubmit}
         onCancel={handleCancel}
       />

@@ -3,6 +3,7 @@ import { ProviderProfile } from "@/components/profiles/ProviderProfile";
 import { BackLink } from "@/components/ui/BackLink";
 import { useProfile } from "@/hooks/useProfile";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
+import { isApiError } from "@/utils/errors";
 import { parseId } from "@/utils/parseId";
 
 // A distância e a categoria vêm do resultado da pesquisa (estado da navegação); o E13 não as tem
@@ -26,7 +27,7 @@ export function ProviderProfilePage() {
   const location = useLocation();
   const navigate = useNavigate();
   // Só para o título do separador: a mesma cache do ProviderProfile, sem pedido extra
-  const { data: profile } = useProfile(id ?? undefined);
+  const { data: profile, error } = useProfile(id ?? undefined);
 
   // Sem página anterior na aplicação (link aberto diretamente), «voltar» sairia do LocalHub
   const handleBackClick = () =>
@@ -34,6 +35,16 @@ export function ProviderProfilePage() {
 
   if (id === null) {
     return <NotFoundPage />; // ID inválido no URL (8.1)
+  }
+  // ID válido mas sem Prestador (404): tentar outra vez não resolve, por isso não é o ErrorState
+  if (isApiError(error) && error.status === 404) {
+    return (
+      <NotFoundPage
+        title="Prestador não encontrado"
+        text="O Prestador que procura não existe ou já não está disponível."
+        action={{ to: "/pesquisa/prestadores", label: "Voltar à pesquisa" }}
+      />
+    );
   }
   return (
     <>
