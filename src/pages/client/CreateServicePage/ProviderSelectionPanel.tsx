@@ -125,6 +125,8 @@ export function ProviderSelectionPanel({
           placeholder="Pesquisar por nome"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          // Está dentro do formulário do serviço: o Enter aqui não pode criar o serviço
+          onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
           disabled={!params}
         />
       </div>
