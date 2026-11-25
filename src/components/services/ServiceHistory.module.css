@@ -4,6 +4,13 @@
   gap: 0.75rem;
 }
 
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
 .title {
   color: var(--color-text-secondary);
   font-weight: 600;
