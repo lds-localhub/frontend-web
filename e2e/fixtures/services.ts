@@ -16,7 +16,11 @@ export type ServiceOptions = {
   addressKey?: AddressKey;
 };
 
-export type AssignedServiceOptions = ServiceOptions & { amount?: number };
+export type AssignedServiceOptions = ServiceOptions & {
+  amount?: number;
+  // modalidade do serviço: com uma solicitação direta ao Prestador (por omissão) ou aberto a propostas
+  proposalModel?: "DIRECT_REQUEST" | "PUBLIC";
+};
 
 function bearer(account: TestAccount) {
   return { Authorization: `Bearer ${account.token}` };
@@ -151,20 +155,23 @@ export async function reviewService(
   );
 }
 
-// E20 + E25 + E28: serviço com uma solicitação direta ao Prestador, que apresenta uma proposta,
-// aceite pelo Cliente: o serviço fica atribuído
+// E20 + E25 + E28: serviço com uma solicitação direta ao Prestador (ou aberto a propostas), em que o
+// Prestador apresenta uma proposta, aceite pelo Cliente: o serviço fica atribuído
 export async function createAssignedService(
   request: APIRequestContext,
   client: TestAccount,
   provider: TestProvider,
-  { amount = 50, ...options }: AssignedServiceOptions = {},
+  { amount = 50, proposalModel = "DIRECT_REQUEST", ...options }: AssignedServiceOptions = {},
 ): Promise<{ serviceId: number; proposalId: number }> {
-  const serviceId = await createDirectRequestService(
-    request,
-    client,
-    [provider.professionalProfileId],
-    options,
-  );
+  const serviceId =
+    proposalModel === "PUBLIC"
+      ? await createPublicService(request, client, options)
+      : await createDirectRequestService(
+          request,
+          client,
+          [provider.professionalProfileId],
+          options,
+        );
   const proposalId = await submitProposal(request, provider, serviceId, amount);
   await acceptProposal(request, client, proposalId);
   return { serviceId, proposalId };
