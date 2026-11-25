@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
 import type { ProposalInput } from "@/api/types";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -10,22 +9,7 @@ import { TextAreaField } from "@/components/ui/TextAreaField";
 import { TextField } from "@/components/ui/TextField";
 import { applyServerErrors } from "@/utils/forms";
 import styles from "./ProposalForm.module.css";
-
-const proposalSchema = z.object({
-  amount: z
-    .number({ error: "Indique o valor." })
-    .gt(0, "O valor tem de ser maior que 0.")
-    .max(100000, "O valor não pode ser superior a 100 000,00 €.")
-    .multipleOf(0.01, "O valor tem, no máximo, duas casas decimais."),
-  conditions: z
-    .string()
-    .trim()
-    .min(1, "Indique as condições.")
-    .max(1000, "As condições têm, no máximo, 1000 caracteres."),
-  obs: z.string().trim().max(500, "A observação tem, no máximo, 500 caracteres."),
-});
-
-type ProposalFormValues = z.infer<typeof proposalSchema>;
+import { type ProposalFormValues, proposalSchema } from "./proposalSchema";
 
 type Props = {
   onSubmit: (body: ProposalInput) => Promise<unknown>;
