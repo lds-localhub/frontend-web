@@ -9,7 +9,7 @@ type Props = {
   distanceKm?: number;
   requestedStartDate: string;
   requestedEndDate: string | null;
-  publishedAt?: string; // só nos serviços abertos a propostas (W18)
+  publishedAt?: string; // só nos serviços abertos a propostas: junto à categoria ou, sem ela, no fim
 };
 
 // Dados de um serviço numa linha: categoria, publicação, local, distância e disponibilidade
@@ -36,11 +36,17 @@ export function ServiceMeta({
           {location}
         </li>
       )}
-      {distanceKm !== undefined && <li>{formatDistance(distanceKm)}</li>}
+      {distanceKm !== undefined && (
+        <li>
+          {!location && <MapPin size={14} aria-hidden="true" />}
+          {formatDistance(distanceKm)}
+        </li>
+      )}
       <li>
         <CalendarDays size={14} aria-hidden="true" />
         Disponibilidade: {formatAvailability(requestedStartDate, requestedEndDate)}
       </li>
+      {publishedAt && !category && <li>Publicado a {formatDate(publishedAt)}</li>}
     </ul>
   );
 }
