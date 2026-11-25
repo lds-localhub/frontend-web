@@ -47,7 +47,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
     });
 
     await test.step("2. «Responder» na primeira", async () => {
-      await row(page, newer).getByRole("link", { name: "Responder" }).click();
+      await row(page, newer).getByRole("button", { name: "Responder" }).click();
       await expect(page).toHaveURL(/\/solicitacoes\/\d+$/);
       await expect(
         page.getByRole("heading", { name: `Solicitação de ${client.user.name}` }),
@@ -68,7 +68,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       await page.getByRole("button", { name: "Enviar proposta" }).click();
       await expect(page.getByText("Proposta enviada.")).toBeVisible();
       await expect(page.getByText("Proposta apresentada", { exact: true })).toBeVisible();
-      await expect(page.getByRole("link", { name: "Ver proposta" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Ver proposta" })).toBeVisible();
       await expect(page.getByRole("heading", { name: "Apresentar proposta" })).toHaveCount(0);
       expect(proposalRequests).toBe(1);
     });
@@ -89,13 +89,13 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       await expect(page).toHaveURL(/\/solicitacoes$/);
       await expect(page.getByRole("combobox", { name: "Estado" })).toHaveText(/Todos/);
       await expect(row(page, newer)).toContainText("Proposta apresentada");
-      await expect(row(page, newer).getByRole("link", { name: "Ver proposta" })).toBeVisible();
+      await expect(row(page, newer).getByRole("button", { name: "Ver proposta" })).toBeVisible();
       await expect(row(page, older)).toContainText("Pendente");
-      await expect(row(page, older).getByRole("link", { name: "Responder" })).toBeVisible();
+      await expect(row(page, older).getByRole("button", { name: "Responder" })).toBeVisible();
     });
 
     await test.step("7. «Responder» na segunda → «Recusar solicitação» → «Recusar»", async () => {
-      await row(page, older).getByRole("link", { name: "Responder" }).click();
+      await row(page, older).getByRole("button", { name: "Responder" }).click();
       await page.getByRole("button", { name: "Recusar solicitação" }).click();
       const dialog = page.getByRole("alertdialog", {
         name: `Recusar a solicitação de ${client.user.name}?`,
