@@ -12,6 +12,7 @@ import { ProviderProfilePage } from "@/pages/client/ProviderProfilePage";
 import { ServiceDetailPage } from "@/pages/client/ServiceDetailPage/ServiceDetailPage";
 import { CreateProfilePage } from "@/pages/provider/CreateProfilePage";
 import { DirectRequestDetailPage } from "@/pages/provider/DirectRequestDetailPage/DirectRequestDetailPage";
+import { DirectRequestsPage } from "@/pages/provider/DirectRequestsPage";
 import { EditProfilePage } from "@/pages/provider/EditProfilePage";
 import { MyProfilePage } from "@/pages/provider/MyProfilePage";
 import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
@@ -53,6 +54,7 @@ export const router = createBrowserRouter(
 
           <Route element={<RequireRole roles={["PROVIDER"]} />}>
             <Route path="/prestador" element={<ProviderHomePage />} />
+            <Route path="/solicitacoes" element={<DirectRequestsPage />} />
             <Route path="/solicitacoes/:directRequestId" element={<DirectRequestDetailPage />} />
             <Route path="/prestador/relatorio" element={<ProviderReportPage />} />
             <Route path="/perfil" element={<MyProfilePage />} />
