@@ -1,0 +1,22 @@
+/* Categoria, interruptor e «Pesquisar» lado a lado, como no protótipo; num ecrã estreito, um por
+   baixo do outro */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem 1.5rem;
+}
+
+.category {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+/* Alinha o interruptor e o botão com o campo, por baixo da etiqueta (altura da etiqueta + espaço) */
+.radius,
+.submit {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 1.6875rem;
+}
