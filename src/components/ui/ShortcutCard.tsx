@@ -7,7 +7,7 @@ type Props = {
   title: string;
   description: string;
   icon?: LucideIcon;
-  tone?: "primary" | "warning";
+  tone?: "primary" | "warning" | "info";
 };
 
 // Atalho dos inícios: cartão inteiro como ligação, com o ícone, o título e uma linha de descrição

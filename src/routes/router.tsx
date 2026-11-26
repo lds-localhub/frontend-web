@@ -11,8 +11,11 @@ import { MyLocationPage } from "@/pages/client/MyLocationPage";
 import { ProviderProfilePage } from "@/pages/client/ProviderProfilePage";
 import { ServiceDetailPage } from "@/pages/client/ServiceDetailPage/ServiceDetailPage";
 import { CreateProfilePage } from "@/pages/provider/CreateProfilePage";
+import { DirectRequestDetailPage } from "@/pages/provider/DirectRequestDetailPage/DirectRequestDetailPage";
+import { DirectRequestsPage } from "@/pages/provider/DirectRequestsPage";
 import { EditProfilePage } from "@/pages/provider/EditProfilePage";
 import { MyProfilePage } from "@/pages/provider/MyProfilePage";
+import { PendingPage } from "@/pages/provider/PendingPage";
 import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
 import { ProviderReportPage } from "@/pages/provider/ProviderReportPage/ProviderReportPage";
 import { LoginPage } from "@/pages/public/LoginPage";
@@ -52,6 +55,19 @@ export const router = createBrowserRouter(
 
           <Route element={<RequireRole roles={["PROVIDER"]} />}>
             <Route path="/prestador" element={<ProviderHomePage />} />
+            <Route path="/solicitacoes" element={<DirectRequestsPage />} />
+            <Route path="/solicitacoes/:directRequestId" element={<DirectRequestDetailPage />} />
+            {/* Provisórias, até os ecrãs dos serviços e das propostas do Prestador serem implementados */}
+            <Route path="/pesquisa/servicos" element={<PendingPage title="Pesquisar serviços" />} />
+            <Route
+              path="/pesquisa/servicos/:serviceId"
+              element={<PendingPage title="Detalhe do serviço" />}
+            />
+            <Route path="/propostas" element={<PendingPage title="As minhas propostas" />} />
+            <Route
+              path="/propostas/:proposalId"
+              element={<PendingPage title="Detalhe da proposta" />}
+            />
             <Route path="/prestador/relatorio" element={<ProviderReportPage />} />
             <Route path="/perfil" element={<MyProfilePage />} />
             <Route path="/perfil/editar" element={<EditProfilePage />} />

@@ -1,19 +1,30 @@
-import type { ServiceHistoryEntry } from "@/api/types";
+import type { ServiceHistoryEntry, ServiceStatus } from "@/api/types";
+import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/utils/format";
-import { serviceStatusLabels } from "@/utils/labels";
+import { serviceStatusLabels, serviceStatusTone } from "@/utils/labels";
 import styles from "./ServiceHistory.module.css";
+
+// O Prestador não sabe o ID de quem fez cada alteração, por isso pode faltar
+type HistoryStep = Omit<ServiceHistoryEntry, "changedByUserId"> & { changedByUserId?: number };
 
 type Props = {
   // A criação não vem no histórico do E22 (só as mudanças de estado), por isso vem à parte
   created: { at: string; byName: string; byUserId: number | undefined };
-  history: ServiceHistoryEntry[];
+  history: HistoryStep[];
   currentUserId: number | undefined;
   acceptedProviderName?: string; // para «Atribuído · Proposta de <nome> aceite»
+  status?: ServiceStatus; // estado atual, ao lado do título (no detalhe da solicitação)
 };
 
 // Histórico do serviço: a criação e as mudanças de estado, com a data e quem as fez. A última fica
 // destacada (verde, ou vermelha se for o cancelamento), como no protótipo.
-export function ServiceHistory({ created, history, currentUserId, acceptedProviderName }: Props) {
+export function ServiceHistory({
+  created,
+  history,
+  currentUserId,
+  acceptedProviderName,
+  status,
+}: Props) {
   const steps = [
     {
       key: "created",
@@ -38,7 +49,10 @@ export function ServiceHistory({ created, history, currentUserId, acceptedProvid
 
   return (
     <div className={styles.history}>
-      <h2 className={styles.title}>Histórico do serviço</h2>
+      <div className={styles.heading}>
+        <h2 className={styles.title}>Histórico do serviço</h2>
+        {status && <Badge tone={serviceStatusTone[status]}>{serviceStatusLabels[status]}</Badge>}
+      </div>
       <ol className={styles.steps}>
         {steps.map((s, i) => (
           <li
