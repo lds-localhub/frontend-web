@@ -3,6 +3,7 @@ import type { ServiceDetail } from "@/api/types";
 import { ServiceHistory } from "@/components/services/ServiceHistory";
 import { ServiceMeta } from "@/components/services/ServiceMeta";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { Callout } from "@/components/ui/Callout";
 import { Card } from "@/components/ui/Card";
 import { formatDate } from "@/utils/format";
@@ -13,7 +14,47 @@ type Props = {
   service: ServiceDetail;
   currentUserId: number | undefined;
   acceptedProviderName: string | undefined;
+  onCancel: () => void;
+  onComplete: () => void;
+  onReview: () => void;
+  disabled: boolean; // enquanto uma ação decorre
 };
+
+// Ações conforme o estado: aberto, cancelar; atribuído, marcar como realizado e cancelar; realizado e
+// sem avaliação, avaliar; avaliado ou cancelado, nenhuma
+function ServiceActions({
+  service,
+  onCancel,
+  onComplete,
+  onReview,
+  disabled,
+}: Pick<Props, "service" | "onCancel" | "onComplete" | "onReview" | "disabled">) {
+  const { status, reviewed } = service;
+  const canCancel = status === "OPEN" || status === "ASSIGNED";
+  const canReview = status === "COMPLETED" && !reviewed;
+  if (!canCancel && !canReview) {
+    return null;
+  }
+  return (
+    <div className={styles.actions}>
+      {status === "ASSIGNED" && (
+        <Button onClick={onComplete} disabled={disabled}>
+          Marcar como realizado
+        </Button>
+      )}
+      {canReview && (
+        <Button onClick={onReview} disabled={disabled}>
+          Avaliar serviço
+        </Button>
+      )}
+      {canCancel && (
+        <Button variant="danger-outline" onClick={onCancel} disabled={disabled}>
+          Cancelar serviço
+        </Button>
+      )}
+    </div>
+  );
+}
 
 // Faixa do serviço cancelado, a partir da última alteração do histórico (textos do protótipo)
 function CancelledBanner({ service }: { service: ServiceDetail }) {
@@ -37,9 +78,17 @@ function CancelledBanner({ service }: { service: ServiceDetail }) {
   );
 }
 
-// Cartão de cima do W15/W18: título, modalidade e estado, dados, descrição e histórico.
-// Só de consulta: as ações (cancelar, marcar como realizado, avaliar) ficam para a tarefa C.
-export function ServiceOverview({ service, currentUserId, acceptedProviderName }: Props) {
+// Cartão de cima do W15/W18: título, modalidade e estado, as ações do Cliente, dados, descrição e
+// histórico. As confirmações e a avaliação são abertas pela página.
+export function ServiceOverview({
+  service,
+  currentUserId,
+  acceptedProviderName,
+  onCancel,
+  onComplete,
+  onReview,
+  disabled,
+}: Props) {
   return (
     <Card>
       <div className={styles.overview}>
@@ -52,6 +101,13 @@ export function ServiceOverview({ service, currentUserId, acceptedProviderName }
             </Badge>
           </div>
         </div>
+        <ServiceActions
+          service={service}
+          onCancel={onCancel}
+          onComplete={onComplete}
+          onReview={onReview}
+          disabled={disabled}
+        />
         <CancelledBanner service={service} />
         <ServiceMeta
           category={service.serviceCategory}
