@@ -28,7 +28,7 @@ export function CategoryField({ control }: Props) {
           value={field.value}
           onValueChange={field.onChange}
           onlyIds={onlyIds}
-          hint={onlyIds ? "Só categorias dos Prestadores selecionados." : undefined}
+          hint={"Só categorias dos Prestadores selecionados."}
           error={fieldState.error?.message}
         />
       )}

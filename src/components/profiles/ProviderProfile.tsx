@@ -80,7 +80,7 @@ export function ProviderProfile({
               </Button>
             ) : (
               <Button
-                to={`/servicos/novo?${toQueryString({ prestador: id, categoria: serviceCategoryId })}`}
+                to={`/servicos/novo?${toQueryString({ professionalProfileId: id, serviceCategoryId })}`}
               >
                 Fazer solicitação direta
               </Button>

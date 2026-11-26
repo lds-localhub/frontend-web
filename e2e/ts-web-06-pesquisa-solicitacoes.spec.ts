@@ -94,7 +94,9 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
     await test.step("3. «Fazer solicitação direta»: o Prestador já está selecionado", async () => {
       await page.getByRole("button", { name: "Fazer solicitação direta" }).click();
       // O Prestador vai no URL (RF-F009-03, regra 4)
-      await expect(page).toHaveURL(new RegExp(`prestador=${first.professionalProfileId}`));
+      await expect(page).toHaveURL(
+        new RegExp(`professionalProfileId=${first.professionalProfileId}`),
+      );
       await expect(
         page.getByText(`Pedido iniciado no perfil de ${first.user.name}, que já está na seleção.`),
       ).toBeVisible();

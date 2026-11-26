@@ -4,8 +4,8 @@ import { ProviderSelectionPanel } from "./ProviderSelectionPanel";
 
 type Props = {
   control: Control<CreateServiceFormValues>;
-  preselectedProviderId: number | null; // Prestador vindo do W12 (?prestador)
-  preselectedProviderMissing: boolean; // o Prestador do URL não existe
+  preselectedProviderId: number | null; // Prestador vindo do W12 (?professionalProfileId)
+  preselectedProviderInvalid: boolean; // o Prestador do URL está mal escrito ou não existe
 };
 
 // Liga o painel à lista de Prestadores do formulário e passa-lhe a categoria e o local, que mudam a
@@ -13,7 +13,7 @@ type Props = {
 export function ProviderSelectionField({
   control,
   preselectedProviderId,
-  preselectedProviderMissing,
+  preselectedProviderInvalid,
 }: Props) {
   const serviceCategoryId = useWatch({ control, name: "serviceCategoryId" });
   const location = useWatch({ control, name: "location" });
@@ -33,12 +33,12 @@ export function ProviderSelectionField({
             location={location}
             value={field.value}
             onChange={field.onChange}
-            // O Prestador do URL que não existe aparece como erro do campo, igual à categoria que
-            // não existe; sai assim que houver alguém selecionado (valor derivado, 8.11)
+            // O Prestador do URL mal escrito ou que não existe aparece como erro do campo; sai
+            // assim que houver alguém selecionado (valor derivado, 8.11)
             error={
               fieldState.error?.message ??
-              (preselectedProviderMissing && field.value.length === 0
-                ? "O Prestador indicado não existe ou já não está disponível. Selecione outro."
+              (preselectedProviderInvalid && field.value.length === 0
+                ? "O Prestador indicado não existe ou já não está disponível."
                 : undefined)
             }
             notice={

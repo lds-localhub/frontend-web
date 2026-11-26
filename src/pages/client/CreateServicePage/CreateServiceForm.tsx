@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { Controller, useForm, useWatch, type DefaultValues } from "react-hook-form";
 import type { ProposalModel, ServiceInput } from "@/api/types";
 import { AddressField } from "@/components/ui/AddressField";
@@ -20,7 +19,7 @@ import styles from "./CreateServiceForm.module.css";
 type Props = {
   defaultValues: DefaultValues<CreateServiceFormValues>;
   preselectedProviderId: number | null;
-  preselectedProviderMissing: boolean; // o Prestador do URL não existe
+  preselectedProviderInvalid: boolean; // o Prestador do URL está mal escrito ou não existe
   onSubmit: (body: ServiceInput) => Promise<unknown>;
   onCancel: () => void;
 };
@@ -40,7 +39,7 @@ const dateModeItems: { value: "single" | "range"; label: string }[] = [
 export function CreateServiceForm({
   defaultValues,
   preselectedProviderId,
-  preselectedProviderMissing,
+  preselectedProviderInvalid,
   onSubmit,
   onCancel,
 }: Props) {
@@ -56,13 +55,6 @@ export function CreateServiceForm({
   const proposalModel = useWatch({ control, name: "proposalModel" });
   const dateMode = useWatch({ control, name: "dateMode" });
   const providersCount = useWatch({ control, name: "providers" }).length;
-
-  // O aviso do Prestador do URL que não existe só vale até à primeira seleção: retirar depois os
-  // selecionados já não o traz de volta (atualização durante o desenho, sem useEffect)
-  const [providerMissing, setProviderMissing] = useState(preselectedProviderMissing);
-  if (providerMissing && providersCount > 0) {
-    setProviderMissing(false);
-  }
 
   // Aberto a propostas não tem destinatários: os selecionados saem todos, incluindo o do W12 (11.10)
   const handleModelChange = (model: ProposalModel) => {
@@ -205,7 +197,7 @@ export function CreateServiceForm({
           <ProviderSelectionField
             control={control}
             preselectedProviderId={preselectedProviderId}
-            preselectedProviderMissing={providerMissing}
+            preselectedProviderInvalid={preselectedProviderInvalid}
           />
         ) : (
           <Card>

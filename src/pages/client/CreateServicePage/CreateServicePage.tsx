@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
@@ -15,36 +14,23 @@ import { parseId } from "@/utils/parseId";
 import { CreateServiceForm } from "./CreateServiceForm";
 import styles from "./CreateServicePage.module.css";
 
-function hasProviderNotFoundState(state: unknown): boolean {
-  return typeof state === "object" && state !== null && "providerNotFound" in state;
-}
-
 // W13 (solicitação direta) e W16 (aberto a propostas): um só formulário. Aberto a partir do W12, traz
-// o Prestador (?prestador) e a categoria da pesquisa (?categoria) (RF-F009-03, regras 4 e 5).
+// o Prestador (?professionalProfileId) e a categoria da pesquisa (?serviceCategoryId) (RF-F009-03, regras 4 e 5).
 export function CreateServicePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const qc = useQueryClient();
   const [searchParams] = useSearchParams();
-  const prestadorId = parseId(searchParams.get("prestador"));
-  const categoriaId = parseId(searchParams.get("categoria"));
+  const categoryId = parseId(searchParams.get("serviceCategoryId"));
   const { data: me } = useMe();
-  const preselected = useProfile(prestadorId ?? undefined);
-  // Prestador do URL que não existe (404): o formulário abre sem ele e o painel dos Prestadores diz
-  // porquê, no lugar dos erros desse campo
-  const providerNotFound = isApiError(preselected.error) && preselected.error.status === 404;
-  const providerMissing = providerNotFound || hasProviderNotFoundState(location.state);
 
-  // Tira o ID do URL (sem nova entrada no histórico), para um recarregar ou um link copiado não o
-  // voltarem a trazer. A indicação segue no estado da navegação, porque sem o ID deixa de haver 404.
-  useEffect(() => {
-    if (!providerNotFound) {
-      return;
-    }
-    const next = new URLSearchParams(searchParams);
-    next.delete("prestador");
-    navigate({ search: next.toString() }, { replace: true, state: { providerNotFound: true } });
-  }, [providerNotFound, searchParams, navigate]);
+  const providerId = parseId(searchParams.get("professionalProfileId"));
+  // Prestador do URL mal escrito ou que não existe (404): o formulário abre sem ele e o painel dos Prestadores diz
+  // porquê, no lugar dos erros desse campo
+  const preselected = useProfile(providerId ?? undefined);
+  const malformedProviderId = !!searchParams.get("professionalProfileId") && providerId === null;
+  const providerNotFound = isApiError(preselected.error) && preselected.error.status === 404;
+  const invalidProviderId = malformedProviderId || providerNotFound;
 
   const create = useMutation({
     mutationFn: (body: ServiceInput) =>
@@ -71,10 +57,11 @@ export function CreateServicePage() {
   const handleCancel = () => (location.key === "default" ? navigate("/servicos") : navigate(-1));
 
   // Só espera pelo perfil se houver Prestador pré-selecionado (8.4)
-  if (prestadorId && preselected.isPending) {
+  if (providerId && preselected.isPending) {
     return <Loading />;
   }
-  if (prestadorId && preselected.isError && !providerNotFound) {
+
+  if (providerId && preselected.isError && !providerNotFound) {
     return (
       <ErrorState
         error={preselected.error}
@@ -84,7 +71,7 @@ export function CreateServicePage() {
     );
   }
 
-  const provider = prestadorId ? preselected.data : undefined;
+  const provider = providerId ? preselected.data : undefined;
   const providerCategoryIds = provider?.serviceCategories.map((c) => c.serviceCategoryId) ?? [];
 
   return (
@@ -94,10 +81,10 @@ export function CreateServicePage() {
       <CreateServiceForm
         defaultValues={{
           // Com Prestador no URL, mesmo que não exista, o Cliente queria uma solicitação direta
-          proposalModel: provider || providerMissing ? "DIRECT_REQUEST" : "PUBLIC",
+          proposalModel: provider || invalidProviderId ? "DIRECT_REQUEST" : "PUBLIC",
           // A categoria da pesquisa só fica escolhida se for uma das do Prestador (RF-F009-03, regra 5)
           serviceCategoryId:
-            categoriaId && providerCategoryIds.includes(categoriaId) ? categoriaId : undefined,
+            categoryId && providerCategoryIds.includes(categoryId) ? categoryId : undefined,
           title: "",
           description: "",
           location: me?.address ?? "", // RF-F009-01, regra 3
@@ -115,7 +102,7 @@ export function CreateServicePage() {
             : [],
         }}
         preselectedProviderId={provider?.professionalProfileId ?? null}
-        preselectedProviderMissing={providerMissing}
+        preselectedProviderInvalid={invalidProviderId}
         onSubmit={handleServiceSubmit}
         onCancel={handleCancel}
       />
