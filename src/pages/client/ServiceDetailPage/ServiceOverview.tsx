@@ -22,13 +22,7 @@ type Props = {
 
 // Ações conforme o estado: aberto, cancelar; atribuído, marcar como realizado e cancelar; realizado e
 // sem avaliação, avaliar; avaliado ou cancelado, nenhuma
-function ServiceActions({
-  service,
-  onCancel,
-  onComplete,
-  onReview,
-  disabled,
-}: Pick<Props, "service" | "onCancel" | "onComplete" | "onReview" | "disabled">) {
+function ServiceActions({ service, onCancel, onComplete, onReview, disabled }: Props) {
   const { status, reviewed } = service;
   const canCancel = status === "OPEN" || status === "ASSIGNED";
   const canReview = status === "COMPLETED" && !reviewed;
@@ -80,15 +74,8 @@ function CancelledBanner({ service }: { service: ServiceDetail }) {
 
 // Cartão de cima do W15/W18: título, modalidade e estado, as ações do Cliente, dados, descrição e
 // histórico. As confirmações e a avaliação são abertas pela página.
-export function ServiceOverview({
-  service,
-  currentUserId,
-  acceptedProviderName,
-  onCancel,
-  onComplete,
-  onReview,
-  disabled,
-}: Props) {
+export function ServiceOverview(props: Props) {
+  const { service, currentUserId, acceptedProviderName } = props;
   return (
     <Card>
       <div className={styles.overview}>
@@ -101,13 +88,7 @@ export function ServiceOverview({
             </Badge>
           </div>
         </div>
-        <ServiceActions
-          service={service}
-          onCancel={onCancel}
-          onComplete={onComplete}
-          onReview={onReview}
-          disabled={disabled}
-        />
+        <ServiceActions {...props} />
         <CancelledBanner service={service} />
         <ServiceMeta
           category={service.serviceCategory}

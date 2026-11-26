@@ -8,8 +8,8 @@ import styles from "./ServicesTable.module.css";
 
 type Props = {
   items: ServiceItem[];
-  detailed?: boolean; // com a categoria, a data e «Cancelar»
-  onCancel?: (service: ServiceItem) => void;
+  detailed?: boolean; // com a categoria e a data
+  onCancel?: (service: ServiceItem) => void; // com ele, «Cancelar» nos serviços abertos e atribuídos
   disabled?: boolean; // enquanto um cancelamento decorre
 };
 
@@ -52,7 +52,7 @@ export function ServicesTable({ items, detailed = false, onCancel, disabled = fa
       align: "end",
       cell: (s) => (
         <div className={styles.actions}>
-          {detailed && onCancel && cancellable(s) && (
+          {onCancel && cancellable(s) && (
             <Button variant="danger-outline" onClick={() => onCancel(s)} disabled={disabled}>
               Cancelar
             </Button>

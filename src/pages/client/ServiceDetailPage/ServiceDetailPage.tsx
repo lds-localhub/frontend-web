@@ -258,10 +258,10 @@ export function ServiceDetailPage() {
         <p>{dialog?.text}</p>
       </ConfirmDialog>
 
-      {reviewOpen && acceptedProviderName && (
+      {reviewOpen && (
         <ReviewDialog
           serviceId={s.serviceId}
-          providerName={acceptedProviderName}
+          providerName={acceptedProviderName ?? "o Prestador"}
           onClose={() => setReviewOpen(false)}
         />
       )}

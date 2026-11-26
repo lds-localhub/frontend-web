@@ -65,7 +65,10 @@ test.describe("TS-WEB-11 Ciclo de um trabalho publicado", () => {
         .getByRole("button", { name: "Confirmar" })
         .click();
       await expect(page.getByText("Proposta aceite.")).toBeVisible();
-      await expect(page.getByText("Atribuído", { exact: true }).first()).toBeVisible();
+      // O estado ao lado do título, no cartão de cima
+      await expect(
+        page.getByRole("heading", { name: title, level: 1 }).locator(".."),
+      ).toContainText("Atribuído");
     });
 
     await test.step("5. «Marcar como realizado» → «Marcar como realizado»", async () => {

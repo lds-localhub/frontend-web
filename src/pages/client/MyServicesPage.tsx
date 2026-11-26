@@ -74,6 +74,15 @@ export function MyServicesPage() {
           onRetry={services.refetch}
           retrying={services.isFetching}
         />
+      ) : services.data.items.length === 0 && services.data.total > 0 ? (
+        // Página que ficou vazia (ex.: cancelou o último serviço da página com o filtro «Aberto»):
+        // o Pagination não aparece com uma só página, por isso dá-se o caminho de volta
+        <EmptyState>
+          Esta página já não tem serviços.{" "}
+          <Button variant="text" onClick={() => setPage(1)}>
+            Ir para a primeira página
+          </Button>
+        </EmptyState>
       ) : services.data.items.length === 0 ? (
         <EmptyState>
           {params.status ? "Não tem serviços neste estado." : "Ainda não criou serviços."}

@@ -77,7 +77,10 @@ test.describe("TS-WEB-10 Ciclo de um serviço com solicitações diretas", () =>
       );
       await dialog.getByRole("button", { name: "Confirmar" }).click();
       await expect(page.getByText("Proposta aceite.")).toBeVisible();
-      await expect(page.getByText("Atribuído", { exact: true }).first()).toBeVisible();
+      // O estado ao lado do título, no cartão de cima
+      await expect(
+        page.getByRole("heading", { name: title, level: 1 }).locator(".."),
+      ).toContainText("Atribuído");
       await expect(page.getByRole("button", { name: "Aceitar proposta" })).toHaveCount(0);
     });
 
