@@ -15,7 +15,10 @@ test.describe("TS-WEB-07 Publicar trabalho", () => {
     await test.step("1. Iniciar sessão e abrir «Criar serviço»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
-      await page.getByRole("link", { name: "Criar serviço" }).click();
+      await page
+        .getByRole("navigation", { name: "Principal" })
+        .getByRole("link", { name: "Criar serviço" })
+        .click();
       await expect(page).toHaveURL(/\/servicos\/novo$/);
       // Aberto a propostas por omissão; o local é a localização registada (RF-F009-01, regra 3)
       await expect(page.getByRole("button", { name: "Publicar serviço" })).toBeVisible();

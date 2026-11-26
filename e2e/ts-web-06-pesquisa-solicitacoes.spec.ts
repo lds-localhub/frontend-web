@@ -78,7 +78,10 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
     await test.step("1. Iniciar sessão e pesquisar Canalização a partir da localização registada", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
-      await page.getByRole("link", { name: "Pesquisar Prestadores" }).click();
+      await page
+        .getByRole("navigation", { name: "Principal" })
+        .getByRole("link", { name: "Pesquisar Prestadores" })
+        .click();
       await chooseCategory(page, "Canalização");
       await page.getByRole("button", { name: "Pesquisar" }).click();
       await expect(result(page, first.user.name)).toContainText("0,0 km");
