@@ -51,7 +51,8 @@ export function ProviderSearchForm({
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const address = usesRegistered ? undefined : draft.address.trim() || undefined;
+    const typedAddress = draft.address.trim() || undefined;
+    const address = usesRegistered ? undefined : typedAddress;
     const next = {
       serviceCategoryId: draft.serviceCategoryId === undefined ? categoryRequired : undefined,
       address: !usesRegistered && !address ? addressRequired : undefined,

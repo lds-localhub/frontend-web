@@ -46,6 +46,7 @@ export function ProviderProfilePage() {
       />
     );
   }
+
   return (
     <>
       <title>{`${profile?.name ?? "Perfil do Prestador"} · LocalHub`}</title>

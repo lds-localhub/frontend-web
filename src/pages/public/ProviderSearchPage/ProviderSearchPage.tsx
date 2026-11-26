@@ -56,7 +56,7 @@ export function ProviderSearchPage() {
 
   // Erros da pesquisa (8.5.3): os 400 com errors vão para os campos do formulário (ex.: morada não
   // reconhecida); os outros aparecem na zona dos resultados. Os filtros nunca desaparecem.
-  const fieldErrors = params ? getFieldErrors(results.error) : undefined;
+  const fieldErrors = getFieldErrors(results.error);
 
   const form = (
     <ProviderSearchForm
