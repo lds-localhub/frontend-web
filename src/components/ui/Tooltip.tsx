@@ -4,14 +4,15 @@ import styles from "./Tooltip.module.css";
 
 type Props = {
   content: ReactNode;
+  label: string; // nome do botão (ex.: «2 alertas»), porque o botão só mostra «⚠ 2»
   children: ReactNode;
 };
 
 // Dica que aparece ao passar o cursor ou ao chegar com o teclado ao botão (ex.: o detalhe dos alertas)
-export function Tooltip({ content, children }: Props) {
+export function Tooltip({ content, label, children }: Props) {
   return (
     <BaseTooltip.Root>
-      <BaseTooltip.Trigger className={styles.trigger} delay={150}>
+      <BaseTooltip.Trigger className={styles.trigger} aria-label={label} delay={150}>
         {children}
       </BaseTooltip.Trigger>
       <BaseTooltip.Portal>

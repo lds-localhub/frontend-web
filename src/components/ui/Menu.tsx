@@ -17,16 +17,16 @@ export type MenuItem = {
 
 type Props = {
   trigger: ReactNode;
-  testId?: string; // para os testes encontrarem o botão
+  triggerLabel: string;
   header?: { name: string; subtitle: string; detail: string };
   items: MenuItem[];
 };
 
 // Menu aberto por um botão, com um topo opcional (avatar, nome e duas linhas) e as opções
-export function Menu({ trigger, testId, header, items }: Props) {
+export function Menu({ trigger, triggerLabel, header, items }: Props) {
   return (
     <BaseMenu.Root>
-      <BaseMenu.Trigger className={styles.trigger} data-testid={testId}>
+      <BaseMenu.Trigger className={styles.trigger} aria-label={triggerLabel}>
         {trigger}
         <ChevronDown className={styles.chevron} size={14} />
       </BaseMenu.Trigger>

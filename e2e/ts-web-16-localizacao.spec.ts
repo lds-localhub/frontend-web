@@ -3,7 +3,7 @@ import { ADDRESS_NOT_FOUND, address, UNKNOWN_ADDRESS } from "./fixtures/addresse
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-16 — Definir a localização do Cliente (RF-F015-02; RNF-08)
+// TS-WEB-16 — Definir a localização do Cliente
 
 test.describe("TS-WEB-16 Definir a localização do Cliente", () => {
   test("definir a localização e manter a anterior quando a morada não é reconhecida", async ({
@@ -16,7 +16,7 @@ test.describe("TS-WEB-16 Definir a localização do Cliente", () => {
     const save = page.getByRole("button", { name: "Guardar" });
 
     const openMyLocation = async () => {
-      await page.getByTestId("menu-conta").click();
+      await page.getByRole("button", { name: /Menu da conta/ }).click();
       await page.getByRole("menuitem", { name: "A minha localização" }).click();
       await expect(page).toHaveURL(/\/conta\/localizacao$/);
     };
@@ -42,7 +42,7 @@ test.describe("TS-WEB-16 Definir a localização do Cliente", () => {
       await expect(page.getByText(ADDRESS_NOT_FOUND)).toBeVisible();
     });
 
-    await test.step("4. Reabrir o W21", async () => {
+    await test.step("4. Reabrir «A minha localização»", async () => {
       await page.goto("/cliente");
       await openMyLocation();
       await expect(addressField).toHaveValue(address("gaia"));

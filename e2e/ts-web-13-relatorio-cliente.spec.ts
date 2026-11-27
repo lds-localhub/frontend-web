@@ -6,7 +6,7 @@ import { completeService, createAssignedService } from "./fixtures/services.ts";
 import { openWithSession } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-13 — Relatório do cliente (RF-F013-01, RF-F013-02; RNF-08)
+// TS-WEB-13 — Relatório do cliente
 
 // Cartão do relatório com o título indicado (ex.: «Por categoria»)
 function card(page: Page, title: string) {
@@ -32,15 +32,10 @@ test.describe("TS-WEB-13 Relatório do cliente", () => {
 
     const expectAllActivity = async () => {
       await expect(
-        page
-          .getByRole("article")
-          .filter({ has: page.getByText("Serviços contratados", { exact: true }) })
-          .getByText("1", { exact: true }),
+        page.getByRole("article", { name: "Serviços contratados" }).getByText("1", { exact: true }),
       ).toBeVisible();
       await expect(
-        page
-          .getByRole("article")
-          .filter({ has: page.getByText("Valor das propostas aceites", { exact: true }) }),
+        page.getByRole("article", { name: "Valor das propostas aceites" }),
       ).toContainText(/80,00\s€/);
       await expect(card(page, "Por categoria").getByRole("listitem")).toHaveText([
         /^Canalização\s*1$/,
@@ -53,7 +48,7 @@ test.describe("TS-WEB-13 Relatório do cliente", () => {
       await expect(historyRow).toContainText(/80,00\s€/);
     };
 
-    await test.step("1. Abrir o relatório do Cliente (W20)", async () => {
+    await test.step("1. Abrir o relatório do Cliente", async () => {
       await openWithSession(page, client.token);
       await page.goto("/cliente");
       await page.getByRole("link", { name: "Relatório", exact: true }).click();

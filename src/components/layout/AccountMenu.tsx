@@ -47,7 +47,7 @@ export function AccountMenu({ me }: Props) {
           <Avatar name={me.name} /> {me.name.split(" ")[0]}
         </>
       }
-      testId="menu-conta"
+      triggerLabel={`Menu da conta de ${me.name}`}
       header={{ name: me.name, subtitle: roleLabels[me.role], detail: me.email }}
       items={items}
     />
