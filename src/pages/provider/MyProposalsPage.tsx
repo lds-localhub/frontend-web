@@ -3,7 +3,7 @@ import { useState } from "react";
 import { api, toQueryString } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import type { Page, ProposalItem, ProposalStatus, ProposalsParams } from "@/api/types";
-import { CancelServiceDialog } from "@/components/proposals/CancelServiceDialog";
+import { CancelServiceDialog } from "@/components/services/CancelServiceDialog";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";

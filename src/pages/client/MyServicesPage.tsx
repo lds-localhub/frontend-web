@@ -1,11 +1,11 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import type { ServiceItem, ServicesParams } from "@/api/types";
+import type { ServicesParams } from "@/api/types";
+import { CancelServiceDialog } from "@/components/services/CancelServiceDialog";
 import { cancelServiceText } from "@/components/services/serviceConfirmTexts";
 import { ServicesTable } from "@/components/services/ServicesTable";
 import { readServiceStatus, serviceStatusOptions } from "@/components/services/serviceStatusFilter";
 import { Button } from "@/components/ui/Button";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { FilterSelect } from "@/components/ui/FilterSelect";
@@ -27,12 +27,17 @@ function readServicesParams(searchParams: URLSearchParams): ServicesParams {
   };
 }
 
+// Todos os serviços do Cliente, com o filtro do estado e o cancelamento dos abertos e atribuídos.
+// O filtro e a página ficam no URL, para o «voltar» do detalhe regressar à mesma lista.
 export function MyServicesPage() {
   const { params, setFilters, setPage } = useUrlParams(readServicesParams);
   const services = useServices(params);
   const cancel = useCancelService();
-  // Serviço cuja confirmação de cancelamento está aberta
-  const [confirming, setConfirming] = useState<ServiceItem | null>(null);
+  // Serviço cuja confirmação de cancelamento está aberta, lido da lista atual
+  const [confirmingId, setConfirmingId] = useState<number | null>(null);
+  const confirming = services.data?.items.find((s) => s.serviceId === confirmingId);
+  // «Cancelar» fica desativado enquanto a lista atualiza ou o cancelamento decorre
+  const busy = services.isFetching || cancel.isPending;
 
   const handleConfirm = () => {
     if (!confirming) {
@@ -40,7 +45,7 @@ export function MyServicesPage() {
     }
     cancel.mutate(confirming.serviceId, {
       onSuccess: () => toast("Serviço cancelado."),
-      onSettled: () => setConfirming(null),
+      onSettled: () => setConfirmingId(null),
     });
   };
 
@@ -51,7 +56,7 @@ export function MyServicesPage() {
         title="Os meus serviços"
         actions={
           <Button to="/servicos/novo">
-            <Plus size={16} aria-hidden="true" />
+            <Plus size={16} />
             Criar serviço
           </Button>
         }
@@ -74,9 +79,9 @@ export function MyServicesPage() {
           onRetry={services.refetch}
           retrying={services.isFetching}
         />
-      ) : services.data.items.length === 0 && services.data.total > 0 ? (
-        // Página que ficou vazia (ex.: cancelou o último serviço da página com o filtro «Aberto»):
-        // o Pagination não aparece com uma só página, por isso dá-se o caminho de volta
+      ) : services.data.total > 0 && services.data.items.length === 0 ? (
+        // Página que ficou vazia (ex.: cancelou o último serviço da página, filtrada por «Aberto»).
+        // A paginação não aparece com uma só página, por isso há o caminho de volta.
         <EmptyState>
           Esta página já não tem serviços.{" "}
           <Button variant="text" onClick={() => setPage(1)}>
@@ -92,8 +97,8 @@ export function MyServicesPage() {
           <ServicesTable
             items={services.data.items}
             detailed
-            onCancel={setConfirming}
-            disabled={cancel.isPending}
+            onCancel={(s) => setConfirmingId(s.serviceId)}
+            disabled={busy}
           />
           <Pagination
             page={services.data}
@@ -103,17 +108,15 @@ export function MyServicesPage() {
         </div>
       )}
 
-      <ConfirmDialog
-        open={confirming !== null}
-        title={`Cancelar o serviço «${confirming?.title ?? ""}»?`}
-        confirmLabel="Cancelar serviço"
-        onConfirm={handleConfirm}
-        onClose={() => setConfirming(null)}
+      <CancelServiceDialog
+        open={confirming !== undefined}
+        serviceTitle={confirming?.title ?? ""}
+        // Vazio enquanto fecha, para não aparecer por instantes o texto do Prestador
+        text={confirming ? cancelServiceText(confirming.status) : ""}
         pending={cancel.isPending}
-        danger
-      >
-        <p>{confirming && cancelServiceText(confirming.status)}</p>
-      </ConfirmDialog>
+        onConfirm={handleConfirm}
+        onClose={() => setConfirmingId(null)}
+      />
     </div>
   );
 }

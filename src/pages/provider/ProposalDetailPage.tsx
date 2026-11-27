@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { CancelServiceDialog } from "@/components/proposals/CancelServiceDialog";
+import { CancelServiceDialog } from "@/components/services/CancelServiceDialog";
 import { SentProposalCard } from "@/components/proposals/SentProposalCard";
 import { ServiceInfoCard } from "@/components/services/ServiceInfoCard";
 import { BackLink } from "@/components/ui/BackLink";
