@@ -72,7 +72,7 @@ export function CategoriesPage() {
   };
 
   const columns: Column<Category>[] = [
-    { header: "Nome", cell: (c) => c.name, rowHeader: true },
+    { header: "Nome", cell: (c) => c.name },
     {
       header: "Estado",
       cell: (c) => (

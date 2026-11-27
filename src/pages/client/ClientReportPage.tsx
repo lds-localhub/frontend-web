@@ -21,7 +21,7 @@ import styles from "./ClientReportPage.module.css";
 const historyColumns: Column<CompletedServiceRow>[] = [
   { header: "Data", cell: (s) => formatDate(s.actualCompletionDate) },
   { header: "Categoria", cell: (s) => s.serviceCategory.name },
-  { header: "Prestador", cell: (s) => s.providerName, rowHeader: true },
+  { header: "Prestador", cell: (s) => s.providerName },
   { header: "Valor", cell: (s) => <strong>{formatCurrency(s.amount)}</strong> },
 ];
 

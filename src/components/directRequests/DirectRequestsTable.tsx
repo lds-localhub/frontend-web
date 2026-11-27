@@ -28,7 +28,7 @@ function RowAction({ item }: { item: DirectRequestItem }) {
 }
 
 const columns: Column<DirectRequestItem>[] = [
-  { header: "Cliente", cell: (r) => r.service.clientName, rowHeader: true },
+  { header: "Cliente", cell: (r) => r.service.clientName },
   { header: "Serviço", cell: (r) => r.service.title, clamp: true },
   { header: "Categoria", cell: (r) => r.service.serviceCategory.name },
   {

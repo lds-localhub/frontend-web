@@ -26,12 +26,12 @@ export function RatingEvolution({ months, hasPeriod }: Props) {
           <tbody>
             {months.map((m) => (
               <tr key={m.month}>
-                <th scope="row">
+                <td>
                   <span className={styles.month}>{formatMonth(m.month)}</span>
                   <span className={styles.count}>
                     {m.reviewCount === 0 ? "sem avaliações" : formatReviewCount(m.reviewCount)}
                   </span>
-                </th>
+                </td>
                 <td className={styles.average}>
                   {m.averageRating === null ? "—" : formatAverageRating(m.averageRating)}
                 </td>

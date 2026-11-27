@@ -67,7 +67,7 @@ export function MyProposalsPage() {
   };
 
   const columns: Column<ProposalItem>[] = [
-    { header: "Serviço", cell: (p) => p.service.title, rowHeader: true, clamp: true },
+    { header: "Serviço", cell: (p) => p.service.title, clamp: true },
     { header: "Cliente", cell: (p) => p.service.clientName },
     { header: "Categoria", cell: (p) => p.service.serviceCategory.name },
     {

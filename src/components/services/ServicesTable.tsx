@@ -34,7 +34,7 @@ const cancellable = (s: ServiceItem) => s.status === "OPEN" || s.status === "ASS
 // Serviços do Cliente: os recentes no início e, com detailed, a lista completa com o cancelamento
 export function ServicesTable({ items, detailed = false, onCancel, disabled = false }: Props) {
   const columns: Column<ServiceItem>[] = [
-    { header: "Serviço", cell: (s) => s.title, rowHeader: true, clamp: true },
+    { header: "Serviço", cell: (s) => s.title, clamp: true },
     ...(detailed
       ? [{ header: "Categoria", cell: (s: ServiceItem) => s.serviceCategory.name }]
       : []),
