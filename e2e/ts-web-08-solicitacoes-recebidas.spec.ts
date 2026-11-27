@@ -28,7 +28,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       title: newer,
     });
 
-    // Pedidos de apresentar proposta (E25) feitos pela aplicação, para provar que o valor inválido
+    // Pedidos de apresentar proposta feitos pela aplicação, para provar que o valor inválido
     // não chega ao backend
     let proposalRequests = 0;
     page.on("request", (r) => {

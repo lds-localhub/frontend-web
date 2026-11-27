@@ -4,11 +4,11 @@ import { formatDate } from "@/utils/format";
 import { serviceStatusLabels, serviceStatusTone } from "@/utils/labels";
 import styles from "./ServiceHistory.module.css";
 
-// O Prestador não sabe o ID de quem fez cada alteração, por isso pode faltar
+// Ao Prestador, o backend só diz o papel de quem fez cada alteração, sem o ID: por isso pode faltar
 type HistoryStep = Omit<ServiceHistoryEntry, "changedByUserId"> & { changedByUserId?: number };
 
 type Props = {
-  // A criação não vem no histórico do E22 (só as mudanças de estado), por isso vem à parte
+  // O histórico do backend só tem as mudanças de estado: a criação do serviço é passada à parte
   created: { at: string; byName: string; byUserId: number | undefined };
   history: HistoryStep[];
   currentUserId: number | undefined;
@@ -17,7 +17,7 @@ type Props = {
 };
 
 // Histórico do serviço: a criação e as mudanças de estado, com a data e quem as fez. A última fica
-// destacada (verde, ou vermelha se for o cancelamento), como no protótipo.
+// destacada: verde, ou vermelha se for o cancelamento.
 export function ServiceHistory({
   created,
   history,
