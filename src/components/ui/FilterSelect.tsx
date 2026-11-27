@@ -23,7 +23,8 @@ export function FilterSelect({ label, items, value, onValueChange, disabled }: P
       onValueChange={(next: string | null) => onValueChange(next ?? undefined)}
       disabled={disabled}
     >
-      <Select.Trigger className={styles.trigger}>
+      {/* Um combobox não tira o nome do texto que mostra: sem aria-label, os testes não o acham */}
+      <Select.Trigger className={styles.trigger} aria-label={label}>
         {label}: <Select.Value />
         <Select.Icon className={styles.icon}>
           <ChevronDown size={14} />
