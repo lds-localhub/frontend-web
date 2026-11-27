@@ -22,7 +22,6 @@ export function StarRatingField({ label, value, onValueChange, meanings, error }
           value={value ?? null}
           onValueChange={(v) => onValueChange(Number(v))}
           className={styles.group}
-          aria-invalid={error ? true : undefined}
         >
           {[1, 2, 3, 4, 5].map((n) => (
             <Radio.Root
@@ -32,7 +31,7 @@ export function StarRatingField({ label, value, onValueChange, meanings, error }
               data-filled={(value !== undefined && n <= value) || undefined}
               aria-label={`${n} ${n === 1 ? "estrela" : "estrelas"}: ${meanings[n]}`}
             >
-              <Star size={28} aria-hidden="true" />
+              <Star size={28} />
             </Radio.Root>
           ))}
         </RadioGroup>
