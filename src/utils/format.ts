@@ -1,5 +1,4 @@
-// Formatação em pt-PT, como no protótipo. Os instantes chegam em UTC e são apresentados na hora local
-// (secção 4.3 da Documentação da API).
+// Formatação em pt-PT. Os instantes chegam da API em UTC e são apresentados na hora local.
 
 const dateFormat = new Intl.DateTimeFormat("pt-PT", {
   day: "2-digit",

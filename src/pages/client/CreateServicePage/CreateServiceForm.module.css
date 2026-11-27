@@ -1,5 +1,4 @@
-/* Formulário à esquerda e Prestadores à direita, como no protótipo; num ecrã estreito, um por
-   baixo do outro */
+/* Formulário à esquerda e Prestadores à direita; num ecrã estreito, um por baixo do outro */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(min(100%, 24rem), 2fr);

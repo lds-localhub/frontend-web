@@ -40,7 +40,7 @@ export function Select({
         <BaseSelect.Label className={styles.label}>{label}</BaseSelect.Label>
         <BaseSelect.Trigger className={styles.trigger}>
           <BaseSelect.Value className={styles.value} placeholder={placeholder} />
-          <BaseSelect.Icon className={styles.icon} aria-hidden="true">
+          <BaseSelect.Icon className={styles.icon}>
             <ChevronDown size={16} />
           </BaseSelect.Icon>
         </BaseSelect.Trigger>

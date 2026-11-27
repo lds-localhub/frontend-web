@@ -41,3 +41,13 @@
     }
   }
 }
+
+/* Texto longo numa coluna estreita: no máximo duas linhas, com «…» no fim */
+.clamp {
+  display: -webkit-box;
+  max-width: 16rem;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+}

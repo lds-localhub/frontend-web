@@ -13,7 +13,7 @@ import {
 import { openWithSession } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-14 — Relatório do prestador (RF-F014-01, RF-F014-02)
+// TS-WEB-14 — Relatório do prestador
 
 const MONTHS = [
   "Janeiro",
@@ -37,7 +37,7 @@ function currentMonthLabel(): string {
 }
 
 function stat(page: Page, label: string) {
-  return page.getByRole("article").filter({ has: page.getByText(label, { exact: true }) });
+  return page.getByRole("article", { name: label });
 }
 
 test.describe("TS-WEB-14 Relatório do prestador", () => {
@@ -80,7 +80,7 @@ test.describe("TS-WEB-14 Relatório do prestador", () => {
       await expect(monthRow).toContainText("5,0");
     };
 
-    await test.step("1. Abrir o relatório do Prestador (W39)", async () => {
+    await test.step("1. Abrir o relatório do Prestador", async () => {
       await openWithSession(page, provider.token);
       await page.goto("/prestador");
       await page.getByRole("link", { name: "Relatório", exact: true }).click();

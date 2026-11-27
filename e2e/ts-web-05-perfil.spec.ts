@@ -4,14 +4,13 @@ import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
 // TS-WEB-05 — Criar, consultar e editar o perfil profissional
-// (RF-F004-01, RF-F004-02, RF-F004-03, RF-F004-04, RF-F015-01; RNF-08)
 
 test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () => {
   test("criar o perfil, consultá-lo e acrescentar uma categoria", async ({ page, request }) => {
     const provider = await registerAndLogin(request, "PROVIDER", "ts05");
     const introduction = "Canalizador com equipa própria na área do Grande Porto.";
 
-    // Pedidos de criação (E12) e de edição (E14) do perfil feitos pela aplicação, para provar que a
+    // Pedidos de criação e de edição do perfil feitos pela aplicação, para provar que a
     // validação não os envia
     let createRequests = 0;
     let editRequests = 0;
@@ -84,7 +83,7 @@ test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () =>
     });
 
     await test.step("5. Abrir o menu da conta → «O meu perfil»", async () => {
-      await page.getByTestId("menu-conta").click();
+      await page.getByRole("button", { name: /Menu da conta/ }).click();
       await page.getByRole("menuitem", { name: "O meu perfil" }).click();
       await expect(page).toHaveURL(/\/perfil$/);
       await expect(page.getByText(introduction)).toBeVisible();
@@ -99,7 +98,7 @@ test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () =>
       await expect(plumbing).toBeChecked();
       await plumbing.click();
       await page.getByRole("button", { name: "Guardar" }).click();
-      // A remoção da única categoria é recusada pela aplicação, sem pedido ao backend (RF-F004-04)
+      // A remoção da única categoria é recusada pela aplicação, sem pedido ao backend
       await expect(page.getByText("Indique pelo menos uma categoria de serviços.")).toBeVisible();
       expect(editRequests).toBe(0);
       await expect(page).toHaveURL(/\/perfil\/editar$/);

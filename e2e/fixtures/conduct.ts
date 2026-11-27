@@ -8,12 +8,12 @@ import {
   reviewService,
 } from "./services.ts";
 
-// Contas com alertas de conduta para a gestão de contas (TS-WEB-03), preparadas pela API documentada
-// (E01, E02, E12, E20, E25, E28, E30, E31, E32). Os nomes começam por «A TS03» porque a lista de contas
-// (E05) vem ordenada por nome e paginada: assim ficam na primeira página, à frente das contas
+// Contas com alertas de conduta para a gestão de contas (TS-WEB-03), preparadas pela API.
+// Os nomes começam por «A TS03» porque a lista de contas
+// vem ordenada por nome e paginada: assim ficam na primeira página, à frente das contas
 // «Cliente …» e «Prestador …» criadas pelos outros testes.
 
-// Cliente com o alerta de cancelamentos: 3 serviços chegam a atribuído e o Cliente cancela 2 (E30).
+// Cliente com o alerta de cancelamentos: 3 serviços chegam a atribuído e o Cliente cancela 2.
 // O alerta aparece com pelo menos 3 serviços atribuídos e metade ou mais cancelados pelo Cliente:
 // «Cancelamentos de serviços atribuídos: 2 de 3 (67%)».
 export async function createClientWithCancellationAlert(
@@ -34,8 +34,8 @@ export async function createClientWithCancellationAlert(
   return client;
 }
 
-// Prestador com o alerta de classificação média baixa: 3 serviços realizados (E31) e avaliados
-// com 2, 2 e 1 estrelas (E32). O alerta aparece com média de 2,0 ou menos e pelo menos 3 avaliações:
+// Prestador com o alerta de classificação média baixa: 3 serviços realizados e avaliados
+// com 2, 2 e 1 estrelas. O alerta aparece com média de 2,0 ou menos e pelo menos 3 avaliações:
 // «Classificação média baixa: 1,7 (3 avaliações)».
 export async function createProviderWithLowRatingAlert(
   request: APIRequestContext,

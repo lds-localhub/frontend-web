@@ -7,7 +7,7 @@ import type {
   ServiceStatus,
 } from "@/api/types";
 
-// Nomes em português dos estados e dos papéis (secção 5 da Documentação da API).
+// Nomes em português dos estados e dos papéis.
 // Os ecrãs nunca mostram o valor da API (ex.: PENDING) diretamente.
 
 export const serviceStatusLabels: Record<ServiceStatus, string> = {
@@ -47,7 +47,7 @@ export const roleLabels: Record<Role, string> = {
   ADMIN: "Administrador",
 };
 
-// Tom com que o Badge mostra cada estado (cores do protótipo)
+// Tom com que o Badge mostra cada estado
 export type Tone = "info" | "warning" | "success" | "danger" | "neutral" | "pending";
 
 export const serviceStatusTone: Record<ServiceStatus, Tone> = {

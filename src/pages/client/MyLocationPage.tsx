@@ -40,10 +40,10 @@ export function MyLocationPage() {
   // As distâncias da pesquisa de Prestadores são calculadas a partir da localização registada
   const save = useMutation({
     mutationFn: (body: LocationInput) =>
-      api<Me>("/users/me/location", { method: "PUT", body: JSON.stringify(body) }), // E16
+      api<Me>("/users/me/location", { method: "PUT", body: JSON.stringify(body) }),
     onSuccess: (me) => {
-      // O E16 devolve o utilizador já com a nova morada (a estrutura do E04): sem um segundo pedido ao
-      // E04, que, se falhasse, trocava a página inteira pelo erro logo a seguir a guardar
+      // A resposta já é o utilizador com a nova morada: guarda-se na cache sem um segundo pedido,
+      // que, se falhasse, trocava a página inteira pelo erro logo a seguir a guardar
       qc.setQueryData(queryKeys.me, me);
       return qc.invalidateQueries({ queryKey: queryKeys.searchProviders.all, refetchType: "all" });
     },

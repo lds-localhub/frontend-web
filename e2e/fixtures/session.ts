@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 
 // Sessão no browser, pelos ecrãs da aplicação ou com um token já obtido pela API.
 
-// Inicia sessão no ecrã de início de sessão (W03), como o utilizador faria
+// Inicia sessão no ecrã de início de sessão, como o utilizador faria
 export async function loginViaUi(page: Page, email: string, password: string): Promise<void> {
   await page.goto("/login");
   await page.getByLabel("E-mail").fill(email);
@@ -12,7 +12,7 @@ export async function loginViaUi(page: Page, email: string, password: string): P
 
 // Termina a sessão no menu da conta do cabeçalho, como o utilizador faria
 export async function logoutViaUi(page: Page): Promise<void> {
-  await page.getByTestId("menu-conta").click();
+  await page.getByRole("button", { name: /Menu da conta/ }).click();
   await page.getByRole("menuitem", { name: "Terminar sessão" }).click();
 }
 

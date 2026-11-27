@@ -1,7 +1,7 @@
 import { test as base, expect } from "@playwright/test";
 
 // Todos os testes de sistema importam o test e o expect daqui, e não de @playwright/test.
-// A fixture automática regista em cada teste a versão do Google Chrome usada (RNF-10),
+// A fixture automática regista em cada teste a versão do Google Chrome usada,
 // que aparece no relatório HTML do Playwright.
 export const test = base.extend<{ chromeVersion: void }>({
   chromeVersion: [

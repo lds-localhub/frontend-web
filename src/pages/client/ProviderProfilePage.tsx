@@ -6,7 +6,7 @@ import { NotFoundPage } from "@/pages/public/NotFoundPage";
 import { isApiError } from "@/utils/errors";
 import { parseId } from "@/utils/parseId";
 
-// A distância e a categoria vêm do resultado da pesquisa (estado da navegação); o E13 não as tem
+// A distância e a categoria vêm do resultado da pesquisa (estado da navegação); o perfil não as tem
 function readSearchState(state: unknown): { distanceKm?: number; serviceCategoryId?: number } {
   if (typeof state !== "object" || state === null) {
     return {};
@@ -21,7 +21,7 @@ function readSearchState(state: unknown): { distanceKm?: number; serviceCategory
   };
 }
 
-// W12: perfil de um Prestador, visto pelo Cliente a partir da pesquisa (RF-F004-03)
+// Perfil de um Prestador, visto pelo Cliente a partir da pesquisa
 export function ProviderProfilePage() {
   const id = parseId(useParams().professionalProfileId);
   const location = useLocation();
@@ -34,7 +34,7 @@ export function ProviderProfilePage() {
     location.key === "default" ? navigate("/pesquisa/prestadores") : navigate(-1);
 
   if (id === null) {
-    return <NotFoundPage />; // ID inválido no URL (8.1)
+    return <NotFoundPage />; // ID inválido no URL
   }
   // ID válido mas sem Prestador (404): tentar outra vez não resolve, por isso não é o ErrorState
   if (isApiError(error) && error.status === 404) {

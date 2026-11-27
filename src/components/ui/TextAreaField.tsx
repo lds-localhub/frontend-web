@@ -23,14 +23,7 @@ export function TextAreaField({ label, hint, error, required, rows = 4, ...texta
         )}
       </Field.Label>
       <Field.Control
-        render={
-          <textarea
-            {...textareaProps}
-            rows={rows}
-            aria-required={required}
-            className={styles.textarea}
-          />
-        }
+        render={<textarea {...textareaProps} rows={rows} className={styles.textarea} />}
       />
       {hint && !error && <Field.Description className={styles.hint}>{hint}</Field.Description>}
       <Field.Error className={styles.error} match={!!error}>

@@ -7,7 +7,8 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   title: string;
   children: ReactNode;
-  size?: "md" | "lg"; // lg: janela larga, com scroll próprio (ex.: o perfil de um Prestador no W13)
+  // lg: janela larga, com scroll próprio (ex.: o perfil de um Prestador no criar serviço)
+  size?: "md" | "lg";
 };
 
 // Janela modal com título (ex.: criar ou editar uma categoria); Esc e o clique fora fecham-na

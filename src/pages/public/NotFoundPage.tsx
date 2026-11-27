@@ -9,7 +9,7 @@ type Props = {
   action?: { to: string; label: string }; // sem ação, volta ao início do perfil
 };
 
-// Página não encontrada; com textos próprios para um recurso que não existe (ex.: um Prestador, W12)
+// Página não encontrada; com textos próprios para um recurso que não existe (ex.: um Prestador)
 export function NotFoundPage({
   title = "Página não encontrada",
   text = "A página que procura não existe.",

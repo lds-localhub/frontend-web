@@ -1,7 +1,7 @@
 import { queryClient } from "./queryClient";
 import type { ProblemDetails } from "./types";
 
-// Erro devolvido pelo backend (4xx/5xx), com os campos do Problem Details (secção 4.6).
+// Erro devolvido pelo backend (4xx/5xx), com os campos do Problem Details.
 // Os erros sem resposta (sem rede, servidor desligado) não são ApiError: chegam como o TypeError do fetch.
 export class ApiError extends Error {
   status: number; // 400, 401, 403, 404, 409, 500, 503
@@ -19,11 +19,11 @@ export class ApiError extends Error {
   }
 }
 
-// URL base da API (secção 4.1). Por omissão, /api no mesmo servidor (em desenvolvimento, o proxy do Vite
+// URL base da API. Por omissão, /api no mesmo servidor (em desenvolvimento, o proxy do Vite
 // encaminha para o backend); pode ser alterado com a variável VITE_API_BASE_URL, sem alterar o código.
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
-// Token da sessão (secção 4.2), guardado no browser até terminar a sessão.
+// Token da sessão, guardado no browser até terminar a sessão.
 const TOKEN_KEY = "token";
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (t: string) => localStorage.setItem(TOKEN_KEY, t);
@@ -53,7 +53,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   if (res.status === 204) return undefined as T;
   if (res.ok) return res.json();
 
-  // Corpo do erro (secção 4.6); Partial: pode não ser um Problem Details (ex.: 502 de um proxy sem JSON)
+  // Corpo do erro; Partial: pode não ser um Problem Details (ex.: 502 de um proxy sem JSON)
   const p: Partial<ProblemDetails> = await res.json().catch(() => ({}));
   if (res.status === 401 && path !== "/auth/login") onUnauthorized();
   throw new ApiError(res.status, p.type ?? "", p.detail ?? "Ocorreu um erro inesperado.", p.errors);

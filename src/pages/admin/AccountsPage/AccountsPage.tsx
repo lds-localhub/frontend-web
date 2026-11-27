@@ -131,7 +131,6 @@ export function AccountsPage() {
     { header: "Alertas", cell: (a) => <AccountAlerts alerts={a.alerts} /> },
     {
       header: "Ações",
-      align: "end",
       cell: (a) => (
         <div className={styles.rowActions}>
           <Button

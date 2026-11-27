@@ -1,4 +1,4 @@
-/* Cartão do Visitante (W01): a grelha dos cartões fica na página */
+/* Cartão do Visitante: a grelha dos cartões fica na página */
 .card {
   display: flex;
   flex-direction: column;
@@ -9,7 +9,7 @@
   background: var(--color-surface);
 }
 
-/* Linha do Cliente (W11): o contorno da lista e as linhas entre resultados ficam na página.
+/* Linha do Cliente: o contorno da lista e as linhas entre resultados ficam na página.
    Num ecrã estreito, os dados e o botão passam para baixo do nome */
 .row {
   display: flex;

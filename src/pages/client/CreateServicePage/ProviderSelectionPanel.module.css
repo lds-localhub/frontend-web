@@ -76,7 +76,7 @@
   font-size: 0.8125rem;
 }
 
-/* Resultados separados por uma linha, como no protótipo */
+/* Resultados separados por uma linha */
 .options {
   transition: opacity 0.15s;
 

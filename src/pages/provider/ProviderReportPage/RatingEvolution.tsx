@@ -5,7 +5,7 @@ import styles from "./RatingEvolution.module.css";
 
 type Props = { months: MonthlyRating[]; hasPeriod: boolean };
 
-// Lista vazia (E34): sem período, o Prestador ainda não tem avaliações; com período, também pode ter
+// Lista vazia: sem período, o Prestador ainda não tem avaliações; com período, também pode ter
 // avaliações só depois do fim do período, que fica antes do mês da primeira avaliação
 export function RatingEvolution({ months, hasPeriod }: Props) {
   return (

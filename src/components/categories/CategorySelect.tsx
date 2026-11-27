@@ -12,7 +12,7 @@ type Props = {
 
 const allValue = "all";
 
-// Seletor das categorias ativas (E08), com «Todas» ou limitado a algumas
+// Seletor das categorias ativas, com «Todas» ou limitado a algumas
 export function CategorySelect({ value, onValueChange, allowAll, onlyIds, hint, error }: Props) {
   const categories = useCategories();
 

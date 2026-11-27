@@ -1,6 +1,6 @@
 import type { APIRequestContext, APIResponse } from "@playwright/test";
 
-// Preparação de contas pela API documentada (E01, E02), sem acesso direto à base de dados.
+// Preparação de contas pela API, sem acesso direto à base de dados.
 // Os pedidos vão para /api no servidor do Vite, que os reencaminha para o backend.
 
 export type Role = "CLIENT" | "PROVIDER";
@@ -21,7 +21,8 @@ export interface TestAccount {
   user: SessionUser;
 }
 
-// Palavra-passe fictícia das contas criadas pelos testes (regra do E01: 8+ caracteres, letra e algarismo)
+// Palavra-passe fictícia das contas criadas pelos testes (o backend exige 8+ caracteres, letra e
+// algarismo)
 export const TEST_PASSWORD = "Teste2026";
 
 // Identificador único por conta: <instante><sufixo aleatório>
@@ -42,7 +43,7 @@ export async function failIfNot(response: APIResponse, status: number) {
   }
 }
 
-// E02: inicia sessão como a aplicação web (client = WEB) e devolve o token e o utilizador
+// Inicia sessão como a aplicação web (client = WEB) e devolve o token e o utilizador
 export async function login(
   request: APIRequestContext,
   email: string,
@@ -55,7 +56,7 @@ export async function login(
   return response.json();
 }
 
-// E01 + E02: regista uma conta nova com um e-mail único e inicia sessão com ela
+// Regista uma conta nova com um e-mail único e inicia sessão com ela
 export async function registerAndLogin(
   request: APIRequestContext,
   role: Role,
@@ -63,7 +64,7 @@ export async function registerAndLogin(
   name?: string,
 ): Promise<TestAccount> {
   // O nome também é único: a BD só é reposta uma vez por execução e os dados dos testes acumulam-se,
-  // por isso um teste identifica as suas contas pelo nome (ex.: filtro name da pesquisa E18)
+  // por isso um teste identifica as suas contas pelo nome (ex.: o filtro por nome na pesquisa)
   const id = uniqueId();
   const email = uniqueEmail(prefix, id);
   name ??= `${role === "CLIENT" ? "Cliente" : "Prestador"} ${id}`;
@@ -77,7 +78,7 @@ export async function registerAndLogin(
   return { email, password: TEST_PASSWORD, ...session };
 }
 
-// E16: define a localização registada da conta (morada conhecida pelo stub do Nominatim)
+// Define a localização registada da conta (morada conhecida pelo stub do Nominatim)
 export async function setLocation(
   request: APIRequestContext,
   account: TestAccount,

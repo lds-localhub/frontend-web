@@ -2,7 +2,7 @@ import { registerAndLogin } from "./fixtures/accounts.ts";
 import { loginViaUi, logoutViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-15 — Alterar a palavra-passe (RF-F001-07)
+// TS-WEB-15 — Alterar a palavra-passe
 
 test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
   test("alterar a palavra-passe, terminar sessão e entrar com a nova", async ({
@@ -11,10 +11,10 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
   }) => {
     const account = await registerAndLogin(request, "CLIENT", "ts15");
 
-    await test.step("iniciar sessão (W03) e abrir a alteração da palavra-passe (W23)", async () => {
+    await test.step("iniciar sessão e abrir a alteração da palavra-passe", async () => {
       await loginViaUi(page, account.email, account.password);
       await expect(page).toHaveURL(/\/cliente$/);
-      await page.getByTestId("menu-conta").click();
+      await page.getByRole("button", { name: /Menu da conta/ }).click();
       await page.getByRole("menuitem", { name: "Alterar palavra-passe" }).click();
       await expect(page).toHaveURL(/\/conta\/palavra-passe$/);
     });
@@ -38,7 +38,7 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
       await expect(page).toHaveURL(/\/login$/);
     });
 
-    await test.step("iniciar sessão (W03) com a nova palavra-passe", async () => {
+    await test.step("iniciar sessão com a nova palavra-passe", async () => {
       await loginViaUi(page, account.email, "Nova2027ab");
       await expect(page).toHaveURL(/\/cliente$/);
     });

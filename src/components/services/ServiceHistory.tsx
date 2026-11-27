@@ -61,7 +61,7 @@ export function ServiceHistory({
             data-current={i === steps.length - 1 || undefined}
             data-status={s.status}
           >
-            <span className={styles.dot} aria-hidden="true" />
+            <span className={styles.dot} />
             <div>
               <p className={styles.stepTitle}>{s.title}</p>
               <p className={styles.stepMeta}>

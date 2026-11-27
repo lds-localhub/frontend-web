@@ -11,7 +11,7 @@ import { Stars } from "@/components/ui/Stars";
 import { formatDate } from "@/utils/format";
 import styles from "./ProfileReviews.module.css";
 
-// O protótipo mostra 4 avaliações de início; cada clique em «Ver mais» junta mais 4
+// Mostram-se 4 avaliações de início; cada clique em «Ver mais» junta mais 4
 const PAGE_SIZE = 4;
 
 type Props = { professionalProfileId: number };
@@ -23,7 +23,7 @@ export function ProfileReviews({ professionalProfileId }: Props) {
     queryFn: ({ pageParam }) =>
       api<Page<Review>>(
         `/profiles/${professionalProfileId}/reviews?${toQueryString({ page: pageParam, pageSize: PAGE_SIZE })}`,
-      ), // E15
+      ),
     initialPageParam: 1,
     getNextPageParam: (last) =>
       last.page * last.pageSize < last.total ? last.page + 1 : undefined,

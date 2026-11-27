@@ -16,7 +16,7 @@ export function ShortcutCard({ to, title, description, icon: Icon, tone = "prima
     <Link to={to} className={styles.shortcutCard}>
       {Icon && (
         <span className={styles.icon} data-tone={tone}>
-          <Icon size={20} aria-hidden="true" />
+          <Icon size={20} />
         </span>
       )}
       <span className={styles.text}>

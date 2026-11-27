@@ -3,7 +3,7 @@ import { todayUtc } from "./fixtures/dates.ts";
 import { loginViaUi, logoutViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-17 — Rede indisponível antes do pedido e durante a operação (RNF-23)
+// TS-WEB-17 — Rede indisponível antes do pedido e durante a operação
 // Cada página é aberta com rede, porque sem rede o browser não carrega a aplicação. Só se simula a
 // falha de rede: o backend continua a ser o real.
 
@@ -16,7 +16,7 @@ test.describe("TS-WEB-17 Rede indisponível", () => {
     const success = page.getByText("Palavra-passe alterada.");
     const save = page.getByRole("button", { name: "Guardar" });
 
-    await test.step("1. Antes do pedido, consulta: relatório (W20) sem rede → «Aplicar»", async () => {
+    await test.step("1. Antes do pedido, consulta: relatório sem rede → «Aplicar»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page.getByRole("link", { name: "Relatório", exact: true }).click();
@@ -29,9 +29,9 @@ test.describe("TS-WEB-17 Rede indisponível", () => {
       await expect(networkMessage).toBeVisible({ timeout: 15_000 });
     });
 
-    await test.step("2. Antes do pedido, alteração: alterar a palavra-passe (W23) sem rede", async () => {
+    await test.step("2. Antes do pedido, alteração: alterar a palavra-passe sem rede", async () => {
       await context.setOffline(false);
-      await page.getByTestId("menu-conta").click();
+      await page.getByRole("button", { name: /Menu da conta/ }).click();
       await page.getByRole("menuitem", { name: "Alterar palavra-passe" }).click();
       await expect(page).toHaveURL(/\/conta\/palavra-passe$/);
 

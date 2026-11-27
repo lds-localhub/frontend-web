@@ -81,7 +81,6 @@ export function CategoriesPage() {
     },
     {
       header: "Ações",
-      align: "end",
       cell: (c) => (
         <div className={styles.rowActions}>
           <Button variant="secondary" disabled={busy} onClick={() => setEditing(c)}>

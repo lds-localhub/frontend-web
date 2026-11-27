@@ -15,13 +15,16 @@ import { DirectRequestDetailPage } from "@/pages/provider/DirectRequestDetailPag
 import { DirectRequestsPage } from "@/pages/provider/DirectRequestsPage";
 import { EditProfilePage } from "@/pages/provider/EditProfilePage";
 import { MyProfilePage } from "@/pages/provider/MyProfilePage";
-import { PendingPage } from "@/pages/provider/PendingPage";
+import { MyProposalsPage } from "@/pages/provider/MyProposalsPage";
+import { ProposalDetailPage } from "@/pages/provider/ProposalDetailPage";
 import { ProviderHomePage } from "@/pages/provider/ProviderHomePage";
 import { ProviderReportPage } from "@/pages/provider/ProviderReportPage/ProviderReportPage";
+import { SearchServiceDetailPage } from "@/pages/provider/SearchServiceDetailPage";
+import { SearchServicesPage } from "@/pages/provider/SearchServicesPage/SearchServicesPage";
 import { LoginPage } from "@/pages/public/LoginPage";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
-import { ProviderSearchPage } from "@/pages/public/ProviderSearchPage/ProviderSearchPage";
 import { RegisterPage } from "@/pages/public/RegisterPage";
+import { SearchProvidersPage } from "@/pages/public/SearchProvidersPage/SearchProvidersPage";
 import { UnexpectedErrorPage } from "@/pages/public/UnexpectedErrorPage";
 import { RequireAuth, RequireProfile, RequireRole } from "./guards";
 import { RootRedirect } from "./RootRedirect";
@@ -34,7 +37,7 @@ export const router = createBrowserRouter(
       <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registar" element={<RegisterPage />} />
-      <Route path="/pesquisa/prestadores" element={<ProviderSearchPage />} />
+      <Route path="/pesquisa/prestadores" element={<SearchProvidersPage />} />
 
       <Route element={<RequireAuth />}>
         <Route path="/conta/palavra-passe" element={<ChangePasswordPage />} />
@@ -57,17 +60,10 @@ export const router = createBrowserRouter(
             <Route path="/prestador" element={<ProviderHomePage />} />
             <Route path="/solicitacoes" element={<DirectRequestsPage />} />
             <Route path="/solicitacoes/:directRequestId" element={<DirectRequestDetailPage />} />
-            {/* Provisórias, até os ecrãs dos serviços e das propostas do Prestador serem implementados */}
-            <Route path="/pesquisa/servicos" element={<PendingPage title="Pesquisar serviços" />} />
-            <Route
-              path="/pesquisa/servicos/:serviceId"
-              element={<PendingPage title="Detalhe do serviço" />}
-            />
-            <Route path="/propostas" element={<PendingPage title="As minhas propostas" />} />
-            <Route
-              path="/propostas/:proposalId"
-              element={<PendingPage title="Detalhe da proposta" />}
-            />
+            <Route path="/pesquisa/servicos" element={<SearchServicesPage />} />
+            <Route path="/pesquisa/servicos/:serviceId" element={<SearchServiceDetailPage />} />
+            <Route path="/propostas" element={<MyProposalsPage />} />
+            <Route path="/propostas/:proposalId" element={<ProposalDetailPage />} />
             <Route path="/prestador/relatorio" element={<ProviderReportPage />} />
             <Route path="/perfil" element={<MyProfilePage />} />
             <Route path="/perfil/editar" element={<EditProfilePage />} />

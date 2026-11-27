@@ -1,0 +1,42 @@
+/* Disposição comum ao detalhe do serviço pesquisado e à proposta enviada: o serviço à esquerda e a
+   proposta (ou o formulário) à direita; num ecrã estreito, um por baixo do outro */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  & > button {
+    align-self: flex-start;
+  }
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.side {
+  min-width: 0;
+}
+
+@media (max-width: 48rem) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Proposta impossível: o serviço é de uma categoria que não está no perfil */
+.blocked {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.blockedTitle {
+  color: var(--color-text);
+  font-size: 1.25rem;
+}
