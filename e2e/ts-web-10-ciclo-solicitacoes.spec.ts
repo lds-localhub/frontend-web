@@ -5,8 +5,7 @@ import { createDirectRequestService, submitProposal } from "./fixtures/services.
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-10 — Ciclo de um serviço com solicitações diretas (RF-F007-04, RF-F007-03, RF-F007-06,
-// RF-F012-01)
+// TS-WEB-10 — Ciclo de um serviço com solicitações diretas
 //
 // O Cliente é criado neste teste, por isso o serviço preparado pela API é o único dos seus serviços.
 
@@ -38,7 +37,7 @@ test.describe("TS-WEB-10 Ciclo de um serviço com solicitações diretas", () =>
     await submitProposal(request, declined, serviceId, 90);
     await submitProposal(request, accepted, serviceId, 75);
 
-    await test.step("1. No início do Cliente (W10), «Serviços recentes» → «Abrir»", async () => {
+    await test.step("1. No início do Cliente, «Serviços recentes» → «Abrir»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page

@@ -9,7 +9,7 @@ import {
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-12 — Cancelar serviços (Cliente) (RF-F007-05, RF-F008-04)
+// TS-WEB-12 — Cancelar serviços (Cliente)
 
 // Data apresentada pela aplicação, sem depender do fuso horário da execução
 const DATE = String.raw`\d{2}/\d{2}/\d{4}`;
@@ -25,7 +25,7 @@ test.describe("TS-WEB-12 Cancelar serviços (Cliente)", () => {
     await createDirectRequestService(request, client, [provider.professionalProfileId], { title });
     const row = page.getByRole("row").filter({ hasText: title });
 
-    await test.step("1. W10 → «Ver todos ›» → «Cancelar» na linha do serviço", async () => {
+    await test.step("1. Início do Cliente → «Ver todos ›» → «Cancelar» na linha do serviço", async () => {
       await loginViaUi(page, client.email, client.password);
       await page.getByRole("link", { name: "Ver todos ›" }).click();
       await expect(page).toHaveURL(/\/servicos$/);
@@ -73,7 +73,7 @@ test.describe("TS-WEB-12 Cancelar serviços (Cliente)", () => {
     await acceptProposal(request, client, await submitProposal(request, provider, serviceId));
     const dialog = page.getByRole("alertdialog", { name: `Cancelar o serviço «${title}»?` });
 
-    await test.step("1. No W14, «Abrir» o serviço → «Cancelar serviço»", async () => {
+    await test.step("1. Em «Os meus serviços», «Abrir» o serviço → «Cancelar serviço»", async () => {
       await loginViaUi(page, client.email, client.password);
       await page.getByRole("link", { name: "Ver todos ›" }).click();
       await page

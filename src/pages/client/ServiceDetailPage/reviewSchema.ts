@@ -1,6 +1,7 @@
 import * as z from "zod";
 
-// Regras do E32: classificação inteira de 1 a 5, obrigatória; comentário opcional, até 500 caracteres
+// As mesmas regras do backend: classificação inteira de 1 a 5, obrigatória; comentário opcional,
+// até 500 caracteres
 export const reviewSchema = z.object({
   rating: z
     .number({ error: "Escolha a classificação." })

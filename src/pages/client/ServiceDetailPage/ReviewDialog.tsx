@@ -21,7 +21,7 @@ type Props = {
   onClose: () => void;
 };
 
-// W19: avaliação do serviço realizado. Não pede confirmação: submeter já é a decisão (8.8)
+// Avaliação do serviço realizado. Não pede confirmação: submeter já é a decisão
 export function ReviewDialog({ serviceId, providerName, onClose }: Props) {
   const qc = useQueryClient();
 

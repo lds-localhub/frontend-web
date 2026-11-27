@@ -5,7 +5,7 @@ import { createPublicService, submitProposal } from "./fixtures/services.ts";
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-11 — Ciclo de um trabalho publicado (RF-F008-01, RF-F008-03, RF-F008-02, RF-F008-05)
+// TS-WEB-11 — Ciclo de um trabalho publicado
 
 // Cartão da proposta do Prestador indicado, no detalhe do serviço
 function card(page: Page, providerName: string) {
@@ -22,7 +22,7 @@ test.describe("TS-WEB-11 Ciclo de um trabalho publicado", () => {
     await submitProposal(request, declined, serviceId, 120);
     await submitProposal(request, accepted, serviceId, 95);
 
-    await test.step("1. No W10, «Ver todos ›»", async () => {
+    await test.step("1. No início do Cliente, «Ver todos ›»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page.getByRole("link", { name: "Ver todos ›" }).click();

@@ -4,7 +4,7 @@ import { utcDay } from "./fixtures/dates.ts";
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-07 — Publicar trabalho (RF-F010-01)
+// TS-WEB-07 — Publicar trabalho
 
 test.describe("TS-WEB-07 Publicar trabalho", () => {
   test("publicar um serviço aberto a propostas e consultá-lo", async ({ page, request }) => {
@@ -20,7 +20,7 @@ test.describe("TS-WEB-07 Publicar trabalho", () => {
         .getByRole("link", { name: "Criar serviço" })
         .click();
       await expect(page).toHaveURL(/\/servicos\/novo$/);
-      // Aberto a propostas por omissão; o local é a localização registada (RF-F009-01, regra 3)
+      // Aberto a propostas por omissão; o local é a localização registada
       await expect(page.getByRole("button", { name: "Publicar serviço" })).toBeVisible();
       await expect(page.getByLabel("Local de realização")).toHaveValue(address("carla"));
     });
@@ -36,7 +36,7 @@ test.describe("TS-WEB-07 Publicar trabalho", () => {
       await expect(page).toHaveURL(/\/servicos\/\d+$/);
     });
 
-    await test.step("3. Detalhe do serviço (W18): aberto a propostas, estado «Aberto», sem propostas", async () => {
+    await test.step("3. Detalhe do serviço: aberto a propostas, estado «Aberto», sem propostas", async () => {
       await expect(page.getByRole("heading", { name: title })).toBeVisible();
       await expect(page.getByText("Aberto a propostas", { exact: true })).toBeVisible();
       await expect(page.getByText("Aberto", { exact: true })).toBeVisible();

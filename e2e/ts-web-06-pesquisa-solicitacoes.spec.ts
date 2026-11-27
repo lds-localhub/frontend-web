@@ -7,12 +7,11 @@ import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
 // TS-WEB-06 — Pesquisar Prestadores e criar solicitações diretas
-// (RF-F005-01, RF-F005-02, RF-F004-03, RF-F009-01 a RF-F009-03)
 //
 // Os Prestadores de cada caso ficam numa morada que nenhum outro teste usa (Aveiro, Braga) e a
 // pesquisa é feita a partir dela: ficam a 0 km, no topo dos resultados.
 
-// Resultado da pesquisa (cartão no W01, linha no W11) com o nome indicado
+// Resultado da pesquisa (cartão para o Visitante, linha para o Cliente) com o nome indicado
 function result(page: Page, name: string) {
   return page.getByRole("article").filter({ has: page.getByRole("heading", { name }) });
 }
@@ -29,7 +28,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
   }) => {
     const provider = await createProviderWithProfile(request, { addressKey: "aveiro" });
 
-    // Pedidos da pesquisa (E18) feitos pela aplicação, para provar que sem morada não é feita
+    // Pedidos da pesquisa feitos pela aplicação, para provar que sem morada não é feita
     let searchRequests = 0;
     page.on("request", (r) => {
       if (new URL(r.url()).pathname === "/api/search/providers") {
@@ -41,7 +40,6 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       await page.goto("/pesquisa/prestadores");
       await chooseCategory(page, "Canalização");
       await page.getByRole("button", { name: "Pesquisar" }).click();
-      // Texto A CONFIRMAR no plano de testes
       await expect(page.getByText("Indique um endereço para pesquisar.")).toBeVisible();
       expect(searchRequests).toBe(0);
     });
@@ -96,7 +94,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
 
     await test.step("3. «Fazer solicitação direta»: o Prestador já está selecionado", async () => {
       await page.getByRole("button", { name: "Fazer solicitação direta" }).click();
-      // O Prestador vai no URL (RF-F009-03, regra 4)
+      // O Prestador vai no URL
       await expect(page).toHaveURL(
         new RegExp(`professionalProfileId=${first.professionalProfileId}`),
       );
@@ -125,7 +123,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       await expect(page).toHaveURL(/\/servicos\/\d+$/);
     });
 
-    await test.step("6. Detalhe do serviço (W15): estado «Aberto» e os dois Prestadores", async () => {
+    await test.step("6. Detalhe do serviço: estado «Aberto» e os dois Prestadores", async () => {
       await expect(page.getByRole("heading", { name: "Reparar fuga na torneira" })).toBeVisible();
       await expect(page.getByText("Solicitações diretas", { exact: true })).toBeVisible();
       await expect(page.getByText("Aberto", { exact: true })).toBeVisible();

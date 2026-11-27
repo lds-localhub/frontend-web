@@ -50,7 +50,7 @@ function ServiceActions({ service, onCancel, onComplete, onReview, disabled }: P
   );
 }
 
-// Faixa do serviço cancelado, a partir da última alteração do histórico (textos do protótipo)
+// Faixa do serviço cancelado, a partir da última alteração do histórico
 function CancelledBanner({ service }: { service: ServiceDetail }) {
   const c = service.history.at(-1);
   if (!c || c.newStatus !== "CANCELLED") {
@@ -72,7 +72,7 @@ function CancelledBanner({ service }: { service: ServiceDetail }) {
   );
 }
 
-// Cartão de cima do W15/W18: título, modalidade e estado, as ações do Cliente, dados, descrição e
+// Cartão de cima do detalhe: título, modalidade e estado, as ações do Cliente, dados, descrição e
 // histórico. As confirmações e a avaliação são abertas pela página.
 export function ServiceOverview(props: Props) {
   const { service, currentUserId, acceptedProviderName } = props;

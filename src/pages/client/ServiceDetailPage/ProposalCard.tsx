@@ -12,7 +12,7 @@ type Props = {
   decision?: ProposalDecisionHandlers; // só com o serviço aberto: aceitar e recusar as pendentes
 };
 
-// Uma proposta a um serviço aberto a propostas (W18): o Prestador, o estado e as datas à esquerda e
+// Uma proposta a um serviço aberto a propostas: o Prestador, o estado e as datas à esquerda e
 // a proposta ao centro; pendente e com o serviço aberto, «Aceitar proposta» e «Recusar proposta».
 export function ProposalCard({ proposal, voidedByCancellationAt, decision }: Props) {
   let dates = `Enviada ${formatDate(proposal.creationDate)}`;

@@ -19,6 +19,8 @@ function readRecentServicesParams(searchParams: URLSearchParams): ServicesParams
   return { status: readServiceStatus(searchParams), pageSize: 5 };
 }
 
+// Início do Cliente: atalhos para pesquisar Prestadores e criar um serviço, e os serviços mais
+// recentes, com o filtro do estado
 export function ClientHomePage() {
   const { data: me } = useMe();
   const { params, setFilters } = useUrlParams(readRecentServicesParams);

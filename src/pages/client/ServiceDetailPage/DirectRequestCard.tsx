@@ -13,8 +13,8 @@ type Props = {
   decision?: ProposalDecisionHandlers; // só com o serviço aberto: aceitar e recusar a proposta pendente
 };
 
-// Uma solicitação direta (W15): o Prestador e o estado à esquerda; ao centro a proposta ou, sem
-// proposta, a mensagem do estado (textos do protótipo); com a proposta pendente e o serviço aberto,
+// Uma solicitação direta: o Prestador e o estado à esquerda; ao centro a proposta ou, sem
+// proposta, a mensagem do estado; com a proposta pendente e o serviço aberto,
 // «Aceitar proposta» e «Recusar proposta».
 export function DirectRequestCard({
   request,
