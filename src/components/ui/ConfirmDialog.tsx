@@ -42,7 +42,7 @@ export function ConfirmDialog({
         <AlertDialog.Backdrop className={styles.backdrop} />
         <AlertDialog.Popup className={styles.popup}>
           <span className={styles.icon} data-danger={danger || undefined}>
-            <Icon size={20} aria-hidden="true" />
+            <Icon size={20} />
           </span>
           <AlertDialog.Title className={styles.title}>{title}</AlertDialog.Title>
           <AlertDialog.Description render={<div />} className={styles.description}>

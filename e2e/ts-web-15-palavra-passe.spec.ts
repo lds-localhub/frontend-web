@@ -14,7 +14,7 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
     await test.step("iniciar sessão (W03) e abrir a alteração da palavra-passe (W23)", async () => {
       await loginViaUi(page, account.email, account.password);
       await expect(page).toHaveURL(/\/cliente$/);
-      await page.getByRole("button", { name: /Menu da conta/ }).click();
+      await page.getByTestId("menu-conta").click();
       await page.getByRole("menuitem", { name: "Alterar palavra-passe" }).click();
       await expect(page).toHaveURL(/\/conta\/palavra-passe$/);
     });

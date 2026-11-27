@@ -114,14 +114,12 @@ export function LoginPage() {
             <button
               type="button"
               className={styles.forgotButton}
-              aria-expanded={forgotOpen}
-              aria-controls="recuperar-acesso"
               onClick={() => setForgotOpen((open) => !open)}
             >
               Esqueci-me da palavra-passe
             </button>
             {forgotOpen && (
-              <Callout icon={KeyRound} id="recuperar-acesso">
+              <Callout icon={KeyRound}>
                 Para recuperar o acesso, contacte <strong>{SUPPORT_EMAIL}</strong> a partir do
                 endereço de e-mail registado na conta. A administração redefine a palavra-passe e
                 responde com uma palavra-passe temporária, que pode alterar depois de iniciar

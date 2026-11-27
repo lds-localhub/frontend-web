@@ -24,7 +24,7 @@ export function Table<T>({ columns, rows, rowKey }: Props<T>) {
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column.header} scope="col" data-align={column.align}>
+              <th key={column.header} data-align={column.align}>
                 {column.header}
               </th>
             ))}

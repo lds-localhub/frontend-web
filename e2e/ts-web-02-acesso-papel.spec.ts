@@ -16,14 +16,14 @@ test.describe("TS-WEB-02 Credenciais erradas e acesso por papel", () => {
 
     await test.step("iniciar sessão com um e-mail inexistente mostra o erro no formulário", async () => {
       await loginViaUi(page, uniqueEmail("ts02.inexistente"), TEST_PASSWORD);
-      const alert = page.getByRole("alert");
+      const alert = page.getByTestId("form-error");
       await expect(alert).toBeVisible();
       message = await alert.textContent();
     });
 
     await test.step("a palavra-passe errada mostra a mesma mensagem", async () => {
       await loginViaUi(page, client.email, "Errada2026");
-      await expect(page.getByRole("alert")).toHaveText(message!);
+      await expect(page.getByTestId("form-error")).toHaveText(message!);
       await expect(page).toHaveURL(/\/login$/);
     });
 

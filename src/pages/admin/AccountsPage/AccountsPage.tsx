@@ -136,7 +136,6 @@ export function AccountsPage() {
         <div className={styles.rowActions}>
           <Button
             variant="secondary"
-            aria-label={`Redefinir a palavra-passe de ${a.name}`}
             disabled={busy}
             onClick={() => setConfirming({ action: "reset", userId: a.userId })}
           >
@@ -145,7 +144,6 @@ export function AccountsPage() {
           {a.status === "ACTIVE" ? (
             <Button
               variant="danger-outline"
-              aria-label={`Desativar ${a.name}`}
               disabled={busy}
               onClick={() => setConfirming({ action: "deactivate", userId: a.userId })}
             >
@@ -154,7 +152,6 @@ export function AccountsPage() {
           ) : (
             <Button
               variant="secondary"
-              aria-label={`Ativar ${a.name}`}
               disabled={busy}
               onClick={() => handleActivateClick(a.userId)}
             >

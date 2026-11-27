@@ -13,7 +13,7 @@ export function BarList({ items }: Props) {
       {items.map((item) => (
         <li key={item.label} className={styles.row}>
           <span className={styles.label}>{item.label}</span>
-          <span className={styles.track} aria-hidden="true">
+          <span className={styles.track}>
             <span
               className={styles.bar}
               data-tone={item.tone}

@@ -37,7 +37,7 @@ function currentMonthLabel(): string {
 }
 
 function stat(page: Page, label: string) {
-  return page.getByRole("article", { name: label });
+  return page.getByRole("article").filter({ has: page.getByText(label, { exact: true }) });
 }
 
 test.describe("TS-WEB-14 Relatório do prestador", () => {

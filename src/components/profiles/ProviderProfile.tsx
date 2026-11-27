@@ -75,7 +75,7 @@ export function ProviderProfile({
           {!hideActions &&
             (isOwn ? (
               <Button variant="secondary" to="/perfil/editar">
-                <Pencil size={14} aria-hidden="true" />
+                <Pencil size={14} />
                 Editar perfil
               </Button>
             ) : (

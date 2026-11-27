@@ -17,18 +17,18 @@ export type MenuItem = {
 
 type Props = {
   trigger: ReactNode;
-  triggerLabel: string;
+  testId?: string; // para os testes encontrarem o botão
   header?: { name: string; subtitle: string; detail: string };
   items: MenuItem[];
 };
 
 // Menu aberto por um botão, com um topo opcional (avatar, nome e duas linhas) e as opções
-export function Menu({ trigger, triggerLabel, header, items }: Props) {
+export function Menu({ trigger, testId, header, items }: Props) {
   return (
     <BaseMenu.Root>
-      <BaseMenu.Trigger className={styles.trigger} aria-label={triggerLabel}>
+      <BaseMenu.Trigger className={styles.trigger} data-testid={testId}>
         {trigger}
-        <ChevronDown className={styles.chevron} size={14} aria-hidden="true" />
+        <ChevronDown className={styles.chevron} size={14} />
       </BaseMenu.Trigger>
       <BaseMenu.Portal>
         <BaseMenu.Positioner className={styles.positioner} align="end" sideOffset={8}>
@@ -51,7 +51,7 @@ export function Menu({ trigger, triggerLabel, header, items }: Props) {
                   render={<Link to={item.to} />}
                   closeOnClick
                 >
-                  {item.icon && <item.icon size={16} aria-hidden="true" />}
+                  {item.icon && <item.icon size={16} />}
                   {item.label}
                 </BaseMenu.LinkItem>
               ) : (
@@ -62,7 +62,7 @@ export function Menu({ trigger, triggerLabel, header, items }: Props) {
                   disabled={item.disabled}
                   onClick={item.onClick}
                 >
-                  {item.icon && <item.icon size={16} aria-hidden="true" />}
+                  {item.icon && <item.icon size={16} />}
                   {item.label}
                 </BaseMenu.Item>
               ),

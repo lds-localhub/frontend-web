@@ -17,7 +17,7 @@ export function Pagination<T>({ page, onPageChange, disabled = false }: Props<T>
   }
 
   return (
-    <nav className={styles.pagination} aria-label="Paginação">
+    <nav className={styles.pagination}>
       <Button
         variant="secondary"
         disabled={disabled || page.page <= 1}

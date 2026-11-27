@@ -21,14 +21,13 @@ type Props = { alerts: AccountAlert[] };
 // Coluna «Alertas»: «—» sem alertas; com alertas, «⚠ N» e o detalhe ao passar o cursor
 export function AccountAlerts({ alerts }: Props) {
   if (alerts.length === 0) {
-    return <span aria-label="Sem alertas">—</span>;
+    return <span>—</span>;
   }
 
   const title = alerts.length === 1 ? "1 alerta" : `${alerts.length} alertas`;
 
   return (
     <Tooltip
-      label={title}
       content={
         <>
           <strong>{title}</strong>

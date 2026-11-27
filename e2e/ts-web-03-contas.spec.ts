@@ -12,7 +12,7 @@ import { expect, test } from "./fixtures/test.ts";
 
 // Linha da tabela de contas com este nome
 function accountRow(page: Page, name: string) {
-  return page.getByRole("row").filter({ has: page.getByRole("rowheader", { name, exact: true }) });
+  return page.getByRole("row").filter({ has: page.getByText(name, { exact: true }) });
 }
 
 // Escolhe uma opção num filtro em pílula («Papel: Todos», «Estado: Todos»)
@@ -44,16 +44,16 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
       const row = accountRow(page, clientName);
       await expect(row.getByText(client.email)).toBeVisible();
       await expect(row.getByText("Ativa", { exact: true })).toBeVisible();
-      await expect(row.getByLabel("Sem alertas")).toBeVisible();
+      await expect(row.getByText("—", { exact: true })).toBeVisible();
 
       // Contas com um alerta de cada tipo: o detalhe aparece ao passar o cursor
-      await accountRow(page, cancellationsName).getByRole("button", { name: "1 alerta" }).hover();
+      await accountRow(page, cancellationsName).getByRole("button", { name: "⚠ 1" }).hover();
       await expect(
         page.getByText("Cancelamentos de serviços atribuídos: 2 de 3 (67%)"),
       ).toBeVisible();
       await page.mouse.move(0, 0);
 
-      await accountRow(page, ratingName).getByRole("button", { name: "1 alerta" }).hover();
+      await accountRow(page, ratingName).getByRole("button", { name: "⚠ 1" }).hover();
       await expect(page.getByText("Classificação média baixa: 1,7 (3 avaliações)")).toBeVisible();
       await page.mouse.move(0, 0);
 
@@ -72,7 +72,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
     });
 
     await test.step("desativar a conta, com confirmação (RF-F002-02)", async () => {
-      await page.getByRole("button", { name: `Desativar ${clientName}` }).click();
+      await accountRow(page, clientName).getByRole("button", { name: "Desativar" }).click();
       const dialog = page.getByRole("alertdialog", {
         name: `Desativar a conta de ${clientName}?`,
       });
@@ -90,7 +90,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
     });
 
     await test.step("ativar a conta (RF-F002-03)", async () => {
-      await page.getByRole("button", { name: `Ativar ${clientName}` }).click();
+      await accountRow(page, clientName).getByRole("button", { name: "Ativar" }).click();
       await expect(page.getByText("Conta ativada.")).toBeVisible();
       await expect(accountRow(page, clientName)).toHaveCount(0);
       await chooseFilter(page, "Estado", "Todos");
@@ -98,9 +98,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
     });
 
     await test.step("redefinir a palavra-passe, com confirmação (RF-F002-05)", async () => {
-      await page
-        .getByRole("button", { name: `Redefinir a palavra-passe de ${clientName}` })
-        .click();
+      await page.getByRole("button", { name: "Redefinir palavra-passe" }).click();
       const confirm = page.getByRole("alertdialog", {
         name: `Redefinir a palavra-passe de ${clientName}?`,
       });

@@ -23,9 +23,9 @@ export function FilterSelect({ label, items, value, onValueChange, disabled }: P
       onValueChange={(next: string | null) => onValueChange(next ?? undefined)}
       disabled={disabled}
     >
-      <Select.Trigger className={styles.trigger} aria-label={label}>
+      <Select.Trigger className={styles.trigger}>
         {label}: <Select.Value />
-        <Select.Icon className={styles.icon} aria-hidden="true">
+        <Select.Icon className={styles.icon}>
           <ChevronDown size={14} />
         </Select.Icon>
       </Select.Trigger>

@@ -16,7 +16,7 @@ test.describe("TS-WEB-16 Definir a localização do Cliente", () => {
     const save = page.getByRole("button", { name: "Guardar" });
 
     const openMyLocation = async () => {
-      await page.getByRole("button", { name: /Menu da conta/ }).click();
+      await page.getByTestId("menu-conta").click();
       await page.getByRole("menuitem", { name: "A minha localização" }).click();
       await expect(page).toHaveURL(/\/conta\/localizacao$/);
     };

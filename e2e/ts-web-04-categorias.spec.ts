@@ -7,7 +7,7 @@ import { expect, test } from "./fixtures/test.ts";
 
 // Linha da tabela de categorias com este nome
 function categoryRow(page: Page, name: string) {
-  return page.getByRole("row").filter({ has: page.getByRole("rowheader", { name, exact: true }) });
+  return page.getByRole("row").filter({ has: page.getByText(name, { exact: true }) });
 }
 
 test.describe("TS-WEB-04 Gestão de categorias", () => {
@@ -35,7 +35,7 @@ test.describe("TS-WEB-04 Gestão de categorias", () => {
     });
 
     await test.step("editar o nome da categoria (W53)", async () => {
-      await page.getByRole("button", { name: `Editar ${name}` }).click();
+      await categoryRow(page, name).getByRole("button", { name: "Editar" }).click();
       const dialog = page.getByRole("dialog", { name: "Editar categoria" });
       await expect(dialog.getByLabel("Nome")).toHaveValue(name);
       await dialog.getByLabel("Nome").fill(newName);
@@ -47,7 +47,7 @@ test.describe("TS-WEB-04 Gestão de categorias", () => {
     });
 
     await test.step("desativar a categoria, com confirmação", async () => {
-      await page.getByRole("button", { name: `Desativar ${newName}` }).click();
+      await categoryRow(page, newName).getByRole("button", { name: "Desativar" }).click();
       const dialog = page.getByRole("alertdialog", {
         name: `Desativar a categoria «${newName}»?`,
       });
