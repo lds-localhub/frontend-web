@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
-import type { ServiceDetail } from "@/api/types";
+import type { ServiceDetail, ServiceStatus } from "@/api/types";
 import {
   acceptProposalText,
   cancelServiceText,
@@ -43,12 +43,16 @@ function providerOfProposal(service: ServiceDetail, proposalId: number): string 
 }
 
 // Decisão à espera de confirmação: aceitar ou recusar uma proposta, cancelar ou marcar como realizado
+// (o cancelar guarda o estado do serviço, porque o texto depende dele e o serviço muda ao cancelar)
 type Confirming =
-  { action: "accept" | "decline"; proposalId: number } | { action: "cancel" | "complete" };
+  | { action: "accept" | "decline"; proposalId: number }
+  | { action: "cancel"; status: ServiceStatus }
+  | { action: "complete" };
 
-// Mensagem de qualquer erro da ação, exceto o 400 e os erros de campo (não há formulário) e o 401
+// Mensagem de qualquer erro da ação, exceto o 401 (sessão terminada, tratado no cliente da API).
+// As decisões não têm formulário, por isso um 400 ou erros de campo também aparecem aqui.
 function showActionError(e: unknown) {
-  if (!isApiError(e) || (e.status !== 400 && e.status !== 401 && !e.errors)) {
+  if (!isApiError(e) || e.status !== 401) {
     toast(getErrorMessage(e));
   }
 }
@@ -75,7 +79,13 @@ function ServiceDetail() {
     enabled: id !== null,
   });
 
+  // A decisão a confirmar não se apaga ao fechar, para a janela não ficar vazia enquanto fecha
   const [confirming, setConfirming] = useState<Confirming | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const openConfirm = (c: Confirming) => {
+    setConfirming(c);
+    setDialogOpen(true);
+  };
   const [reviewOpen, setReviewOpen] = useState(false);
 
   // O estado do serviço e das propostas; atribuído ou realizado, muda também os relatórios
@@ -89,7 +99,7 @@ function ServiceDetail() {
   // Estado diferente no servidor (ex.: o Prestador cancelou entretanto): atualiza o ecrã
   const onActionError = (refresh: () => Promise<unknown>) => (e: unknown) => {
     showActionError(e);
-    if (isApiError(e) && e.status === 409 && !e.errors) {
+    if (isApiError(e) && e.status === 409) {
       return refresh();
     }
   };
@@ -157,15 +167,15 @@ function ServiceDetail() {
   const decision =
     s.status === "OPEN"
       ? {
-          onAccept: (proposalId: number) => setConfirming({ action: "accept", proposalId }),
-          onDecline: (proposalId: number) => setConfirming({ action: "decline", proposalId }),
+          onAccept: (proposalId: number) => openConfirm({ action: "accept", proposalId }),
+          onDecline: (proposalId: number) => openConfirm({ action: "decline", proposalId }),
           disabled: pending,
         }
       : undefined;
 
   // Título, texto, botão e ação da confirmação aberta A janela fecha
   // quando a ação termina, com sucesso ou com erro.
-  const close = { onSettled: () => setConfirming(null) };
+  const close = { onSettled: () => setDialogOpen(false) };
   const confirmationOf = (c: Confirming) => {
     switch (c.action) {
       case "accept":
@@ -204,7 +214,7 @@ function ServiceDetail() {
       case "cancel":
         return {
           title: `Cancelar o serviço «${s.title}»?`,
-          text: cancelServiceText(s.status),
+          text: cancelServiceText(c.status),
           confirmLabel: "Cancelar serviço",
           danger: true,
           run: () =>
@@ -222,8 +232,8 @@ function ServiceDetail() {
         service={s}
         currentUserId={me?.userId}
         acceptedProviderName={acceptedProviderName}
-        onCancel={() => setConfirming({ action: "cancel" })}
-        onComplete={() => setConfirming({ action: "complete" })}
+        onCancel={() => openConfirm({ action: "cancel", status: s.status })}
+        onComplete={() => openConfirm({ action: "complete" })}
         onReview={() => setReviewOpen(true)}
         disabled={pending}
       />
@@ -260,11 +270,11 @@ function ServiceDetail() {
       )}
 
       <ConfirmDialog
-        open={dialog !== null}
+        open={dialogOpen}
         title={dialog?.title ?? ""}
         confirmLabel={dialog?.confirmLabel ?? ""}
         onConfirm={() => dialog?.run()}
-        onClose={() => setConfirming(null)}
+        onClose={() => setDialogOpen(false)}
         pending={pending}
         danger={dialog?.danger}
       >
