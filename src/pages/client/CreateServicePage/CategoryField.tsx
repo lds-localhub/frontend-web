@@ -4,9 +4,9 @@ import type { CreateServiceFormValues } from "./createServiceSchema";
 
 type Props = { control: Control<CreateServiceFormValues> };
 
-// Categoria do serviço, limitada às categorias que todos os Prestadores selecionados têm
-// (RF-F009-03, regra 7): mudar de categoria nunca invalida a seleção. Só este componente volta a ser
-// desenhado quando a seleção muda (11.8).
+// Categoria do serviço, limitada às categorias que todos os Prestadores selecionados têm: assim,
+// mudar de categoria nunca invalida a seleção. Fica num componente à parte para só ele voltar a ser
+// desenhado quando a seleção muda.
 export function CategoryField({ control }: Props) {
   const providers = useWatch({ control, name: "providers" });
 
@@ -23,6 +23,7 @@ export function CategoryField({ control }: Props) {
     <Controller
       control={control}
       name="serviceCategoryId"
+      rules={{ deps: ["providers"] }}
       render={({ field, fieldState }) => (
         <CategorySelect
           value={field.value}

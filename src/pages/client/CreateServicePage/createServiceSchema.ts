@@ -1,17 +1,18 @@
 import * as z from "zod";
 
-// Prestador selecionado: com o nome (lista dos selecionados) e as categorias (limitam a categoria do
-// serviço às que todos os selecionados têm, RF-F009-03 regra 7). Só os IDs vão para o E20.
+// Prestador selecionado: o nome serve para a lista dos selecionados e as categorias limitam a
+// categoria do serviço às que todos têm. Ao criar o serviço, só se enviam os IDs.
 const selectedProvider = z.object({
   professionalProfileId: z.number(),
   name: z.string(),
   serviceCategoryIds: z.array(z.number()),
 });
 
-// Data atual em UTC, como no backend (secção 4.3 da Documentação da API)
+// Data de hoje em UTC, a mesma referência que o backend usa para recusar datas no passado
 const todayUtc = () => new Date().toISOString().slice(0, 10);
 
-// Criar serviço (E20): regras de campo da Documentação da API. As datas AAAA-MM-DD comparam-se como texto.
+// Regras dos campos do serviço, as mesmas que o backend aplica. As datas AAAA-MM-DD comparam-se
+// como texto, porque nesse formato a ordem alfabética é a ordem cronológica.
 export const createServiceSchema = z
   .object({
     proposalModel: z.enum(["DIRECT_REQUEST", "PUBLIC"]),
@@ -38,7 +39,13 @@ export const createServiceSchema = z
   })
   .superRefine(
     (v, ctx) => {
-      if (v.proposalModel === "DIRECT_REQUEST" && v.providers.length === 0) {
+      // Sem categoria ou local não há pesquisa de Prestadores, por isso ainda não se pede seleção
+      if (
+        v.proposalModel === "DIRECT_REQUEST" &&
+        v.providers.length === 0 &&
+        v.location !== "" &&
+        v.serviceCategoryId !== undefined
+      ) {
         ctx.addIssue({
           code: "custom",
           path: ["providers"],
@@ -68,7 +75,11 @@ export const createServiceSchema = z
         }
       }
     },
-    { when: () => true }, // corre sempre, mesmo com outros campos inválidos (11.7)
+    {
+      // Corre mesmo com outros campos inválidos (ex.: sem categoria), para mostrar todos os erros
+      // de uma vez; os valores vêm sempre dos defaultValues, por isso os campos usados aqui existem
+      when: () => true,
+    },
   );
 
 export type CreateServiceFormValues = z.infer<typeof createServiceSchema>;

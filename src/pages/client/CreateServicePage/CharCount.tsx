@@ -7,7 +7,8 @@ type Props = {
   max: number;
 };
 
-// Contador «24/100» de um campo de texto: só ele volta a ser desenhado a cada tecla (11.8)
+// Contador «24/100» de um campo de texto. Fica num componente à parte para só ele voltar a ser
+// desenhado a cada tecla, e não o formulário inteiro
 export function CharCount({ control, name, max }: Props) {
   const value = useWatch({ control, name });
   return (

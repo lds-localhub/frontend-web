@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback } from "react";
 import { Controller, useForm, useWatch, type DefaultValues } from "react-hook-form";
 import type { ProposalModel, ServiceInput } from "@/api/types";
 import { AddressField } from "@/components/ui/AddressField";
@@ -34,8 +35,8 @@ const dateModeItems: { value: "single" | "range"; label: string }[] = [
   { value: "range", label: "Intervalo de datas" },
 ];
 
-// Criar serviço (W13/W16): modalidade, categoria, título, descrição, local, disponibilidade e, em
-// solicitação direta, os Prestadores (RF-F009-01 a RF-F009-03, RF-F010-01)
+// Formulário do serviço nas duas modalidades: modalidade, categoria, título, descrição, local,
+// disponibilidade e, em solicitação direta, os Prestadores que recebem o pedido
 export function CreateServiceForm({
   defaultValues,
   preselectedProviderId,
@@ -43,8 +44,8 @@ export function CreateServiceForm({
   onSubmit,
   onCancel,
 }: Props) {
-  // Com o tipo escrito: os valores iniciais são parciais (a categoria pode começar sem valor) e, sem
-  // ele, o TypeScript deduziria o tipo do formulário a partir deles e não do esquema
+  // Com o tipo escrito: os valores iniciais são parciais (a categoria pode começar sem valor) e,
+  // sem ele, o TypeScript deduziria o tipo do formulário a partir deles e não do esquema
   const form = useForm<CreateServiceFormValues>({
     resolver: zodResolver(createServiceSchema),
     mode: "onSubmit",
@@ -56,7 +57,7 @@ export function CreateServiceForm({
   const dateMode = useWatch({ control, name: "dateMode" });
   const providersCount = useWatch({ control, name: "providers" }).length;
 
-  // Aberto a propostas não tem destinatários: os selecionados saem todos, incluindo o do W12 (11.10)
+  // Aberto a propostas não tem destinatários: saem todos os selecionados, até o vindo do perfil
   const handleModelChange = (model: ProposalModel) => {
     form.setValue("proposalModel", model);
     if (model === "PUBLIC") {
@@ -83,9 +84,23 @@ export function CreateServiceForm({
     try {
       await onSubmit(body);
     } catch (e) {
-      applyServerErrors(e, form.setError, { professionalProfileIds: "providers" }); // 11.3
+      // Os erros dos Prestadores vêm do backend em professionalProfileIds; aqui o campo é providers
+      applyServerErrors(e, form.setError, { professionalProfileIds: "providers" });
     }
   };
+
+  // A pesquisa dos Prestadores usa o local de realização: se não reconhecer a morada, o erro
+  // aparece no campo «Local». Só se limpa o erro posto pela pesquisa, nunca o da validação.
+  const handleAddressError = useCallback(
+    (message: string | undefined) => {
+      if (message) {
+        form.setError("location", { type: "server", message });
+      } else if (form.getFieldState("location").error?.type === "server") {
+        form.clearErrors("location");
+      }
+    },
+    [form],
+  );
 
   return (
     <form className={styles.layout} noValidate onSubmit={form.handleSubmit(handleValidSubmit)}>
@@ -132,7 +147,7 @@ export function CreateServiceForm({
 
           <AddressField
             label="Local de realização"
-            {...register("location")}
+            {...register("location", { deps: ["providers"] })}
             hint="Por omissão, a sua localização registada. Outro endereço não altera a localização registada."
             error={formState.errors.location?.message}
           />
@@ -198,6 +213,7 @@ export function CreateServiceForm({
             control={control}
             preselectedProviderId={preselectedProviderId}
             preselectedProviderInvalid={preselectedProviderInvalid}
+            onAddressError={handleAddressError}
           />
         ) : (
           <Card>

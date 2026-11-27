@@ -1,5 +1,5 @@
 import { Info, Search, X } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { ProviderSearchItem } from "@/api/types";
 import { ProviderProfile } from "@/components/profiles/ProviderProfile";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +12,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Pagination } from "@/components/ui/Pagination";
 import { TextField } from "@/components/ui/TextField";
 import { useSearchProviders } from "@/hooks/useSearchProviders";
+import { getFieldErrors } from "@/utils/errors";
 import type { SelectedProvider } from "./createServiceSchema";
 import { ProviderOption } from "./ProviderOption";
 import { useDebouncedValue } from "./useDebouncedValue";
@@ -20,18 +21,20 @@ import styles from "./ProviderSelectionPanel.module.css";
 type Props = {
   categoryId: number | undefined;
   location: string;
+  onAddressError: (message: string | undefined) => void; // morada não reconhecida pela pesquisa
   value: SelectedProvider[];
   onChange: (value: SelectedProvider[]) => void;
   error?: string;
   notice?: string; // ex.: «Pedido iniciado no perfil de …»
 };
 
-// Pesquisa e seleção dos Prestadores que recebem as solicitações diretas (RF-F009-02). Pesquisa
-// enquanto o Cliente escreve, com debounce de 500 ms, e só com categoria e local (regra 11).
-// Controlado e sem React Hook Form (11.7).
+// Pesquisa e seleção dos Prestadores que recebem as solicitações diretas. Pesquisa enquanto o
+// Cliente escreve, com 500 ms de atraso, e só com categoria e local. É controlado (recebe a seleção
+// e avisa quando muda) e não conhece o React Hook Form.
 export function ProviderSelectionPanel({
   categoryId,
   location,
+  onAddressError,
   value,
   onChange,
   error,
@@ -56,6 +59,7 @@ export function ProviderSelectionPanel({
           page: page === 1 ? undefined : page,
         }
       : null;
+
   const results = useSearchProviders(params);
 
   const isSelected = (id: number) => value.some((p) => p.professionalProfileId === id);
@@ -75,18 +79,27 @@ export function ProviderSelectionPanel({
       },
     ]);
   };
+
+  // Morada não reconhecida pela pesquisa: o erro vai para o campo «Local» do formulário. Avisa-se
+  // depois do desenho, porque não se pode mudar o formulário enquanto o painel é desenhado.
+  const addressError = getFieldErrors(results.error)?.address?.[0];
+  useEffect(() => onAddressError(addressError), [addressError, onAddressError]);
+
+  // Distância do Prestador cujo perfil está aberto na janela
   const viewedDistance = results.data?.items.find(
     (i) => i.professionalProfileId === profileId,
   )?.distanceKm;
 
-  // Desligada → indicação; ligada → loading, erro ou resultados (8.4)
+  // Sem categoria ou local, a indicação; com eles, o carregamento, o erro ou os resultados
   let content: ReactNode;
   if (!params) {
     content = <p className={styles.hint}>Escolha a categoria e o local para pesquisar.</p>;
   } else if (results.isPending) {
     content = <Loading />;
   } else if (results.isError) {
-    content = (
+    content = addressError ? (
+      <p className={styles.hint}>Corrija o local de realização para pesquisar.</p>
+    ) : (
       <ErrorState error={results.error} onRetry={results.refetch} retrying={results.isFetching} />
     );
   } else if (results.data.total === 0) {

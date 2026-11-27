@@ -10,8 +10,8 @@ type Props = {
   onViewProfile: () => void;
 };
 
-// Um Prestador nos resultados do painel do W13: caixa de seleção, nome, classificação, distância
-// e raio, e «Ver perfil» (janela, sem sair do formulário)
+// Um Prestador nos resultados do painel: botão de seleção, nome, classificação, distância e raio, e
+// «Ver perfil», que abre numa janela para não sair do formulário
 export function ProviderOption({ result, selected, onToggle, onViewProfile }: Props) {
   const details = [
     formatRating(result.averageRating, result.reviewCount),

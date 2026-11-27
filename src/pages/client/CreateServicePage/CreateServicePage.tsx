@@ -14,8 +14,8 @@ import { parseId } from "@/utils/parseId";
 import { CreateServiceForm } from "./CreateServiceForm";
 import styles from "./CreateServicePage.module.css";
 
-// W13 (solicitação direta) e W16 (aberto a propostas): um só formulário. Aberto a partir do W12, traz
-// o Prestador (?professionalProfileId) e a categoria da pesquisa (?serviceCategoryId) (RF-F009-03, regras 4 e 5).
+// Criar serviço, nas duas modalidades. Quando é aberto a partir do perfil de um Prestador, o URL
+// traz esse Prestador (?professionalProfileId) e a categoria da pesquisa (?serviceCategoryId).
 export function CreateServicePage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,8 +25,8 @@ export function CreateServicePage() {
   const { data: me } = useMe();
 
   const providerId = parseId(searchParams.get("professionalProfileId"));
-  // Prestador do URL mal escrito ou que não existe (404): o formulário abre sem ele e o painel dos Prestadores diz
-  // porquê, no lugar dos erros desse campo
+  // Prestador do URL mal escrito ou que não existe: o formulário abre sem ele e o painel dos
+  // Prestadores explica porquê
   const preselected = useProfile(providerId ?? undefined);
   const malformedProviderId = !!searchParams.get("professionalProfileId") && providerId === null;
   const providerNotFound = isApiError(preselected.error) && preselected.error.status === 404;
@@ -34,8 +34,8 @@ export function CreateServicePage() {
 
   const create = useMutation({
     mutationFn: (body: ServiceInput) =>
-      api<ServiceDetail>("/services", { method: "POST", body: JSON.stringify(body) }), // E20
-    // O serviço novo nas listas do W10 e do W14 (8.3)
+      api<ServiceDetail>("/services", { method: "POST", body: JSON.stringify(body) }),
+    // O serviço novo tem de aparecer nas listas dos serviços do Cliente
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.services.all, refetchType: "all" }),
     onError: (e) => {
       if (!isApiError(e) || (e.status !== 400 && e.status !== 401 && !e.errors)) {
@@ -46,8 +46,8 @@ export function CreateServicePage() {
 
   const handleServiceSubmit = async (body: ServiceInput) => {
     const service = await create.mutateAsync(body);
-    // O E20 devolve a estrutura do E22: o detalhe aparece logo, sem «A carregar…» (com o staleTime 0,
-    // o E22 é pedido na mesma, em segundo plano)
+    // A resposta da criação já traz o serviço completo: guardá-la na cache faz o detalhe aparecer
+    // logo, sem «A carregar…» (é pedido outra vez em segundo plano, para ficar atualizado)
     qc.setQueryData(queryKeys.services.detail(service.serviceId), service);
     toast("Serviço criado.");
     navigate(`/servicos/${service.serviceId}`);
@@ -56,7 +56,8 @@ export function CreateServicePage() {
   // Sem página anterior na aplicação (formulário aberto diretamente), vai para os serviços
   const handleCancel = () => (location.key === "default" ? navigate("/servicos") : navigate(-1));
 
-  // Só espera pelo perfil se houver Prestador pré-selecionado (8.4)
+  // Só espera pelo perfil se houver um Prestador no URL: sem ele, a query está desligada e ficaria
+  // à espera para sempre
   if (providerId && preselected.isPending) {
     return <Loading />;
   }
@@ -82,12 +83,12 @@ export function CreateServicePage() {
         defaultValues={{
           // Com Prestador no URL, mesmo que não exista, o Cliente queria uma solicitação direta
           proposalModel: provider || invalidProviderId ? "DIRECT_REQUEST" : "PUBLIC",
-          // A categoria da pesquisa só fica escolhida se for uma das do Prestador (RF-F009-03, regra 5)
+          // A categoria da pesquisa só fica escolhida se o Prestador a tiver
           serviceCategoryId:
             categoryId && providerCategoryIds.includes(categoryId) ? categoryId : undefined,
           title: "",
           description: "",
-          location: me?.address ?? "", // RF-F009-01, regra 3
+          location: me?.address ?? "", // por omissão, a localização registada do Cliente
           dateMode: "single",
           requestedStartDate: "",
           requestedEndDate: "",
