@@ -22,7 +22,7 @@ const historyColumns: Column<CompletedServiceRow>[] = [
   { header: "Data", cell: (s) => formatDate(s.actualCompletionDate) },
   { header: "Categoria", cell: (s) => s.serviceCategory.name },
   { header: "Prestador", cell: (s) => s.providerName, rowHeader: true },
-  { header: "Valor", cell: (s) => <strong>{formatCurrency(s.amount)}</strong>, align: "end" },
+  { header: "Valor", cell: (s) => <strong>{formatCurrency(s.amount)}</strong> },
 ];
 
 export function ClientReportPage() {
@@ -30,7 +30,7 @@ export function ClientReportPage() {
 
   const report = useQuery({
     queryKey: queryKeys.reports.client(params),
-    queryFn: () => api<ClientReport>(`/reports/client?${toQueryString(params)}`), // E33
+    queryFn: () => api<ClientReport>(`/reports/client?${toQueryString(params)}`),
     placeholderData: keepPreviousData,
   });
 

@@ -29,7 +29,7 @@ function RowAction({ item }: { item: DirectRequestItem }) {
 
 const columns: Column<DirectRequestItem>[] = [
   { header: "Cliente", cell: (r) => r.service.clientName, rowHeader: true },
-  { header: "Serviço", cell: (r) => r.service.title },
+  { header: "Serviço", cell: (r) => r.service.title, clamp: true },
   { header: "Categoria", cell: (r) => r.service.serviceCategory.name },
   {
     header: "Disponibilidade",
@@ -41,7 +41,7 @@ const columns: Column<DirectRequestItem>[] = [
       <Badge tone={directRequestStatusTone[r.status]}>{directRequestStatusLabels[r.status]}</Badge>
     ),
   },
-  { header: "Ações", align: "end", cell: (r) => <RowAction item={r} /> },
+  { header: "Ações", cell: (r) => <RowAction item={r} /> },
 ];
 
 // Solicitações diretas recebidas pelo Prestador, com a ação de cada estado
