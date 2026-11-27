@@ -21,7 +21,7 @@ test.describe("TS-WEB-16 Definir a localização do Cliente", () => {
       await expect(page).toHaveURL(/\/conta\/localizacao$/);
     };
 
-    await test.step("1. Abrir o menu da conta → «A minha localização»", async () => {
+    await test.step("1. Carregar no nome, no cabeçalho, para abrir o menu da conta → «A minha localização»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await openMyLocation();
@@ -42,7 +42,7 @@ test.describe("TS-WEB-16 Definir a localização do Cliente", () => {
       await expect(page.getByText(ADDRESS_NOT_FOUND)).toBeVisible();
     });
 
-    await test.step("4. Reabrir «A minha localização»", async () => {
+    await test.step("4. Reabrir o W21", async () => {
       await page.goto("/cliente");
       await openMyLocation();
       await expect(addressField).toHaveValue(address("gaia"));

@@ -22,7 +22,7 @@ test.describe("TS-WEB-11 Ciclo de um trabalho publicado", () => {
     await submitProposal(request, declined, serviceId, 120);
     await submitProposal(request, accepted, serviceId, 95);
 
-    await test.step("1. No início do Cliente, «Ver todos ›»", async () => {
+    await test.step("1. No W10, «Ver todos ›»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page.getByRole("link", { name: "Ver todos ›" }).click();
@@ -44,7 +44,7 @@ test.describe("TS-WEB-11 Ciclo de um trabalho publicado", () => {
       await expect(card(page, accepted.user.name)).toContainText("Pendente");
     });
 
-    await test.step("3. «Recusar proposta» numa → «Recusar»", async () => {
+    await test.step("3. «Recusar proposta» numa → confirmação → «Recusar»", async () => {
       await card(page, declined.user.name)
         .getByRole("button", { name: "Recusar proposta" })
         .click();
@@ -56,7 +56,7 @@ test.describe("TS-WEB-11 Ciclo de um trabalho publicado", () => {
       await expect(card(page, declined.user.name)).toContainText("Recusada");
     });
 
-    await test.step("4. «Aceitar proposta» na outra → «Confirmar»", async () => {
+    await test.step("4. «Aceitar proposta» na outra → «Aceitar a proposta de <nome>?» → «Confirmar»", async () => {
       await card(page, accepted.user.name)
         .getByRole("button", { name: "Aceitar proposta" })
         .click();
@@ -71,7 +71,7 @@ test.describe("TS-WEB-11 Ciclo de um trabalho publicado", () => {
       ).toContainText("Atribuído");
     });
 
-    await test.step("5. «Marcar como realizado» → «Marcar como realizado»", async () => {
+    await test.step("5. «Marcar como realizado» → confirmação → «Marcar como realizado»", async () => {
       await page.getByRole("button", { name: "Marcar como realizado" }).click();
       await page
         .getByRole("alertdialog", { name: `Marcar o serviço «${title}» como realizado?` })

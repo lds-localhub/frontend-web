@@ -54,7 +54,7 @@ test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () =>
       expect(createRequests).toBe(0);
     });
 
-    await test.step("3. Preencher todos os campos com o raio 101 e a morada desconhecida → «Criar perfil»", async () => {
+    await test.step("3. Preencher todos os campos com o raio 101 e a morada desconhecida → «Criar perfil»; depois corrigir o raio para 25 → «Criar perfil»", async () => {
       await introductionField.fill(introduction);
       await contactsField.fill("Telefone 220 000 000");
       await experienceField.fill("15 anos em reparação de fugas e instalação de sanitários.");
@@ -75,14 +75,14 @@ test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () =>
       await expect(page).toHaveURL(/\/perfil\/criar$/);
     });
 
-    await test.step("4. Corrigir o raio para 25 e a morada para a da Maia → «Criar perfil»", async () => {
+    await test.step("4. Corrigir a morada para a da Maia → «Criar perfil»", async () => {
       await addressField.fill(address("maia"));
       await create.click();
       await expect(page).toHaveURL(/\/prestador$/);
       await expect(page.getByText("Perfil criado.")).toBeVisible();
     });
 
-    await test.step("5. Abrir o menu da conta → «O meu perfil»", async () => {
+    await test.step("5. Carregar no nome, no cabeçalho, para abrir o menu da conta → «O meu perfil»", async () => {
       await page.getByRole("button", { name: /Menu da conta/ }).click();
       await page.getByRole("menuitem", { name: "O meu perfil" }).click();
       await expect(page).toHaveURL(/\/perfil$/);
@@ -92,7 +92,7 @@ test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () =>
       await expect(page.getByText("Raio de atuação: 25 km")).toBeVisible();
     });
 
-    await test.step("6. «Editar perfil» → desmarcar «Canalização», a única categoria → guardar", async () => {
+    await test.step("6. «Editar perfil» (W31) → desmarcar «Canalização», a única categoria → «Guardar»", async () => {
       await page.getByRole("button", { name: "Editar perfil" }).click();
       await expect(page).toHaveURL(/\/perfil\/editar$/);
       await expect(plumbing).toBeChecked();

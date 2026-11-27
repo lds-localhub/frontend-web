@@ -8,7 +8,7 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
   test("registar uma conta de Cliente, iniciar sessão e terminar sessão", async ({ page }) => {
     const email = uniqueEmail("ts01.cliente");
 
-    await test.step("registar a conta de Cliente", async () => {
+    await test.step("1. Registar a conta de Cliente no W02 (papel «Cliente») e carregar em «Criar conta»", async () => {
       await page.goto("/registar");
       await expect(page.getByRole("radio")).toHaveCount(2); // só Cliente e Prestador de Serviços
       await page.getByLabel("Nome").fill("Cliente TS-WEB-01");
@@ -16,14 +16,11 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
       await page.getByLabel("Palavra-passe").fill(TEST_PASSWORD);
       await page.getByRole("radio", { name: "Cliente" }).check();
       await page.getByRole("button", { name: "Criar conta" }).click();
-    });
-
-    await test.step("vai para o início de sessão com a indicação de conta criada", async () => {
       await expect(page).toHaveURL(/\/login$/);
       await expect(page.getByText("Conta criada. Inicie sessão.")).toBeVisible();
     });
 
-    await test.step("iniciar sessão leva ao início do Cliente", async () => {
+    await test.step("2. Iniciar sessão no W03 e carregar em «Entrar»", async () => {
       await page.getByLabel("E-mail").fill(email);
       await page.getByLabel("Palavra-passe").fill(TEST_PASSWORD);
       await page.getByRole("button", { name: "Entrar" }).click();
@@ -34,7 +31,7 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
       await expect(page.getByRole("link", { name: "Os meus serviços" })).toBeVisible();
     });
 
-    await test.step("terminar sessão no menu da conta", async () => {
+    await test.step("3. Terminar sessão no menu da conta", async () => {
       await logoutViaUi(page);
       await expect(page).toHaveURL(/\/login$/);
       await expect(page.getByRole("link", { name: "Iniciar sessão" })).toBeVisible();

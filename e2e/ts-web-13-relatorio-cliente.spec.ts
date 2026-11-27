@@ -48,7 +48,7 @@ test.describe("TS-WEB-13 Relatório do cliente", () => {
       await expect(historyRow).toContainText(/80,00\s€/);
     };
 
-    await test.step("1. Abrir o relatório do Cliente", async () => {
+    await test.step("1. Abrir o relatório do Cliente (W20)", async () => {
       await openWithSession(page, client.token);
       await page.goto("/cliente");
       await page.getByRole("link", { name: "Relatório", exact: true }).click();

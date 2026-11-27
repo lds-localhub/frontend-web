@@ -37,7 +37,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       }
     });
 
-    await test.step("1. Abrir o início do Prestador", async () => {
+    await test.step("1. Abrir o início do Prestador (W30)", async () => {
       await loginViaUi(page, provider.email, provider.password);
       await expect(page).toHaveURL(/\/prestador$/);
       await expect(page.getByRole("link", { name: /2 solicitações pendentes/ })).toBeVisible();
@@ -73,7 +73,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       expect(proposalRequests).toBe(1);
     });
 
-    await test.step("5. Voltar ao início", async () => {
+    await test.step("5. Voltar ao início (W30)", async () => {
       await page.getByRole("link", { name: "LocalHub" }).click();
       await expect(page).toHaveURL(/\/prestador$/);
       await expect(page.getByRole("link", { name: /1 solicitação pendente/ })).toBeVisible();
@@ -94,7 +94,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       await expect(row(page, older).getByRole("button", { name: "Responder" })).toBeVisible();
     });
 
-    await test.step("7. «Responder» na segunda → «Recusar solicitação» → «Recusar»", async () => {
+    await test.step("7. «Responder» na segunda → «Recusar solicitação» → janela «Recusar a solicitação de <Cliente>?» → «Recusar»", async () => {
       await row(page, older).getByRole("button", { name: "Responder" }).click();
       await page.getByRole("button", { name: "Recusar solicitação" }).click();
       const dialog = page.getByRole("alertdialog", {

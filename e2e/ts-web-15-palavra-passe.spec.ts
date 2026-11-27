@@ -11,7 +11,7 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
   }) => {
     const account = await registerAndLogin(request, "CLIENT", "ts15");
 
-    await test.step("iniciar sessão e abrir a alteração da palavra-passe", async () => {
+    await test.step("1. Iniciar sessão no W03 e abrir «Alterar palavra-passe» no menu da conta", async () => {
       await loginViaUi(page, account.email, account.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page.getByRole("button", { name: /Menu da conta/ }).click();
@@ -24,7 +24,7 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
     const confirm = page.getByLabel("Confirmar nova palavra-passe");
     const save = page.getByRole("button", { name: "Guardar" });
 
-    await test.step("alterar a palavra-passe", async () => {
+    await test.step("2. Preencher a palavra-passe atual, a nova e a confirmação e carregar em «Guardar»", async () => {
       await current.fill(account.password);
       await next.fill("Nova2027ab");
       await confirm.fill("Nova2027ab");
@@ -33,12 +33,12 @@ test.describe("TS-WEB-15 Alterar a palavra-passe", () => {
       await expect(current).toHaveValue("");
     });
 
-    await test.step("terminar sessão no menu da conta", async () => {
+    await test.step("3. Terminar sessão no menu da conta", async () => {
       await logoutViaUi(page);
       await expect(page).toHaveURL(/\/login$/);
     });
 
-    await test.step("iniciar sessão com a nova palavra-passe", async () => {
+    await test.step("4. Iniciar sessão com a palavra-passe nova", async () => {
       await loginViaUi(page, account.email, "Nova2027ab");
       await expect(page).toHaveURL(/\/cliente$/);
     });

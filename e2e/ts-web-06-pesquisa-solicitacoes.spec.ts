@@ -36,7 +36,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       }
     });
 
-    await test.step("1. Sem sessão, escolher a categoria e pesquisar sem morada", async () => {
+    await test.step("1. Sem sessão, abrir a pesquisa de Prestadores (W01), escolher «Canalização» e «Pesquisar» sem morada", async () => {
       await page.goto("/pesquisa/prestadores");
       await chooseCategory(page, "Canalização");
       await page.getByRole("button", { name: "Pesquisar" }).click();
@@ -44,7 +44,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       expect(searchRequests).toBe(0);
     });
 
-    await test.step("2. Escrever a morada de Aveiro → «Pesquisar»", async () => {
+    await test.step("2. Escrever a morada da Rua das Flores (Porto) → «Pesquisar»", async () => {
       await page.getByLabel("Localização de referência (obrigatória)").fill(address("aveiro"));
       await page.getByRole("button", { name: "Pesquisar" }).click();
       await expect(
@@ -55,7 +55,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       await expect(page.getByRole("article").first()).toContainText("0,0 km");
     });
 
-    await test.step("3. «Iniciar sessão para ver o perfil» no Prestador do teste", async () => {
+    await test.step("3. Carregar em «Iniciar sessão para ver o perfil» num resultado", async () => {
       await result(page, provider.user.name)
         .getByRole("button", { name: "Iniciar sessão para ver o perfil" })
         .click();
@@ -73,7 +73,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
     const client = await registerAndLogin(request, "CLIENT", "ts06");
     await setLocation(request, client, address("braga"));
 
-    await test.step("1. Iniciar sessão e pesquisar Canalização a partir da localização registada", async () => {
+    await test.step("1. Com a sessão do Cliente, pesquisar «Canalização» (W11)", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page
@@ -86,13 +86,13 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       await expect(result(page, second.user.name)).toBeVisible();
     });
 
-    await test.step("2. «Ver perfil» no primeiro Prestador", async () => {
+    await test.step("2. «Ver perfil» do Prestador de Vila Nova de Gaia", async () => {
       await result(page, first.user.name).getByRole("button", { name: "Ver perfil" }).click();
       await expect(page).toHaveURL(new RegExp(`/prestadores/${first.professionalProfileId}$`));
       await expect(page.getByRole("heading", { name: first.user.name, level: 1 })).toBeVisible();
     });
 
-    await test.step("3. «Fazer solicitação direta»: o Prestador já está selecionado", async () => {
+    await test.step("3. «Fazer solicitação direta»", async () => {
       await page.getByRole("button", { name: "Fazer solicitação direta" }).click();
       // O Prestador vai no URL
       await expect(page).toHaveURL(
@@ -104,7 +104,7 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       await expect(page.getByRole("combobox", { name: "Categoria" })).toHaveText(/Canalização/);
     });
 
-    await test.step("4. Preencher o serviço e juntar o segundo Prestador", async () => {
+    await test.step("4. Juntar o Prestador da Maia pela pesquisa do formulário; preencher o título, a descrição e a disponibilidade; «Enviar solicitações (2)»", async () => {
       await page.getByLabel("Título").fill("Reparar fuga na torneira");
       await page
         .getByLabel("Descrição do serviço")
@@ -115,15 +115,9 @@ test.describe("TS-WEB-06 Pesquisar Prestadores e criar solicitações diretas", 
       const selected = page.getByRole("list", { name: "Prestadores selecionados" });
       await expect(selected).toContainText(first.user.name);
       await expect(selected).toContainText(second.user.name);
-    });
-
-    await test.step("5. «Enviar solicitações (2)»", async () => {
       await page.getByRole("button", { name: "Enviar solicitações (2)" }).click();
       await expect(page.getByText("Serviço criado.")).toBeVisible();
       await expect(page).toHaveURL(/\/servicos\/\d+$/);
-    });
-
-    await test.step("6. Detalhe do serviço: estado «Aberto» e os dois Prestadores", async () => {
       await expect(page.getByRole("heading", { name: "Reparar fuga na torneira" })).toBeVisible();
       await expect(page.getByText("Solicitações diretas", { exact: true })).toBeVisible();
       await expect(page.getByText("Aberto", { exact: true })).toBeVisible();

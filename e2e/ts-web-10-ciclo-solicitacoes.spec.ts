@@ -37,7 +37,7 @@ test.describe("TS-WEB-10 Ciclo de um serviço com solicitações diretas", () =>
     await submitProposal(request, declined, serviceId, 90);
     await submitProposal(request, accepted, serviceId, 75);
 
-    await test.step("1. No início do Cliente, «Serviços recentes» → «Abrir»", async () => {
+    await test.step("1. No início do Cliente (W10), «Serviços recentes» → «Abrir» o serviço", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page
@@ -51,7 +51,7 @@ test.describe("TS-WEB-10 Ciclo de um serviço com solicitações diretas", () =>
       await expect(card(page, silent.user.name)).toContainText("A aguardar resposta do Prestador.");
     });
 
-    await test.step("2. «Recusar proposta» numa → «Recusar»", async () => {
+    await test.step("2. «Recusar proposta» numa → «Recusar a proposta de <nome>?» → «Recusar»", async () => {
       await card(page, declined.user.name)
         .getByRole("button", { name: "Recusar proposta" })
         .click();
@@ -64,7 +64,7 @@ test.describe("TS-WEB-10 Ciclo de um serviço com solicitações diretas", () =>
       await expect(page.getByRole("button", { name: "Aceitar proposta" })).toHaveCount(1);
     });
 
-    await test.step("3. «Aceitar proposta» na outra → «Confirmar»", async () => {
+    await test.step("3. «Aceitar proposta» na outra → «Aceitar a proposta de <nome>?» (com «…as solicitações ainda sem resposta ficam sem efeito. Esta ação não pode ser anulada.») → «Confirmar»", async () => {
       await card(page, accepted.user.name)
         .getByRole("button", { name: "Aceitar proposta" })
         .click();
@@ -83,13 +83,13 @@ test.describe("TS-WEB-10 Ciclo de um serviço com solicitações diretas", () =>
       await expect(page.getByRole("button", { name: "Aceitar proposta" })).toHaveCount(0);
     });
 
-    await test.step("4. A solicitação sem resposta", async () => {
+    await test.step("4. Ver a solicitação sem resposta", async () => {
       await expect(card(page, silent.user.name)).toContainText(
         `Ficou sem efeito quando aceitou a proposta de ${accepted.user.name}.`,
       );
     });
 
-    await test.step("5. «Marcar como realizado» → «Marcar como realizado»", async () => {
+    await test.step("5. «Marcar como realizado» → «Marcar o serviço «<título>» como realizado?» → «Marcar como realizado»", async () => {
       await page.getByRole("button", { name: "Marcar como realizado" }).click();
       const dialog = page.getByRole("alertdialog", {
         name: `Marcar o serviço «${title}» como realizado?`,
@@ -99,7 +99,7 @@ test.describe("TS-WEB-10 Ciclo de um serviço com solicitações diretas", () =>
       await expect(page.getByRole("button", { name: "Avaliar serviço" })).toBeVisible();
     });
 
-    await test.step("6. «Avaliar serviço» → 5 estrelas e o comentário → submeter", async () => {
+    await test.step("6. «Avaliar serviço» → janela W19 → 5 estrelas e o comentário → submeter", async () => {
       await page.getByRole("button", { name: "Avaliar serviço" }).click();
       const dialog = page.getByRole("dialog", { name: "Avaliar serviço" });
       await dialog.getByRole("radio", { name: /^5 estrelas/ }).click();

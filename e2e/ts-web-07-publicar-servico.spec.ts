@@ -12,7 +12,7 @@ test.describe("TS-WEB-07 Publicar trabalho", () => {
     await setLocation(request, client, address("carla"));
     const title = "Pintar sala de 20 m²";
 
-    await test.step("1. Iniciar sessão e abrir «Criar serviço»", async () => {
+    await test.step("1. Abrir «Criar serviço» e escolher «Aberto a propostas»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page
@@ -25,7 +25,7 @@ test.describe("TS-WEB-07 Publicar trabalho", () => {
       await expect(page.getByLabel("Local de realização")).toHaveValue(address("carla"));
     });
 
-    await test.step("2. Preencher o serviço → «Publicar serviço»", async () => {
+    await test.step("2. Preencher o título, a categoria, a descrição e a disponibilidade → «Publicar serviço»", async () => {
       await page.getByRole("combobox", { name: "Categoria" }).click();
       await page.getByRole("option", { name: "Canalização" }).click();
       await page.getByLabel("Título").fill(title);
@@ -34,9 +34,6 @@ test.describe("TS-WEB-07 Publicar trabalho", () => {
       await page.getByRole("button", { name: "Publicar serviço" }).click();
       await expect(page.getByText("Serviço criado.")).toBeVisible();
       await expect(page).toHaveURL(/\/servicos\/\d+$/);
-    });
-
-    await test.step("3. Detalhe do serviço: aberto a propostas, estado «Aberto», sem propostas", async () => {
       await expect(page.getByRole("heading", { name: title })).toBeVisible();
       await expect(page.getByText("Aberto a propostas", { exact: true })).toBeVisible();
       await expect(page.getByText("Aberto", { exact: true })).toBeVisible();

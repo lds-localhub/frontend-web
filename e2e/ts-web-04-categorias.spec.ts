@@ -16,7 +16,7 @@ test.describe("TS-WEB-04 Gestão de categorias", () => {
     const name = uniqueCategoryName("Serralharia");
     const newName = uniqueCategoryName("Serralharia e portões");
 
-    await test.step("abrir a gestão de categorias", async () => {
+    await test.step("1. Abrir a gestão de categorias (W52)", async () => {
       await openWithSession(page, adminToken);
       await page.goto("/admin/categorias");
       await expect(
@@ -24,7 +24,7 @@ test.describe("TS-WEB-04 Gestão de categorias", () => {
       ).toBeVisible();
     });
 
-    await test.step("criar a categoria na janela «Nova categoria»", async () => {
+    await test.step("2. «Nova categoria» → preencher o nome → «Guardar»", async () => {
       await page.getByRole("button", { name: "Nova categoria" }).click();
       const dialog = page.getByRole("dialog", { name: "Nova categoria" });
       await dialog.getByLabel("Nome").fill(name);
@@ -34,7 +34,7 @@ test.describe("TS-WEB-04 Gestão de categorias", () => {
       await expect(categoryRow(page, name).getByText("Ativa", { exact: true })).toBeVisible();
     });
 
-    await test.step("editar o nome da categoria", async () => {
+    await test.step("3. Editar o nome → «Guardar»", async () => {
       await categoryRow(page, name).getByRole("button", { name: "Editar" }).click();
       const dialog = page.getByRole("dialog", { name: "Editar categoria" });
       await expect(dialog.getByLabel("Nome")).toHaveValue(name);
@@ -46,7 +46,7 @@ test.describe("TS-WEB-04 Gestão de categorias", () => {
       await expect(categoryRow(page, name)).toHaveCount(0);
     });
 
-    await test.step("desativar a categoria, com confirmação", async () => {
+    await test.step("4. «Desativar» → confirmação → «Desativar»", async () => {
       await categoryRow(page, newName).getByRole("button", { name: "Desativar" }).click();
       const dialog = page.getByRole("alertdialog", {
         name: `Desativar a categoria «${newName}»?`,

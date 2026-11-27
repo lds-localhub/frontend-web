@@ -25,7 +25,7 @@ test.describe("TS-WEB-12 Cancelar serviços (Cliente)", () => {
     await createDirectRequestService(request, client, [provider.professionalProfileId], { title });
     const row = page.getByRole("row").filter({ hasText: title });
 
-    await test.step("1. Início do Cliente → «Ver todos ›» → «Cancelar» na linha do serviço", async () => {
+    await test.step("1. No W10, «Ver todos ›» → no W14, «Cancelar» na linha do serviço (modalidade «Solicitações diretas»)", async () => {
       await loginViaUi(page, client.email, client.password);
       await page.getByRole("link", { name: "Ver todos ›" }).click();
       await expect(page).toHaveURL(/\/servicos$/);
@@ -73,7 +73,7 @@ test.describe("TS-WEB-12 Cancelar serviços (Cliente)", () => {
     await acceptProposal(request, client, await submitProposal(request, provider, serviceId));
     const dialog = page.getByRole("alertdialog", { name: `Cancelar o serviço «${title}»?` });
 
-    await test.step("1. Em «Os meus serviços», «Abrir» o serviço → «Cancelar serviço»", async () => {
+    await test.step("1. No W14, «Abrir» o serviço → «Cancelar serviço»", async () => {
       await loginViaUi(page, client.email, client.password);
       await page.getByRole("link", { name: "Ver todos ›" }).click();
       await page

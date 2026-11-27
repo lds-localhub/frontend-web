@@ -35,7 +35,7 @@ test.describe("TS-WEB-09 Pesquisar trabalhos e apresentar proposta", () => {
       has: page.getByRole("heading", { name: title }),
     });
 
-    await test.step("1. Abrir «Pesquisar serviços»", async () => {
+    await test.step("1. Abrir «Pesquisar serviços» (W36)", async () => {
       await loginViaUi(page, provider.email, provider.password);
       await expect(page).toHaveURL(/\/prestador$/);
       await page
@@ -69,7 +69,7 @@ test.describe("TS-WEB-09 Pesquisar trabalhos e apresentar proposta", () => {
       await expect(page.getByRole("button", { name: "Ver proposta" })).toHaveCount(0);
     });
 
-    await test.step("4. Abrir «As minhas propostas»", async () => {
+    await test.step("4. Abrir «As minhas propostas» (W38)", async () => {
       await page
         .getByRole("navigation", { name: "Principal" })
         .getByRole("link", { name: "As minhas propostas" })

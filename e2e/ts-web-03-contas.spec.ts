@@ -35,7 +35,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
     const client = await registerAndLogin(request, "CLIENT", "ts03.cliente", clientName);
     const adminToken = await loginAsAdmin(request);
 
-    await test.step("consultar as contas, com os alertas de conduta", async () => {
+    await test.step("1. Abrir /admin/contas (W51)", async () => {
       await openWithSession(page, adminToken);
       await page.goto("/admin/contas");
       await expect(page.getByRole("heading", { name: "Gestão de contas", level: 1 })).toBeVisible();
@@ -61,7 +61,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
       await expect(page.getByText(ADMIN_EMAIL)).toHaveCount(0);
     });
 
-    await test.step("filtrar por papel e por estado", async () => {
+    await test.step("2. Filtrar «Papel: Cliente» e «Estado: Ativa»", async () => {
       await chooseFilter(page, "Papel", "Cliente");
       await chooseFilter(page, "Estado", "Ativa");
       await expect(page).toHaveURL(/role=CLIENT/);
@@ -71,7 +71,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
       await expect(accountRow(page, clientName)).toBeVisible();
     });
 
-    await test.step("desativar a conta, com confirmação", async () => {
+    await test.step("3. «Desativar» a conta → janela «Desativar a conta de <nome>?» → «Desativar»", async () => {
       await accountRow(page, clientName).getByRole("button", { name: "Desativar" }).click();
       const dialog = page.getByRole("alertdialog", {
         name: `Desativar a conta de ${clientName}?`,
@@ -89,7 +89,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
       ).toBeVisible();
     });
 
-    await test.step("ativar a conta", async () => {
+    await test.step("4. «Ativar» a conta (sem confirmação)", async () => {
       await accountRow(page, clientName).getByRole("button", { name: "Ativar" }).click();
       await expect(page.getByText("Conta ativada.")).toBeVisible();
       await expect(accountRow(page, clientName)).toHaveCount(0);
@@ -97,7 +97,7 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
       await expect(accountRow(page, clientName).getByText("Ativa", { exact: true })).toBeVisible();
     });
 
-    await test.step("redefinir a palavra-passe, com confirmação", async () => {
+    await test.step("5. «Redefinir a palavra-passe» → janela com o e-mail da conta → «Redefinir»", async () => {
       await accountRow(page, clientName)
         .getByRole("button", { name: "Redefinir palavra-passe" })
         .click();
