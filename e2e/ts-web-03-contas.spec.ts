@@ -98,7 +98,9 @@ test.describe("TS-WEB-03 Gestão de contas pelo administrador", () => {
     });
 
     await test.step("redefinir a palavra-passe, com confirmação (RF-F002-05)", async () => {
-      await page.getByRole("button", { name: "Redefinir palavra-passe" }).click();
+      await accountRow(page, clientName)
+        .getByRole("button", { name: "Redefinir palavra-passe" })
+        .click();
       const confirm = page.getByRole("alertdialog", {
         name: `Redefinir a palavra-passe de ${clientName}?`,
       });
