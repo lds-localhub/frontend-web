@@ -56,6 +56,13 @@ function showActionError(e: unknown) {
 // Detalhe do serviço do Cliente, nas duas modalidades: o proposalModel escolhe a secção de baixo
 // (solicitações ou propostas). As decisões pedem confirmação; a avaliação abre uma janela.
 export function ServiceDetailPage() {
+  // Um componente por serviço: ao passar de um serviço para outro sem mudar de página (ex.: com o
+  // «voltar» do browser), as janelas abertas não passam para o outro serviço
+  const { serviceId } = useParams();
+  return <ServiceDetail key={serviceId} />;
+}
+
+function ServiceDetail() {
   const id = parseId(useParams().serviceId);
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,9 +114,10 @@ export function ServiceDetailPage() {
   const cancel = useCancelService();
   const pending = accept.isPending || decline.isPending || complete.isPending || cancel.isPending;
 
-  // Volta à página de onde veio (a lista com o mesmo filtro e página, ou o início); aberto
-  // diretamente, sem página anterior na aplicação, vai para os serviços
-  const handleBackClick = () => (location.key === "default" ? navigate("/servicos") : navigate(-1));
+  // Aberto a partir de «Os meus serviços», volta a essa lista com o mesmo filtro e página; aberto
+  // de outro sítio (início, criar serviço, link direto), vai para a lista
+  const fromList = (location.state as { fromList?: boolean } | null)?.fromList === true;
+  const handleBackClick = () => (fromList ? navigate(-1) : navigate("/servicos"));
 
   if (id === null) {
     return <NotFoundPage />; // ID inválido no URL

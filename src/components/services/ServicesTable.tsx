@@ -8,7 +8,7 @@ import styles from "./ServicesTable.module.css";
 
 type Props = {
   items: ServiceItem[];
-  detailed?: boolean; // com a categoria e a data
+  detailed?: boolean; // a lista completa: com a categoria e a data, e o detalhe sabe que veio dela
   onCancel?: (service: ServiceItem) => void; // com ele, «Cancelar» nos serviços abertos e atribuídos
   disabled?: boolean; // enquanto a lista atualiza ou um cancelamento decorre
 };
@@ -17,15 +17,6 @@ type Props = {
 function modelText(s: ServiceItem): string {
   const label = proposalModelLabels[s.proposalModel];
   return s.proposalModel === "DIRECT_REQUEST" ? `${label} (${s.directRequestsCount})` : label;
-}
-
-// Número de propostas e, se houver, quantas esperam pela decisão do Cliente
-function proposalsText(s: ServiceItem): string {
-  if (s.pendingProposalsCount === 0) {
-    return String(s.proposalsCount);
-  }
-  const pending = s.pendingProposalsCount === 1 ? "pendente" : "pendentes";
-  return `${s.proposalsCount} (${s.pendingProposalsCount} ${pending})`;
 }
 
 // Só os serviços abertos e atribuídos podem ser cancelados
@@ -39,7 +30,7 @@ export function ServicesTable({ items, detailed = false, onCancel, disabled = fa
       ? [{ header: "Categoria", cell: (s: ServiceItem) => s.serviceCategory.name }]
       : []),
     { header: "Modalidade", cell: modelText },
-    { header: "Propostas", cell: proposalsText },
+    { header: "Propostas", cell: (s) => s.proposalsCount },
     ...(detailed ? [{ header: "Data", cell: (s: ServiceItem) => formatDate(s.creationDate) }] : []),
     {
       header: "Estado",
@@ -56,7 +47,11 @@ export function ServicesTable({ items, detailed = false, onCancel, disabled = fa
               Cancelar
             </Button>
           )}
-          <Button variant="secondary" to={`/servicos/${s.serviceId}`}>
+          <Button
+            variant="secondary"
+            to={`/servicos/${s.serviceId}`}
+            state={detailed ? { fromList: true } : undefined}
+          >
             Abrir
           </Button>
         </div>
