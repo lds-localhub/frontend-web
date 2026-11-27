@@ -1,6 +1,5 @@
+/* «Cancelar» e «Abrir» sempre lado a lado; num ecrã estreito, a tabela desliza na horizontal */
 .actions {
   display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
   gap: 0.5rem;
 }

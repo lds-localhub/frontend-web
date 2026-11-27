@@ -10,10 +10,10 @@ type Props = {
   items: ServiceItem[];
   detailed?: boolean; // com a categoria e a data
   onCancel?: (service: ServiceItem) => void; // com ele, «Cancelar» nos serviços abertos e atribuídos
-  disabled?: boolean; // enquanto um cancelamento decorre
+  disabled?: boolean; // enquanto a lista atualiza ou um cancelamento decorre
 };
 
-// «Solicitações diretas (3)» ou «Aberto a propostas»
+// Modalidade; nas solicitações diretas, com o número de Prestadores a quem foi pedida
 function modelText(s: ServiceItem): string {
   const label = proposalModelLabels[s.proposalModel];
   return s.proposalModel === "DIRECT_REQUEST" ? `${label} (${s.directRequestsCount})` : label;
@@ -34,7 +34,7 @@ const cancellable = (s: ServiceItem) => s.status === "OPEN" || s.status === "ASS
 // Serviços do Cliente: os recentes no início e, com detailed, a lista completa com o cancelamento
 export function ServicesTable({ items, detailed = false, onCancel, disabled = false }: Props) {
   const columns: Column<ServiceItem>[] = [
-    { header: "Serviço", cell: (s) => s.title, rowHeader: true },
+    { header: "Serviço", cell: (s) => s.title, rowHeader: true, clamp: true },
     ...(detailed
       ? [{ header: "Categoria", cell: (s: ServiceItem) => s.serviceCategory.name }]
       : []),
@@ -49,7 +49,6 @@ export function ServicesTable({ items, detailed = false, onCancel, disabled = fa
     },
     {
       header: "Ações",
-      align: "end",
       cell: (s) => (
         <div className={styles.actions}>
           {onCancel && cancellable(s) && (
