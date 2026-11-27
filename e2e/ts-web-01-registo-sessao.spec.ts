@@ -28,9 +28,7 @@ test.describe("TS-WEB-01 Registo, início e fim de sessão", () => {
       await page.getByLabel("Palavra-passe").fill(TEST_PASSWORD);
       await page.getByRole("button", { name: "Entrar" }).click();
       await expect(page).toHaveURL(/\/cliente$/);
-      await expect(
-        page.getByRole("button", { name: /Menu da conta de Cliente TS-WEB-01/ }),
-      ).toBeVisible();
+      await expect(page.getByTestId("menu-conta")).toContainText("Cliente");
       await expect(page.getByRole("link", { name: "Os meus serviços" })).toBeVisible();
     });
 

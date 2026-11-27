@@ -31,7 +31,7 @@ test.describe("TS-WEB-17 Rede indisponível", () => {
 
     await test.step("2. Antes do pedido, alteração: alterar a palavra-passe (W23) sem rede", async () => {
       await context.setOffline(false);
-      await page.getByRole("button", { name: /Menu da conta/ }).click();
+      await page.getByTestId("menu-conta").click();
       await page.getByRole("menuitem", { name: "Alterar palavra-passe" }).click();
       await expect(page).toHaveURL(/\/conta\/palavra-passe$/);
 

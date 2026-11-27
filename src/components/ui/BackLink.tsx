@@ -8,7 +8,7 @@ type Props = { children: ReactNode; onClick: () => void };
 export function BackLink({ children, onClick }: Props) {
   return (
     <button type="button" className={styles.backLink} onClick={onClick}>
-      <ChevronLeft size={16} aria-hidden="true" />
+      <ChevronLeft size={16} />
       {children}
     </button>
   );

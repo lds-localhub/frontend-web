@@ -9,7 +9,7 @@ type Props = { address: string; serviceRadiusKm: number; distanceKm?: number };
 export function ServiceAreaMap({ address, serviceRadiusKm, distanceKm }: Props) {
   return (
     <div className={styles.area}>
-      <div className={styles.map} aria-hidden="true">
+      <div className={styles.map}>
         <div className={styles.radius}>
           <MapPin className={styles.pin} size={18} />
           <span className={styles.radiusLabel}>{serviceRadiusKm} km</span>

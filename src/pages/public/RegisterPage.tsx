@@ -93,7 +93,7 @@ export function RegisterPage() {
     <div className={styles.page}>
       <title>Registar conta · LocalHub</title>
       <aside className={styles.panel}>
-        <House size={40} strokeWidth={1.75} aria-hidden="true" />
+        <House size={40} strokeWidth={1.75} />
         <div className={styles.panelText}>
           <h2>Junte-se ao LocalHub</h2>
           <p>

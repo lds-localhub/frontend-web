@@ -9,8 +9,8 @@ export function FormError({ message }: Props) {
     return null;
   }
   return (
-    <p className={styles.formError} role="alert">
-      <CircleAlert size={16} aria-hidden="true" />
+    <p className={styles.formError} data-testid="form-error">
+      <CircleAlert size={16} />
       {message}
     </p>
   );

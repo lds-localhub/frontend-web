@@ -19,10 +19,8 @@ export function RatingEvolution({ months, hasPeriod }: Props) {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th scope="col">Mês · avaliações recebidas</th>
-              <th scope="col" className={styles.average}>
-                Média
-              </th>
+              <th>Mês · avaliações recebidas</th>
+              <th className={styles.average}>Média</th>
             </tr>
           </thead>
           <tbody>

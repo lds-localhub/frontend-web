@@ -84,7 +84,7 @@ test.describe("TS-WEB-05 Criar, consultar e editar o perfil profissional", () =>
     });
 
     await test.step("5. Abrir o menu da conta → «O meu perfil»", async () => {
-      await page.getByRole("button", { name: /Menu da conta/ }).click();
+      await page.getByTestId("menu-conta").click();
       await page.getByRole("menuitem", { name: "O meu perfil" }).click();
       await expect(page).toHaveURL(/\/perfil$/);
       await expect(page.getByText(introduction)).toBeVisible();

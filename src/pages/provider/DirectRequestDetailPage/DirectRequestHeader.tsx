@@ -13,12 +13,12 @@ type Props = { data: DirectRequestDetail };
 // Cliente e estado da solicitação, e o cartão do serviço com o histórico
 export function DirectRequestHeader({ data }: Props) {
   const { service } = data;
-  const client = `${service.clientName} (Cliente)`;
+  const clientName = `${service.clientName} (Cliente)`;
   // O histórico visto pelo Prestador só diz o papel de quem fez cada alteração, para não identificar
   // o Prestador contratado; as do Cliente levam o nome dele
   const history = service.history.map((h) => ({
     ...h,
-    changedByName: h.changedByRole === "CLIENT" ? client : "Prestador",
+    changedByName: h.changedByRole === "CLIENT" ? clientName : "Prestador",
   }));
 
   return (
@@ -49,7 +49,7 @@ export function DirectRequestHeader({ data }: Props) {
           <p className={styles.description}>«{service.description}»</p>
           <hr className={styles.divider} />
           <ServiceHistory
-            created={{ at: service.creationDate, byName: client, byUserId: undefined }}
+            created={{ at: service.creationDate, byName: clientName, byUserId: undefined }}
             history={history}
             currentUserId={undefined}
             status={service.status}

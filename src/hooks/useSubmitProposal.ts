@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { type QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import type { ProposalInput } from "@/api/types";
@@ -9,13 +9,14 @@ import { getErrorMessage, isApiError } from "@/utils/errors";
 // O ID do serviço vai no mutate, porque só é conhecido depois de o ecrã ler o serviço.
 export function useSubmitProposal() {
   const qc = useQueryClient();
-  // A solicitação passa a ter proposta, a proposta nova entra nas do Prestador e o serviço pesquisado
-  // passa a indicar a proposta já apresentada
-  const refresh = () =>
+  // A solicitação passa a ter proposta e a proposta nova entra nas do Prestador. Da pesquisa, no
+  // sucesso só muda o detalhe do serviço (passa a ter a proposta); num 409 o serviço pode já não
+  // estar aberto e sai também das listas
+  const refresh = (searchKey: QueryKey) =>
     Promise.all([
       qc.invalidateQueries({ queryKey: queryKeys.directRequests.all, refetchType: "all" }),
       qc.invalidateQueries({ queryKey: queryKeys.proposals.all, refetchType: "all" }),
-      qc.invalidateQueries({ queryKey: queryKeys.searchServices.all, refetchType: "all" }),
+      qc.invalidateQueries({ queryKey: searchKey, refetchType: "all" }),
     ]);
 
   return useMutation({
@@ -24,7 +25,7 @@ export function useSubmitProposal() {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    onSuccess: refresh,
+    onSuccess: (_data, { serviceId }) => refresh(queryKeys.searchServices.detail(serviceId)),
     onError: (e) => {
       // Os erros de campo e o 400 são mostrados no formulário
       if (!isApiError(e) || (e.status !== 400 && e.status !== 401 && !e.errors)) {
@@ -32,7 +33,7 @@ export function useSubmitProposal() {
       }
       // Estado diferente no servidor (ex.: o Cliente já aceitou outra proposta): atualiza o ecrã
       if (isApiError(e) && e.status === 409 && !e.errors) {
-        return refresh();
+        return refresh(queryKeys.searchServices.all);
       }
     },
   });

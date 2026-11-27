@@ -1,5 +1,6 @@
 import type { DirectRequestStatus, DirectRequestsParams } from "@/api/types";
 import { DirectRequestsTable } from "@/components/directRequests/DirectRequestsTable";
+import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { FilterSelect } from "@/components/ui/FilterSelect";
@@ -27,6 +28,8 @@ function readDirectRequestsParams(searchParams: URLSearchParams): DirectRequests
   };
 }
 
+// Todas as solicitações diretas recebidas pelo Prestador, com o filtro do estado. O filtro e a
+// página ficam no URL, para o «voltar» do detalhe regressar à mesma lista.
 export function DirectRequestsPage() {
   const { params, setFilters, setPage } = useUrlParams(readDirectRequestsParams);
   const requests = useDirectRequests(params);
@@ -56,6 +59,15 @@ export function DirectRequestsPage() {
           onRetry={requests.refetch}
           retrying={requests.isFetching}
         />
+      ) : requests.data.total > 0 && requests.data.items.length === 0 ? (
+        // Página que ficou vazia (ex.: respondeu à última pendente da página, filtrada por
+        // «Pendente»). A paginação não aparece com uma só página, por isso há o caminho de volta.
+        <EmptyState>
+          Esta página já não tem solicitações.
+          <Button variant="text" onClick={() => setPage(1)}>
+            Ir para a primeira página
+          </Button>
+        </EmptyState>
       ) : requests.data.items.length === 0 ? (
         <EmptyState>
           {params.status ? "Não tem solicitações neste estado." : "Não tem solicitações."}

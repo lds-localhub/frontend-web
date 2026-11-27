@@ -18,6 +18,8 @@ import { parseId } from "@/utils/parseId";
 import { DirectRequestHeader } from "./DirectRequestHeader";
 import styles from "./DirectRequestDetailPage.module.css";
 
+// Detalhe de uma solicitação direta recebida: o serviço e o histórico e, enquanto estiver pendente,
+// a proposta ou a recusa. Depois de respondida, leva à proposta apresentada.
 export function DirectRequestDetailPage() {
   const id = parseId(useParams().directRequestId);
   const navigate = useNavigate();
@@ -59,7 +61,8 @@ export function DirectRequestDetailPage() {
     }
   };
 
-  // O ID é verificado antes do loading: com um ID inválido a query fica desligada e nunca sairia dele
+  // O ID é verificado antes do loading: com um ID inválido a query fica desligada e o loading
+  // nunca terminaria
   if (id === null) {
     return <NotFoundPage />;
   }
@@ -73,6 +76,8 @@ export function DirectRequestDetailPage() {
   }
 
   const { data } = request;
+  // A solicitação pode estar pendente com o serviço já atribuído a outro Prestador ou cancelado.
+  // Aí o backend recusaria a proposta, por isso só se mostra o formulário com o serviço aberto.
   const canRespond = data.status === "PENDING" && data.service.status === "OPEN";
   const busy = request.isFetching || submit.isPending || decline.isPending;
 

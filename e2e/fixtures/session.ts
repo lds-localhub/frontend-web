@@ -12,7 +12,7 @@ export async function loginViaUi(page: Page, email: string, password: string): P
 
 // Termina a sessão no menu da conta do cabeçalho, como o utilizador faria
 export async function logoutViaUi(page: Page): Promise<void> {
-  await page.getByRole("button", { name: /Menu da conta/ }).click();
+  await page.getByTestId("menu-conta").click();
   await page.getByRole("menuitem", { name: "Terminar sessão" }).click();
 }
 

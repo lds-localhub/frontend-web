@@ -84,19 +84,13 @@ export function CategoriesPage() {
       align: "end",
       cell: (c) => (
         <div className={styles.rowActions}>
-          <Button
-            variant="secondary"
-            aria-label={`Editar ${c.name}`}
-            disabled={busy}
-            onClick={() => setEditing(c)}
-          >
+          <Button variant="secondary" disabled={busy} onClick={() => setEditing(c)}>
             Editar
           </Button>
           {/* Não há forma de voltar a ativar uma categoria: só as ativas se desativam */}
           {c.status === "ACTIVE" && (
             <Button
               variant="danger-outline"
-              aria-label={`Desativar ${c.name}`}
               disabled={busy}
               onClick={() => setConfirmingId(c.serviceCategoryId)}
             >

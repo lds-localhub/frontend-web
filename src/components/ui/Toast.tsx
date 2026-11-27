@@ -31,9 +31,7 @@ function Toasts() {
   return toasts.map((t) => (
     <Toast.Root key={t.id} toast={t} className={styles.toast}>
       <Toast.Description className={styles.description} />
-      <Toast.Close className={styles.close} aria-label="Fechar">
-        ×
-      </Toast.Close>
+      <Toast.Close className={styles.close}>×</Toast.Close>
     </Toast.Root>
   ));
 }

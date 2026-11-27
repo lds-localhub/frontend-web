@@ -32,10 +32,15 @@ test.describe("TS-WEB-13 Relatório do cliente", () => {
 
     const expectAllActivity = async () => {
       await expect(
-        page.getByRole("article", { name: "Serviços contratados" }).getByText("1", { exact: true }),
+        page
+          .getByRole("article")
+          .filter({ has: page.getByText("Serviços contratados", { exact: true }) })
+          .getByText("1", { exact: true }),
       ).toBeVisible();
       await expect(
-        page.getByRole("article", { name: "Valor das propostas aceites" }),
+        page
+          .getByRole("article")
+          .filter({ has: page.getByText("Valor das propostas aceites", { exact: true }) }),
       ).toContainText(/80,00\s€/);
       await expect(card(page, "Por categoria").getByRole("listitem")).toHaveText([
         /^Canalização\s*1$/,
