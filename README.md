@@ -58,6 +58,17 @@ npm run dev
 
 A aplicação fica disponível em `http://localhost:5173`.
 
+## Tipos de letra
+
+Os tipos de letra estão incluídos no projeto, em `src/assets/fonts`, e são servidos pelo próprio site. Assim, o browser não faz pedidos ao Google Fonts, que receberia o endereço IP de cada utilizador sem consentimento (RGPD). As declarações `@font-face` estão em `src/styles/fonts.css`.
+
+| Tipo de letra       | Pesos               | Uso     | Origem                                                                              |
+| ------------------- | ------------------- | ------- | ----------------------------------------------------------------------------------- |
+| Figtree             | 400, 500, 600 e 700 | Texto   | The Figtree Project Authors (https://github.com/erikdkennedy/figtree)               |
+| Bricolage Grotesque | 600 e 700           | Títulos | The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage) |
+
+Os ficheiros são os mesmos usados no `frontend-mobile` (`assets/fonts`). Os dois tipos de letra são distribuídos com a licença SIL Open Font License 1.1, cujo texto está ao lado dos ficheiros (`OFL-Figtree.txt` e `OFL-BricolageGrotesque.txt`).
+
 ## Scripts
 
 | Script                 | O que faz                                                                                             |
@@ -93,7 +104,7 @@ src/
     admin/           páginas do Administrador
   styles/            CSS global (tokens.css com as cores do protótipo e base.css)
   utils/             funções sem React
-  assets/            imagens importadas no código
+  assets/            imagens importadas no código e tipos de letra (fonts/)
 ```
 
 Os imports de outra pasta usam o alias `@/` (`src/`).

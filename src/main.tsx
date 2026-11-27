@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router/dom";
 import { queryClient } from "@/api/queryClient";
 import { ToastProvider } from "@/components/ui/Toast";
 import { router } from "@/routes/router";
+import "@/styles/fonts.css";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
 
