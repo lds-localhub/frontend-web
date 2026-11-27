@@ -32,13 +32,18 @@ export function ReviewDialog({ serviceId, providerName, onClose }: Props) {
     defaultValues: { comment: "" },
   });
 
-  // O serviço passa a avaliado; a média, o número e as avaliações do Prestador mudam
-  const refresh = () =>
-    Promise.all([
-      qc.invalidateQueries({ queryKey: queryKeys.services.all, refetchType: "all" }),
-      qc.invalidateQueries({ queryKey: queryKeys.profiles.all, refetchType: "all" }),
-      qc.invalidateQueries({ queryKey: queryKeys.searchProviders.all, refetchType: "all" }),
-    ]);
+  // O serviço passa a avaliado; a média, o número e as avaliações do Prestador mudam. Só se
+  // espera pelo detalhe do serviço (deixa de mostrar «Avaliar serviço»); o resto atualiza em
+  // segundo plano.
+  const refresh = () => {
+    void qc.invalidateQueries({ queryKey: queryKeys.profiles.all, refetchType: "all" });
+    void qc.invalidateQueries({ queryKey: queryKeys.searchProviders.all, refetchType: "all" });
+    void qc.invalidateQueries({
+      queryKey: [...queryKeys.services.all, "list"],
+      refetchType: "all",
+    });
+    return qc.invalidateQueries({ queryKey: queryKeys.services.detail(serviceId) });
+  };
 
   const review = useMutation({
     mutationFn: (body: ReviewInput) =>
@@ -89,6 +94,7 @@ export function ReviewDialog({ serviceId, providerName, onClose }: Props) {
               onValueChange={field.onChange}
               meanings={ratingMeanings}
               error={fieldState.error?.message}
+              focusRef={field.ref}
             />
           )}
         />
