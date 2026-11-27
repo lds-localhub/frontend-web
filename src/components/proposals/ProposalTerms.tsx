@@ -7,7 +7,7 @@ import styles from "./ProposalTerms.module.css";
 
 type Props = {
   proposal: ServiceDirectRequestProposal;
-  withHeader: boolean; // «Proposta» e o estado por cima do valor (solicitação direta, W15)
+  withHeader: boolean; // «Proposta» e o estado por cima do valor (nas solicitações diretas)
   statusNote?: string; // ao lado do estado (ex.: «Aceite a 30/09/2026»)
 };
 
@@ -39,12 +39,7 @@ function LongText({ text }: { text: string }) {
         {text}
       </p>
       {(overflows || expanded) && (
-        <button
-          type="button"
-          className={styles.more}
-          aria-expanded={expanded}
-          onClick={() => setExpanded(!expanded)}
-        >
+        <button type="button" className={styles.more} onClick={() => setExpanded(!expanded)}>
           {expanded ? "Ver menos" : "Ver mais"}
         </button>
       )}

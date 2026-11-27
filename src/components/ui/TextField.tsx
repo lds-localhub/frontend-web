@@ -22,7 +22,7 @@ export function TextField({ label, hint, error, required, ...inputProps }: Props
           </span>
         )}
       </Field.Label>
-      <Field.Control {...inputProps} aria-required={required} className={styles.input} />
+      <Field.Control {...inputProps} className={styles.input} />
       {hint && !error && <Field.Description className={styles.hint}>{hint}</Field.Description>}
       <Field.Error className={styles.error} match={!!error}>
         {error}

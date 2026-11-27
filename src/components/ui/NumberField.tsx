@@ -70,7 +70,6 @@ export function NumberField({
             ref={inputRef}
             className={styles.input}
             onBlur={onBlur}
-            aria-required={required}
             data-wide={wide || undefined}
             data-full-width={fullWidth || undefined}
           />

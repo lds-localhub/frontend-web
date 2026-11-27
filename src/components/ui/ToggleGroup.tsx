@@ -5,7 +5,6 @@ import styles from "./ToggleGroup.module.css";
 type Option<T extends string> = { value: T; label: string };
 
 type Props<T extends string> = {
-  label: string; // nome do grupo para o leitor de ecrã
   items: Option<T>[];
   value: T;
   onValueChange: (value: T) => void;
@@ -13,10 +12,9 @@ type Props<T extends string> = {
 
 // Controlo segmentado: uma só opção escolhida, sempre uma (ex.: a modalidade do serviço; data única
 // ou intervalo). Carregar na opção já escolhida não a desmarca.
-export function ToggleGroup<T extends string>({ label, items, value, onValueChange }: Props<T>) {
+export function ToggleGroup<T extends string>({ items, value, onValueChange }: Props<T>) {
   return (
     <BaseToggleGroup
-      aria-label={label}
       className={styles.group}
       value={[value]}
       onValueChange={(values) => {

@@ -13,7 +13,7 @@ type Props = {
 export function Callout({ children, icon: Icon, id, tone = "info" }: Props) {
   return (
     <div className={styles.callout} id={id} data-tone={tone}>
-      {Icon && <Icon size={16} aria-hidden="true" />}
+      {Icon && <Icon size={16} />}
       <p>{children}</p>
     </div>
   );

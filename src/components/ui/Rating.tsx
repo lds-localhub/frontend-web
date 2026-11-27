@@ -13,7 +13,7 @@ export function Rating({ value, count, variant = "compact" }: Props) {
       {variant === "stars" && value !== null ? (
         <Stars value={value} />
       ) : (
-        <Star className={styles.star} size={14} aria-hidden="true" />
+        <Star className={styles.star} size={14} />
       )}
       {formatRating(value, count)}
     </span>

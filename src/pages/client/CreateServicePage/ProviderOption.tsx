@@ -25,18 +25,15 @@ export function ProviderOption({ result, selected, onToggle, onViewProfile }: Pr
         type="button"
         className={styles.toggle}
         data-selected={selected || undefined}
-        aria-pressed={selected}
         aria-label={`${selected ? "Retirar" : "Selecionar"} ${result.name}`}
         onClick={onToggle}
       >
-        {selected ? <Check size={18} aria-hidden="true" /> : <Plus size={18} aria-hidden="true" />}
+        {selected ? <Check size={18} /> : <Plus size={18} />}
       </button>
       <div className={styles.info}>
         <p className={styles.name}>{result.name}</p>
         <p className={styles.details}>
-          {result.averageRating !== null && (
-            <Star className={styles.star} size={12} aria-hidden="true" />
-          )}
+          {result.averageRating !== null && <Star className={styles.star} size={12} />}
           {details}
         </p>
       </div>

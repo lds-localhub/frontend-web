@@ -109,7 +109,6 @@ export function CreateServiceForm({
           <div className={styles.group}>
             <span className={styles.label}>Modalidade</span>
             <ToggleGroup
-              label="Modalidade"
               items={modelItems}
               value={proposalModel}
               onValueChange={handleModelChange}
@@ -159,7 +158,6 @@ export function CreateServiceForm({
               name="dateMode"
               render={({ field }) => (
                 <ToggleGroup
-                  label="Disponibilidade pretendida"
                   items={dateModeItems}
                   value={field.value}
                   onValueChange={field.onChange}

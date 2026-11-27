@@ -42,7 +42,7 @@ export function ReportPeriodFilter({ value, onApply }: Props) {
   };
 
   return (
-    <form className={styles.filter} noValidate onSubmit={handleSubmit} aria-label="Período">
+    <form className={styles.filter} noValidate onSubmit={handleSubmit}>
       <div className={styles.date}>
         <DateField label="Data inicial" value={draft.startDate} onChange={handleStartDateChange} />
       </div>

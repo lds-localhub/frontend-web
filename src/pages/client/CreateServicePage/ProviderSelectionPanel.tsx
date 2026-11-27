@@ -132,7 +132,7 @@ export function ProviderSelectionPanel({
       <h2 className={styles.title}>Prestadores selecionados ({value.length})</h2>
       {notice && <Callout icon={Info}>{notice}</Callout>}
       <div className={styles.nameFilter}>
-        <Search className={styles.searchIcon} size={16} aria-hidden="true" />
+        <Search className={styles.searchIcon} size={16} />
         <TextField
           label="Pesquisar por nome"
           placeholder="Pesquisar por nome"
@@ -151,20 +151,15 @@ export function ProviderSelectionPanel({
               <button
                 type="button"
                 className={styles.chipRemove}
-                aria-label={`Retirar ${p.name}`}
                 onClick={() => handleRemove(p.professionalProfileId)}
               >
-                <X size={14} aria-hidden="true" />
+                <X size={14} />
               </button>
             </li>
           ))}
         </ul>
       )}
-      {error && (
-        <p className={styles.error} role="alert">
-          {error}
-        </p>
-      )}
+      {error && <p className={styles.error}>{error}</p>}
       {content}
 
       <Modal

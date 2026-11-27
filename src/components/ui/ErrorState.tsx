@@ -13,11 +13,11 @@ type Props = {
 // desativado enquanto a nova tentativa decorre.
 export function ErrorState({ error, onRetry, retrying }: Props) {
   return (
-    <div className={styles.error} role="alert">
-      <CircleAlert className={styles.icon} size={22} aria-hidden="true" />
+    <div className={styles.error}>
+      <CircleAlert className={styles.icon} size={22} />
       <p className={styles.message}>{getErrorMessage(error)}</p>
       <Button variant="secondary" onClick={onRetry} disabled={retrying}>
-        <RotateCw size={14} aria-hidden="true" />
+        <RotateCw size={14} />
         Tentar outra vez
       </Button>
     </div>
