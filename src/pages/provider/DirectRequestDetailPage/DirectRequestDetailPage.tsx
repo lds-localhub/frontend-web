@@ -66,6 +66,16 @@ export function DirectRequestDetailPage() {
   if (id === null) {
     return <NotFoundPage />;
   }
+  // Solicitação que não existe ou que não é deste Prestador: tentar outra vez não resolve
+  if (isApiError(request.error) && request.error.status === 404) {
+    return (
+      <NotFoundPage
+        title="Solicitação não encontrada"
+        text="A solicitação que procura não existe."
+        action={{ to: "/solicitacoes", label: "Voltar às solicitações" }}
+      />
+    );
+  }
   if (request.isPending) {
     return <Loading />;
   }
