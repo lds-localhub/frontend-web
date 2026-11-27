@@ -1,4 +1,5 @@
 import { FileText, Inbox, Search } from "lucide-react";
+import { Link } from "react-router";
 import { DirectRequestsTable } from "@/components/directRequests/DirectRequestsTable";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
@@ -10,10 +11,13 @@ import { useMe } from "@/hooks/useMe";
 import { useSearchServices } from "@/hooks/useSearchServices";
 import styles from "./ProviderHomePage.module.css";
 
+// Início do Prestador: atalhos com os números do que tem para fazer e as solicitações pendentes
+// mais recentes, para responder sem passar pela lista
 export function ProviderHomePage() {
   const { data: me } = useMe();
-  // Os mesmos parâmetros dão o número do atalho (o total) e a tabela (só a primeira página)
-  const pendingRequests = useDirectRequests({ status: "PENDING" });
+  // Os mesmos parâmetros dão o número do atalho (o total) e a tabela (as 5 primeiras; as outras
+  // estão em «Ver todas»)
+  const pendingRequests = useDirectRequests({ status: "PENDING", pageSize: 5 });
   // Só interessa o total, por isso pede-se um só serviço
   const nearbyServices = useSearchServices({ withinServiceRadius: true, page: 1, pageSize: 1 });
 
@@ -59,7 +63,12 @@ export function ProviderHomePage() {
       </div>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Solicitações pendentes</h2>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Solicitações pendentes</h2>
+          <Link to="/solicitacoes?status=PENDING" className={styles.seeAll}>
+            Ver todas ›
+          </Link>
+        </div>
         {pendingRequests.isPending ? (
           <Loading />
         ) : pendingRequests.isError ? (
