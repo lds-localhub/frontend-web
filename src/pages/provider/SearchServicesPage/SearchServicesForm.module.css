@@ -1,5 +1,4 @@
-/* Categoria, interruptor e «Pesquisar» lado a lado, como no protótipo; num ecrã estreito, um por
-   baixo do outro */
+/* Categoria, interruptor e «Pesquisar» lado a lado; num ecrã estreito, um por baixo do outro */
 .form {
   display: flex;
   flex-wrap: wrap;

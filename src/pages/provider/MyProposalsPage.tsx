@@ -67,7 +67,7 @@ export function MyProposalsPage() {
   };
 
   const columns: Column<ProposalItem>[] = [
-    { header: "Serviço", cell: (p) => p.service.title, rowHeader: true },
+    { header: "Serviço", cell: (p) => p.service.title, rowHeader: true, clamp: true },
     { header: "Cliente", cell: (p) => p.service.clientName },
     { header: "Categoria", cell: (p) => p.service.serviceCategory.name },
     {
@@ -133,6 +133,15 @@ export function MyProposalsPage() {
           onRetry={proposals.refetch}
           retrying={proposals.isFetching}
         />
+      ) : proposals.data.total > 0 && proposals.data.items.length === 0 ? (
+        // Página que ficou vazia (ex.: filtrada por «Pendente», o Cliente já decidiu as que tinha).
+        // A paginação não aparece com uma só página, por isso há o caminho de volta.
+        <EmptyState>
+          Esta página já não tem propostas.
+          <Button variant="text" onClick={() => setPage(1)}>
+            Ir para a primeira página
+          </Button>
+        </EmptyState>
       ) : proposals.data.items.length === 0 ? (
         <EmptyState>
           {params.status ? "Não tem propostas neste estado." : "Ainda não apresentou propostas."}

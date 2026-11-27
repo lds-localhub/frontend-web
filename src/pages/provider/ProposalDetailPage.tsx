@@ -11,6 +11,7 @@ import { toast } from "@/components/ui/Toast";
 import { useCancelService } from "@/hooks/useCancelService";
 import { useProposal } from "@/hooks/useProposal";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
+import { isApiError } from "@/utils/errors";
 import { parseId } from "@/utils/parseId";
 import styles from "./ServiceAndProposal.module.css";
 
@@ -36,6 +37,16 @@ export function ProposalDetailPage() {
   // O ID é verificado antes do loading: com um ID inválido a query fica desligada e nunca sairia dele
   if (id === null) {
     return <NotFoundPage />;
+  }
+  // Proposta que não existe ou que não é deste Prestador: tentar outra vez não resolve
+  if (isApiError(proposal.error) && proposal.error.status === 404) {
+    return (
+      <NotFoundPage
+        title="Proposta não encontrada"
+        text="A proposta que procura não existe."
+        action={{ to: "/propostas", label: "Voltar às propostas" }}
+      />
+    );
   }
   if (proposal.isPending) {
     return <Loading />;

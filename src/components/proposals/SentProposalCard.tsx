@@ -29,7 +29,7 @@ function statusSentence(proposal: ProposalStatus, service: ServiceStatus): strin
   }
 }
 
-// «Aceite a …» ou «Recusada a …»; uma proposta sem efeito não tem decisão do Cliente
+// Data da decisão do Cliente; uma proposta pendente ou sem efeito não tem decisão
 function decisionText(proposal: ProposalDetail): string | null {
   if (!proposal.decisionDate || proposal.status === "PENDING" || proposal.status === "VOID") {
     return null;

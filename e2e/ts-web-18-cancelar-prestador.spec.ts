@@ -5,8 +5,7 @@ import { createAssignedService } from "./fixtures/services.ts";
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-18 — Cancelar serviços (Prestador) (RF-F007-05, RF-F008-04: cancelamento pelo Prestador
-// contratado)
+// TS-WEB-18 — Cancelar serviços (Prestador): cancelamento pelo Prestador contratado
 //
 // O Prestador é criado neste teste, por isso as suas propostas são só as dos dois serviços
 // atribuídos preparados pela API.
@@ -42,7 +41,7 @@ test.describe("TS-WEB-18 Cancelar serviços (Prestador)", () => {
       proposalModel: "DIRECT_REQUEST",
     });
 
-    await test.step("1. A partir da lista. Em «As minhas propostas» (W38), «Cancelar» num dos serviços", async () => {
+    await test.step("1. A partir da lista. Em «As minhas propostas», «Cancelar» num dos serviços", async () => {
       await loginViaUi(page, provider.email, provider.password);
       await expect(page).toHaveURL(/\/prestador$/);
       await page

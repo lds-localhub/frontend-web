@@ -18,6 +18,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useProposal } from "@/hooks/useProposal";
 import { useSubmitProposal } from "@/hooks/useSubmitProposal";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
+import { isApiError } from "@/utils/errors";
 import { parseId } from "@/utils/parseId";
 import styles from "./ServiceAndProposal.module.css";
 
@@ -51,6 +52,17 @@ export function SearchServiceDetailPage() {
   // O ID é verificado antes do loading: com um ID inválido a query fica desligada e nunca sairia dele
   if (id === null) {
     return <NotFoundPage />;
+  }
+  // Serviço que não existe ou que já não está aberto (atribuído, cancelado ou de um Cliente
+  // desativado): tentar outra vez não resolve, por isso não é o ErrorState
+  if (isApiError(service.error) && service.error.status === 404) {
+    return (
+      <NotFoundPage
+        title="Serviço indisponível"
+        text="Este serviço já não está aberto a propostas."
+        action={{ to: "/pesquisa/servicos", label: "Voltar aos serviços" }}
+      />
+    );
   }
   if (service.isPending) {
     return <Loading />;
@@ -87,6 +99,11 @@ export function SearchServiceDetailPage() {
     } else {
       side = <SentProposalCard proposal={proposal.data} />;
     }
+  } else if (profile.isError) {
+    // Sem o perfil não se sabe se a categoria é do Prestador: o formulário ficava sempre desativado
+    side = (
+      <ErrorState error={profile.error} onRetry={profile.refetch} retrying={profile.isFetching} />
+    );
   } else if (profile.data && !hasCategory) {
     // Sem a categoria no perfil, a proposta seria recusada: o formulário não chega a ser preenchido
     side = (

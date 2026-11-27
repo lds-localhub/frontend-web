@@ -40,7 +40,7 @@ export function ServiceInfoCard({ service, clientName }: Props) {
             {isPublic && <span>Publicado em {formatDate(service.creationDate)}</span>}
             {clientName && (
               <span className={styles.client}>
-                <UserRound size={14} aria-hidden="true" />
+                <UserRound size={14} />
                 Cliente: {clientName}
               </span>
             )}

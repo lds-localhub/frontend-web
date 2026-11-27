@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { SearchServicesParams } from "@/api/types";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
@@ -23,7 +24,6 @@ function readSearchServicesParams(searchParams: URLSearchParams): SearchServices
   };
 }
 
-// «1 serviço aberto · …» / «4 serviços abertos · …»
 function resultsCountText(total: number): string {
   const open = total === 1 ? "1 serviço aberto" : `${total} serviços abertos`;
   return `${open} · do mais próximo ao mais distante`;
@@ -53,6 +53,17 @@ export function SearchServicesPage() {
         {hasFilters
           ? "Não há serviços abertos para estes filtros."
           : "Não há serviços abertos perto de si."}
+      </EmptyState>
+    );
+  } else if (results.data.items.length === 0) {
+    // Página que ficou vazia (ex.: um link antigo para uma página que já não existe). A paginação
+    // não aparece com uma só página, por isso há o caminho de volta.
+    content = (
+      <EmptyState>
+        Esta página já não tem serviços.
+        <Button variant="text" onClick={() => setPage(1)}>
+          Ir para a primeira página
+        </Button>
       </EmptyState>
     );
   } else {

@@ -25,25 +25,25 @@ export function ServiceMeta({
     <ul className={styles.meta}>
       {category && (
         <li>
-          <Wrench size={14} aria-hidden="true" />
+          <Wrench size={14} />
           {category.name}
           {publishedAt && ` · Publicado a ${formatDate(publishedAt)}`}
         </li>
       )}
       {location && (
         <li>
-          <MapPin size={14} aria-hidden="true" />
+          <MapPin size={14} />
           {location}
         </li>
       )}
       {distanceKm !== undefined && (
         <li>
-          {!location && <MapPin size={14} aria-hidden="true" />}
+          {!location && <MapPin size={14} />}
           {formatDistance(distanceKm)}
         </li>
       )}
       <li>
-        <CalendarDays size={14} aria-hidden="true" />
+        <CalendarDays size={14} />
         Disponibilidade: {formatAvailability(requestedStartDate, requestedEndDate)}
       </li>
       {publishedAt && !category && <li>Publicado a {formatDate(publishedAt)}</li>}

@@ -31,12 +31,7 @@ export function SearchServicesForm({ initial, fieldErrors, onSearch }: Props) {
   };
 
   return (
-    <form
-      className={styles.form}
-      noValidate
-      onSubmit={handleSubmit}
-      aria-label="Pesquisar serviços"
-    >
+    <form className={styles.form} noValidate onSubmit={handleSubmit}>
       <div className={styles.category}>
         <CategorySelect
           value={serviceCategoryId}
@@ -54,7 +49,7 @@ export function SearchServicesForm({ initial, fieldErrors, onSearch }: Props) {
       </div>
       <div className={styles.submit}>
         <Button type="submit">
-          <Search size={16} aria-hidden="true" />
+          <Search size={16} />
           Pesquisar
         </Button>
       </div>

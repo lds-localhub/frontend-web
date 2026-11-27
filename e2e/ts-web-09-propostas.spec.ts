@@ -5,8 +5,7 @@ import { createPublicService } from "./fixtures/services.ts";
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-09 — Pesquisar trabalhos e apresentar proposta (RF-F006-01, RF-F011-01, RF-F011-02,
-// RF-F008-07)
+// TS-WEB-09 — Pesquisar trabalhos e apresentar proposta
 //
 // A pesquisa mostra os serviços abertos de todos os testes, por isso o serviço deste teste tem um
 // título único e é procurado pelo título.
@@ -36,7 +35,7 @@ test.describe("TS-WEB-09 Pesquisar trabalhos e apresentar proposta", () => {
       has: page.getByRole("heading", { name: title }),
     });
 
-    await test.step("1. Abrir «Pesquisar serviços» (W36)", async () => {
+    await test.step("1. Abrir «Pesquisar serviços»", async () => {
       await loginViaUi(page, provider.email, provider.password);
       await expect(page).toHaveURL(/\/prestador$/);
       await page
@@ -70,7 +69,7 @@ test.describe("TS-WEB-09 Pesquisar trabalhos e apresentar proposta", () => {
       await expect(page.getByRole("button", { name: "Ver proposta" })).toHaveCount(0);
     });
 
-    await test.step("4. Abrir «As minhas propostas» (W38)", async () => {
+    await test.step("4. Abrir «As minhas propostas»", async () => {
       await page
         .getByRole("navigation", { name: "Principal" })
         .getByRole("link", { name: "As minhas propostas" })
