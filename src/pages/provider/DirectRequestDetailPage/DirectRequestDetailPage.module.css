@@ -1,0 +1,14 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+
+  & > button {
+    align-self: flex-start;
+  }
+}
+
+.proposalLink {
+  align-self: flex-start;
+}

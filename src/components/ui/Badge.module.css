@@ -28,4 +28,9 @@
     background: var(--color-danger-bg);
     color: var(--color-danger);
   }
+
+  &[data-tone="pending"] {
+    background: var(--color-pending-bg);
+    color: var(--color-pending);
+  }
 }

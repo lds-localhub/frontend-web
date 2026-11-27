@@ -1,0 +1,54 @@
+.terms {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.label {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.note {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.amount {
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.text {
+  white-space: pre-line;
+
+  &[data-clamped] {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
+
+.more {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

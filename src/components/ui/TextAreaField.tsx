@@ -1,10 +1,10 @@
 import { Field } from "@base-ui/react/field";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import styles from "./TextAreaField.module.css";
 
 type Props = Omit<ComponentProps<"textarea">, "className"> & {
   label: string;
-  hint?: string;
+  hint?: ReactNode; // texto, ou texto com um contador (ex.: «1 a 100 caracteres · 24/100»)
   error?: string;
 };
 

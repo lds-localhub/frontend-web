@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router";
+import { Link, useLocation } from "react-router";
 import type { Me } from "@/api/types";
 import logo from "@/assets/logo.svg";
 import { AccountMenu } from "./AccountMenu";
@@ -41,6 +41,15 @@ function navOf(me: Me | undefined): NavItem[] {
 
 // Barra superior de todas as páginas: logótipo, navegação do papel e acesso à sessão
 export function Header({ me }: Props) {
+  const { pathname } = useLocation();
+  const nav = navOf(me);
+  // Só fica ativa uma ligação: a mais específica que corresponde ao caminho. Com o NavLink, em
+  // /servicos/novo ficavam ativas «Os meus serviços» (/servicos) e «Criar serviço» ao mesmo tempo.
+  const activeTo = nav
+    .map((item) => item.to)
+    .filter((to) => pathname === to || pathname.startsWith(`${to}/`))
+    .sort((a, b) => b.length - a.length)[0];
+
   return (
     <header className={styles.header}>
       <nav className={styles.nav} aria-label="Principal">
@@ -52,10 +61,15 @@ export function Header({ me }: Props) {
           {me?.role === "ADMIN" && <span className={styles.adminBadge}>Admin</span>}
         </Link>
         <div className={styles.links}>
-          {navOf(me).map((item) => (
-            <NavLink key={item.to} to={item.to} className={styles.navLink}>
+          {nav.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={styles.navLink}
+              aria-current={item.to === activeTo ? "page" : undefined}
+            >
               {item.label}
-            </NavLink>
+            </Link>
           ))}
         </div>
         <div className={styles.session}>

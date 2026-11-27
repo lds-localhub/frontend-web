@@ -7,15 +7,16 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   title: string;
   children: ReactNode;
+  size?: "md" | "lg"; // lg: janela larga, com scroll próprio (ex.: o perfil de um Prestador no W13)
 };
 
 // Janela modal com título (ex.: criar ou editar uma categoria); Esc e o clique fora fecham-na
-export function Modal({ open, onOpenChange, title, children }: Props) {
+export function Modal({ open, onOpenChange, title, children, size = "md" }: Props) {
   return (
     <Dialog.Root open={open} onOpenChange={(next) => onOpenChange(next)}>
       <Dialog.Portal>
         <Dialog.Backdrop className={styles.backdrop} />
-        <Dialog.Popup className={styles.popup}>
+        <Dialog.Popup className={styles.popup} data-size={size}>
           <Dialog.Title className={styles.title}>{title}</Dialog.Title>
           {children}
         </Dialog.Popup>

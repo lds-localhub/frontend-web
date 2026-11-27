@@ -1,4 +1,7 @@
+import { CircleAlert, RotateCw } from "lucide-react";
 import { getErrorMessage } from "@/utils/errors";
+import { Button } from "./Button";
+import styles from "./ErrorState.module.css";
 
 type Props = {
   error: unknown;
@@ -10,11 +13,13 @@ type Props = {
 // desativado enquanto a nova tentativa decorre.
 export function ErrorState({ error, onRetry, retrying }: Props) {
   return (
-    <div role="alert">
-      <p>{getErrorMessage(error)}</p>
-      <button type="button" onClick={onRetry} disabled={retrying}>
+    <div className={styles.error} role="alert">
+      <CircleAlert className={styles.icon} size={22} aria-hidden="true" />
+      <p className={styles.message}>{getErrorMessage(error)}</p>
+      <Button variant="secondary" onClick={onRetry} disabled={retrying}>
+        <RotateCw size={14} aria-hidden="true" />
         Tentar outra vez
-      </button>
+      </Button>
     </div>
   );
 }

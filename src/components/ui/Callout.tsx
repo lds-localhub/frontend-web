@@ -6,7 +6,7 @@ type Props = {
   children: ReactNode;
   icon?: LucideIcon;
   id?: string;
-  tone?: "info" | "warning"; // info: verde claro (por omissão); warning: amarelo (avisos)
+  tone?: "info" | "warning" | "danger"; // info: verde claro (por omissão); warning: amarelo (avisos); danger: vermelho (ex.: serviço cancelado)
 };
 
 // Faixa colorida com uma informação para o utilizador (ex.: o contacto de suporte, um aviso)

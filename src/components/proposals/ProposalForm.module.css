@@ -1,0 +1,47 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  container-type: inline-size;
+}
+
+.title {
+  font-size: 1.25rem;
+}
+
+/* Um campo por linha num cartão estreito; num cartão largo, o valor e a observação lado a lado e as
+   condições por baixo (a ordem no código é sempre valor, condições, observação) */
+.fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@container (min-width: 40rem) {
+  .fields {
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas:
+      "amount obs"
+      "conditions conditions";
+    align-items: start;
+  }
+
+  .amount {
+    grid-area: amount;
+  }
+
+  .obs {
+    grid-area: obs;
+  }
+
+  .conditions {
+    grid-area: conditions;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}

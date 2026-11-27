@@ -61,3 +61,18 @@ export const activationStatusTone: Record<ActivationStatus, Tone> = {
   ACTIVE: "success",
   INACTIVE: "neutral",
 };
+
+// Pendente a roxo, proposta apresentada e aceite a verde, recusada a vermelho, sem efeito a cinzento
+export const directRequestStatusTone: Record<DirectRequestStatus, Tone> = {
+  PENDING: "pending",
+  PROPOSAL_SUBMITTED: "success",
+  DECLINED: "danger",
+  VOID: "neutral",
+};
+
+export const proposalStatusTone: Record<ProposalStatus, Tone> = {
+  PENDING: "pending",
+  ACCEPTED: "success",
+  DECLINED: "danger",
+  VOID: "neutral",
+};

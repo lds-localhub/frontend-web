@@ -19,6 +19,13 @@
   background: var(--color-surface);
   box-shadow: var(--shadow-dialog);
   transform: translate(-50%, -50%);
+
+  &[data-size="lg"] {
+    width: min(64rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    background: var(--color-bg);
+  }
 }
 
 .title {

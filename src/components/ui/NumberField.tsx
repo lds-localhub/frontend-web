@@ -77,7 +77,7 @@ export function NumberField({
           {suffix && <span className={styles.suffix}>{suffix}</span>}
         </BaseNumberField.Group>
       </BaseNumberField.Root>
-      {hint && <Field.Description className={styles.hint}>{hint}</Field.Description>}
+      {hint && !error && <Field.Description className={styles.hint}>{hint}</Field.Description>}
       <Field.Error className={styles.error} match={!!error}>
         {error}
       </Field.Error>

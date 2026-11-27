@@ -1,0 +1,48 @@
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.title {
+  min-width: 0;
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.service {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.serviceTitle {
+  font-weight: 600;
+  font-size: 1.0625rem;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 1.25rem;
+}
+
+.received {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.description {
+  color: var(--color-text-secondary);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.divider {
+  margin: 0.25rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
