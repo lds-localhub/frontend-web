@@ -23,8 +23,8 @@ import { SearchServiceDetailPage } from "@/pages/provider/SearchServiceDetailPag
 import { SearchServicesPage } from "@/pages/provider/SearchServicesPage/SearchServicesPage";
 import { LoginPage } from "@/pages/public/LoginPage";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
-import { ProviderSearchPage } from "@/pages/public/ProviderSearchPage/ProviderSearchPage";
 import { RegisterPage } from "@/pages/public/RegisterPage";
+import { SearchProvidersPage } from "@/pages/public/SearchProvidersPage/SearchProvidersPage";
 import { UnexpectedErrorPage } from "@/pages/public/UnexpectedErrorPage";
 import { RequireAuth, RequireProfile, RequireRole } from "./guards";
 import { RootRedirect } from "./RootRedirect";
@@ -37,7 +37,7 @@ export const router = createBrowserRouter(
       <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registar" element={<RegisterPage />} />
-      <Route path="/pesquisa/prestadores" element={<ProviderSearchPage />} />
+      <Route path="/pesquisa/prestadores" element={<SearchProvidersPage />} />
 
       <Route element={<RequireAuth />}>
         <Route path="/conta/palavra-passe" element={<ChangePasswordPage />} />

@@ -16,11 +16,11 @@ import { homeOf } from "@/utils/homeOf";
 import { parseId } from "@/utils/parseId";
 import { ProviderResultCard } from "./ProviderResultCard";
 import { ProviderResultRow } from "./ProviderResultRow";
-import { ProviderSearchForm } from "./ProviderSearchForm";
-import styles from "./ProviderSearchPage.module.css";
+import { SearchProvidersForm } from "./SearchProvidersForm";
+import styles from "./SearchProvidersPage.module.css";
 
-// Sem categoria, ou sem endereço e sem localização registada → null: sem pedido;
-// sem endereço, o Cliente com localização registada pesquisa a partir dela (E18)
+// Sem categoria, ou sem endereço e sem localização registada, não há pesquisa (null). Sem endereço,
+// o Cliente com localização registada pesquisa a partir dela.
 function readSearchProvidersParams(
   searchParams: URLSearchParams,
   hasRegisteredLocation: boolean,
@@ -33,14 +33,14 @@ function readSearchProvidersParams(
   return { serviceCategoryId, address, page: parseId(searchParams.get("page")) ?? undefined };
 }
 
-// «1 Prestador encontrado, …» / «3 Prestadores encontrados, …»
 function resultsCountText(total: number): string {
   const found = total === 1 ? "1 Prestador encontrado" : `${total} Prestadores encontrados`;
   return `${found}, do mais próximo para o mais distante`;
 }
 
-// W01 (Visitante) e W11 (Cliente): um só componente (RF-F005-01, RF-F005-02)
-export function ProviderSearchPage() {
+// Pesquisa de Prestadores do Visitante e do Cliente, num só componente: o Visitante escreve a
+// morada e vê cartões; o Cliente pode usar a localização registada e vê linhas
+export function SearchProvidersPage() {
   const { data: me } = useMe();
   const isClient = me?.role === "CLIENT";
   const hasRegisteredLocation = isClient && !!me.address;
@@ -54,12 +54,12 @@ export function ProviderSearchPage() {
     return <Navigate to={homeOf(me.role)} replace />;
   }
 
-  // Erros da pesquisa (8.5.3): os 400 com errors vão para os campos do formulário (ex.: morada não
+  // Erros da pesquisa: os 400 com errors vão para os campos do formulário (ex.: morada não
   // reconhecida); os outros aparecem na zona dos resultados. Os filtros nunca desaparecem.
   const fieldErrors = getFieldErrors(results.error);
 
   const form = (
-    <ProviderSearchForm
+    <SearchProvidersForm
       key={searchParams.toString()}
       initial={params}
       hasRegisteredLocation={hasRegisteredLocation}
@@ -68,7 +68,7 @@ export function ProviderSearchPage() {
     />
   );
 
-  // o que aparece nos resultados nas diferentes situações
+  // Sem pesquisa, a indicação; com ela, o carregamento, o erro, o vazio ou os resultados
   let content: ReactNode;
   if (!params) {
     content = <p className={styles.hint}>Escolha a categoria e a localização para pesquisar.</p>;
@@ -123,7 +123,7 @@ export function ProviderSearchPage() {
       </div>
       {!isClient && (
         <div className={styles.signIn}>
-          <UserRound size={18} aria-hidden="true" />
+          <UserRound size={18} />
           <p>Inicie sessão como Cliente para ver o perfil completo e solicitar um serviço.</p>
           <Button to="/login">Iniciar sessão</Button>
         </div>

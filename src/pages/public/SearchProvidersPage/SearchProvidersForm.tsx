@@ -7,15 +7,15 @@ import { AddressField } from "@/components/ui/AddressField";
 import { Button } from "@/components/ui/Button";
 import { useMe } from "@/hooks/useMe";
 import { ReferenceLocationSelect, type ReferenceLocation } from "./ReferenceLocationSelect";
-import styles from "./ProviderSearchForm.module.css";
+import styles from "./SearchProvidersForm.module.css";
 
-export type ProviderSearchFilters = { serviceCategoryId: number; address: string | undefined };
+export type SearchProvidersFilters = { serviceCategoryId: number; address: string | undefined };
 
 type Props = {
   initial: SearchProvidersParams | null;
   hasRegisteredLocation: boolean;
-  fieldErrors: Record<string, string[]> | undefined; // erros por campo do 400 do E18
-  onSearch: (filters: ProviderSearchFilters) => void;
+  fieldErrors: Record<string, string[]> | undefined; // erros por campo do 400 da pesquisa
+  onSearch: (filters: SearchProvidersFilters) => void;
 };
 
 type Draft = {
@@ -24,15 +24,15 @@ type Draft = {
   address: string;
 };
 
-// Mensagens da aplicação (texto A CONFIRMAR, TS-WEB-06)
+// Erros dos filtros em falta, verificados aqui porque sem eles a pesquisa não chega a ser feita
 const categoryRequired = "Escolha uma categoria.";
 const addressRequired = "Indique um endereço para pesquisar.";
 
 // Filtros da pesquisa de Prestadores (categoria e localização de referência), aplicados só em
 // «Pesquisar». Sem categoria, ou sem localização de referência, a pesquisa não é feita e o erro
-// aparece junto ao campo (RF-F005-01, regras 2 e 5). Quem o usa recria-o com uma key quando o URL
+// aparece junto ao campo. Quem o usa recria-o com uma key quando o URL
 // muda, para o rascunho voltar aos valores aplicados.
-export function ProviderSearchForm({
+export function SearchProvidersForm({
   initial,
   hasRegisteredLocation,
   fieldErrors,
@@ -78,12 +78,7 @@ export function ProviderSearchForm({
   );
 
   return (
-    <form
-      className={styles.form}
-      noValidate
-      onSubmit={handleSubmit}
-      aria-label="Pesquisar Prestadores"
-    >
+    <form className={styles.form} noValidate onSubmit={handleSubmit}>
       <div className={styles.fields}>
         <CategorySelect
           value={draft.serviceCategoryId}
@@ -107,7 +102,7 @@ export function ProviderSearchForm({
         )}
         <div className={styles.submit}>
           <Button type="submit">
-            <Search size={16} aria-hidden="true" />
+            <Search size={16} />
             Pesquisar
           </Button>
         </div>

@@ -9,7 +9,7 @@ type Props = {
 };
 
 // Localização de referência do Cliente com localização registada: a registada (por omissão) ou
-// outro endereço, que serve só para esta pesquisa e não altera a registada (RF-F005-02, regras 1 a 3)
+// outro endereço, que serve só para esta pesquisa e não altera a registada
 export function ReferenceLocationSelect({ value, registeredAddress, onChange }: Props) {
   return (
     <Select
