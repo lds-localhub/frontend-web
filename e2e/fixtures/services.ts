@@ -4,8 +4,8 @@ import { address, type AddressKey } from "./addresses.ts";
 import { todayUtc } from "./dates.ts";
 import { categoryIds, type TestProvider } from "./providers.ts";
 
-// Preparação de serviços, solicitações diretas, propostas e avaliações pela API documentada
-// (E20, E25, E28 a E32), sem acesso direto à base de dados. Tudo fica com a data do dia da execução:
+// Preparação de serviços, solicitações diretas, propostas e avaliações pela API,
+// sem acesso direto à base de dados. Tudo fica com a data do dia da execução:
 // o backend não aceita disponibilidades no passado e não deixa alterar as datas de criação.
 
 export type ServiceOptions = {
@@ -56,7 +56,7 @@ async function createService(
   return serviceId;
 }
 
-// E20: serviço com uma solicitação direta a cada um dos perfis indicados; devolve o identificador
+// Serviço com uma solicitação direta a cada um dos perfis indicados; devolve o identificador
 export async function createDirectRequestService(
   request: APIRequestContext,
   client: TestAccount,
@@ -66,7 +66,7 @@ export async function createDirectRequestService(
   return createService(request, client, "DIRECT_REQUEST", professionalProfileIds, options);
 }
 
-// E20: serviço aberto a propostas (trabalho publicado); devolve o identificador
+// Serviço aberto a propostas (trabalho publicado); devolve o identificador
 export async function createPublicService(
   request: APIRequestContext,
   client: TestAccount,
@@ -75,7 +75,7 @@ export async function createPublicService(
   return createService(request, client, "PUBLIC", [], options);
 }
 
-// E25: o Prestador apresenta uma proposta ao serviço; devolve o identificador da proposta
+// O Prestador apresenta uma proposta ao serviço; devolve o identificador da proposta
 export async function submitProposal(
   request: APIRequestContext,
   provider: TestAccount,
@@ -91,7 +91,7 @@ export async function submitProposal(
   return proposalId;
 }
 
-// E28: o Cliente aceita a proposta; o serviço fica atribuído
+// O Cliente aceita a proposta; o serviço fica atribuído
 export async function acceptProposal(
   request: APIRequestContext,
   client: TestAccount,
@@ -103,7 +103,7 @@ export async function acceptProposal(
   );
 }
 
-// E29: o Cliente recusa a proposta; o serviço continua aberto
+// O Cliente recusa a proposta; o serviço continua aberto
 export async function declineProposal(
   request: APIRequestContext,
   client: TestAccount,
@@ -115,7 +115,7 @@ export async function declineProposal(
   );
 }
 
-// E30: o Cliente ou o Prestador contratado cancela o serviço
+// O Cliente ou o Prestador contratado cancela o serviço
 export async function cancelService(
   request: APIRequestContext,
   account: TestAccount,
@@ -127,7 +127,7 @@ export async function cancelService(
   );
 }
 
-// E31: o Cliente marca o serviço atribuído como realizado
+// O Cliente marca o serviço atribuído como realizado
 export async function completeService(
   request: APIRequestContext,
   client: TestAccount,
@@ -139,7 +139,7 @@ export async function completeService(
   );
 }
 
-// E32: o Cliente avalia o serviço realizado (1 a 5 estrelas)
+// O Cliente avalia o serviço realizado (1 a 5 estrelas)
 export async function reviewService(
   request: APIRequestContext,
   client: TestAccount,
@@ -155,7 +155,7 @@ export async function reviewService(
   );
 }
 
-// E20 + E25 + E28: serviço com uma solicitação direta ao Prestador (ou aberto a propostas), em que o
+// Serviço com uma solicitação direta ao Prestador (ou aberto a propostas), em que o
 // Prestador apresenta uma proposta, aceite pelo Cliente: o serviço fica atribuído
 export async function createAssignedService(
   request: APIRequestContext,

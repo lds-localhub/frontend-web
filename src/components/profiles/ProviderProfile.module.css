@@ -38,7 +38,7 @@
   font-size: 0.875rem;
 }
 
-/* Duas colunas como no protótipo; num ecrã estreito, uma por baixo da outra */
+/* Duas colunas; num ecrã estreito, uma por baixo da outra */
 .columns {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));

@@ -21,7 +21,7 @@ export function CreateProfilePage() {
 
   const create = useMutation({
     mutationFn: (body: ProfileInput) =>
-      api<unknown>("/profiles", { method: "POST", body: JSON.stringify(body) }), // E12
+      api<unknown>("/profiles", { method: "POST", body: JSON.stringify(body) }),
     onSuccess: refreshMe,
     onError: (e) => {
       if (!isApiError(e) || (e.status !== 400 && e.status !== 401 && !e.errors)) {

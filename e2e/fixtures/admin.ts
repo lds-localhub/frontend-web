@@ -15,7 +15,7 @@ export function adminPassword(): string {
   return password;
 }
 
-// E02: sessão do Administrador (aplicação web); devolve o token
+// Sessão do Administrador (aplicação web); devolve o token
 export async function loginAsAdmin(request: APIRequestContext): Promise<string> {
   const { token } = await login(request, ADMIN_EMAIL, adminPassword());
   return token;

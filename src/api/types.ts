@@ -1,9 +1,9 @@
-// Tipos da API do LocalHub: cópia em TypeScript da Documentação da API v04.
+// Tipos dos pedidos e das respostas da API do LocalHub.
 // Os instantes ("2026-10-08T18:00:00Z") e as datas sem hora ("2026-10-13") ficam como string;
-// só são convertidos na apresentação, com as funções de utils/format.ts (secção 4.3).
+// só são convertidos na apresentação, com as funções de utils/format.ts.
 
 // ---------------------------------------------------------------------------
-// Estados e papéis (secção 5)
+// Estados e papéis
 // ---------------------------------------------------------------------------
 
 export type Role = "CLIENT" | "PROVIDER" | "ADMIN";
@@ -14,7 +14,7 @@ export type ProposalStatus = "PENDING" | "ACCEPTED" | "DECLINED" | "VOID";
 export type ProposalModel = "DIRECT_REQUEST" | "PUBLIC";
 
 // ---------------------------------------------------------------------------
-// Listas (secção 4.4) e erros (secção 4.6)
+// Listas e erros
 // ---------------------------------------------------------------------------
 
 export type Page<T> = { page: number; pageSize: number; total: number; items: T[] }; // listas paginadas
@@ -29,7 +29,7 @@ export type ProblemDetails = {
   errors?: Record<string, string[]>; // só nos 400 com erros por campo
 };
 
-// Tipos próprios do LocalHub (prefixo https://localhub.local/erros/, secção 4.6)
+// Tipos próprios do LocalHub (prefixo https://localhub.local/erros/)
 export type LocalHubErrorType =
   | "credenciais-invalidas"
   | "conta-desativada"
@@ -53,10 +53,10 @@ export type ProfessionalProfileSummary = ProfessionalProfileRef & {
 };
 
 // ---------------------------------------------------------------------------
-// F001 — Registo, autenticação e autorização
+// Registo, autenticação e autorização
 // ---------------------------------------------------------------------------
 
-// E04 (e user do E02)
+// Utilizador autenticado (também é o user da resposta do início de sessão)
 export type Me = {
   userId: number;
   name: string;
@@ -71,13 +71,13 @@ export type RegisterInput = {
   email: string;
   password: string;
   role: "CLIENT" | "PROVIDER";
-}; // E01
-export type LoginInput = { email: string; password: string; client: "WEB" }; // E02
-export type LoginResult = { token: string; user: Me }; // E02
-export type ChangePasswordInput = { currentPassword: string; newPassword: string }; // E40
+};
+export type LoginInput = { email: string; password: string; client: "WEB" };
+export type LoginResult = { token: string; user: Me };
+export type ChangePasswordInput = { currentPassword: string; newPassword: string };
 
 // ---------------------------------------------------------------------------
-// F002 — Gestão de contas
+// Gestão de contas
 // ---------------------------------------------------------------------------
 
 // Cada alerta só traz os campos do seu tipo: depois de verificar o type,
@@ -86,7 +86,6 @@ export type AccountAlert =
   | { type: "ASSIGNED_CANCELLATIONS"; count: number; total: number }
   | { type: "LOW_AVERAGE_RATING"; averageRating: number; reviewCount: number };
 
-// E05
 export type Account = {
   userId: number;
   name: string;
@@ -96,9 +95,8 @@ export type Account = {
   alerts: AccountAlert[];
 };
 
-export type ResetPasswordResult = { temporaryPassword: string }; // E41
+export type ResetPasswordResult = { temporaryPassword: string };
 
-// E39
 export type AdminSummary = {
   activeAccounts: number;
   inactiveAccounts: number;
@@ -106,17 +104,16 @@ export type AdminSummary = {
 };
 
 // ---------------------------------------------------------------------------
-// F003 — Categorias
+// Categorias
 // ---------------------------------------------------------------------------
 
-export type Category = CategoryRef & { status: ActivationStatus }; // E08
-export type CategoryInput = { name: string }; // E09, E10
+export type Category = CategoryRef & { status: ActivationStatus };
+export type CategoryInput = { name: string };
 
 // ---------------------------------------------------------------------------
-// F004 e F015 — Perfil profissional e localização
+// Perfil profissional e localização
 // ---------------------------------------------------------------------------
 
-// E12, E13, E14
 export type Profile = {
   professionalProfileId: number;
   serviceProviderId: number;
@@ -131,7 +128,6 @@ export type Profile = {
   reviewCount: number;
 };
 
-// E12, E14
 export type ProfileInput = {
   introduction: string;
   contactDetails: string;
@@ -141,7 +137,6 @@ export type ProfileInput = {
   serviceRadiusKm: number;
 };
 
-// E15
 export type Review = {
   reviewId: number;
   rating: number;
@@ -150,13 +145,12 @@ export type Review = {
   creationDate: string;
 };
 
-export type LocationInput = { address: string }; // E16
+export type LocationInput = { address: string };
 
 // ---------------------------------------------------------------------------
-// F005 e F006 — Pesquisas
+// Pesquisas
 // ---------------------------------------------------------------------------
 
-// E18
 export type ProviderSearchItem = {
   professionalProfileId: number;
   name: string;
@@ -168,7 +162,6 @@ export type ProviderSearchItem = {
   withinServiceRadius: boolean;
 };
 
-// E19
 export type SearchServiceItem = {
   serviceId: number;
   title: string;
@@ -182,14 +175,12 @@ export type SearchServiceItem = {
   creationDate: string;
 };
 
-// E38
 export type SearchServiceDetail = SearchServiceItem & { myProposalId: number | null };
 
 // ---------------------------------------------------------------------------
-// F007 a F010 — Serviços, solicitações diretas e propostas
+// Serviços, solicitações diretas e propostas
 // ---------------------------------------------------------------------------
 
-// E20
 export type ServiceInput = {
   proposalModel: ProposalModel;
   serviceCategoryId: number;
@@ -201,7 +192,6 @@ export type ServiceInput = {
   professionalProfileIds: number[] | null;
 };
 
-// E21
 export type ServiceItem = {
   serviceId: number;
   title: string;
@@ -216,7 +206,7 @@ export type ServiceItem = {
   reviewed: boolean;
 };
 
-// Alteração de estado do serviço (E22)
+// Alteração de estado do serviço
 export type ServiceHistoryEntry = {
   previousStatus: ServiceStatus;
   newStatus: ServiceStatus;
@@ -226,7 +216,7 @@ export type ServiceHistoryEntry = {
   changedByRole: "CLIENT" | "PROVIDER";
 };
 
-// Proposta dentro de uma solicitação direta (E22)
+// Proposta dentro de uma solicitação direta
 export type ServiceDirectRequestProposal = {
   proposalId: number;
   amount: number;
@@ -237,7 +227,7 @@ export type ServiceDirectRequestProposal = {
   decisionDate: string | null;
 };
 
-// Solicitação direta de um serviço (E22)
+// Solicitação direta de um serviço
 export type ServiceDirectRequest = {
   directRequestId: number;
   status: DirectRequestStatus;
@@ -247,12 +237,12 @@ export type ServiceDirectRequest = {
   proposal: ServiceDirectRequestProposal | null;
 };
 
-// Proposta de um trabalho publicado (E22)
+// Proposta de um trabalho publicado
 export type ServiceProposal = ServiceDirectRequestProposal & {
   professionalProfile: ProfessionalProfileSummary;
 };
 
-// E22 (e resposta do E20)
+// Detalhe do serviço do Cliente (também é a resposta da criação do serviço)
 export type ServiceDetail = {
   serviceId: number;
   title: string;
@@ -272,7 +262,6 @@ export type ServiceDetail = {
   proposals: ServiceProposal[];
 };
 
-// E23
 export type DirectRequestItem = {
   directRequestId: number;
   status: DirectRequestStatus;
@@ -287,7 +276,6 @@ export type DirectRequestItem = {
   };
 };
 
-// E36
 export type DirectRequestDetail = {
   directRequestId: number;
   status: DirectRequestStatus;
@@ -313,10 +301,9 @@ export type DirectRequestDetail = {
   proposalId: number | null;
 };
 
-// E25 (obs opcional: não é enviado quando vazio)
+// A observação é opcional e não é enviada quando está vazia
 export type ProposalInput = { amount: number; conditions: string; obs?: string };
 
-// E27
 export type ProposalItem = {
   proposalId: number;
   amount: number;
@@ -332,7 +319,6 @@ export type ProposalItem = {
   };
 };
 
-// E37
 export type ProposalDetail = {
   proposalId: number;
   amount: number;
@@ -357,11 +343,11 @@ export type ProposalDetail = {
   };
 };
 
-// E32 (comment opcional: não é enviado quando vazio)
+// O comentário é opcional e não é enviado quando está vazio
 export type ReviewInput = { rating: number; comment?: string };
 
 // ---------------------------------------------------------------------------
-// F013 e F014 — Relatórios
+// Relatórios
 // ---------------------------------------------------------------------------
 
 export type CategoryCount = CategoryRef & { count: number };
@@ -377,7 +363,6 @@ export type CompletedServiceRow = {
 
 export type MonthlyRating = { month: string; reviewCount: number; averageRating: number | null };
 
-// E33
 export type ClientReport = {
   contractedServices: number;
   byCategory: CategoryCount[];
@@ -386,7 +371,6 @@ export type ClientReport = {
   completedHistory: CompletedServiceRow[];
 };
 
-// E34
 export type ProviderReport = {
   completedServices: number;
   byCategory: CategoryCount[];
@@ -398,23 +382,23 @@ export type ProviderReport = {
 };
 
 // ---------------------------------------------------------------------------
-// Parâmetros de query (linha «Parâmetros (query)» de cada endpoint)
+// Parâmetros de query das listas e das pesquisas
 // ---------------------------------------------------------------------------
 
-type Paging = { page?: number; pageSize?: number }; // secção 4.4
+type Paging = { page?: number; pageSize?: number };
 
-export type AccountsParams = Paging & { role?: "CLIENT" | "PROVIDER"; status?: ActivationStatus }; // E05
-export type ReviewsParams = Paging; // E15
+export type AccountsParams = Paging & { role?: "CLIENT" | "PROVIDER"; status?: ActivationStatus };
+export type ReviewsParams = Paging;
 export type SearchProvidersParams = Paging & {
   serviceCategoryId: number;
   address?: string;
   name?: string;
-}; // E18
+};
 export type SearchServicesParams = Paging & {
   serviceCategoryId?: number;
   withinServiceRadius?: boolean;
-}; // E19
-export type ServicesParams = Paging & { status?: ServiceStatus }; // E21
-export type DirectRequestsParams = Paging & { status?: DirectRequestStatus }; // E23
-export type ProposalsParams = Paging & { status?: ProposalStatus }; // E27
-export type ReportParams = { startDate?: string; endDate?: string }; // E33, E34 (AAAA-MM-DD)
+};
+export type ServicesParams = Paging & { status?: ServiceStatus };
+export type DirectRequestsParams = Paging & { status?: DirectRequestStatus };
+export type ProposalsParams = Paging & { status?: ProposalStatus };
+export type ReportParams = { startDate?: string; endDate?: string }; // datas AAAA-MM-DD

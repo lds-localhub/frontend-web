@@ -3,7 +3,7 @@ import { ApiError } from "./client";
 
 // Mantêm-se os valores por omissão (staleTime: 0, gcTime: 5 min, refetchOnWindowFocus e refetchOnMount).
 // As mutações ficam com retry: 0 (valor por omissão): um pedido de alteração nunca é repetido
-// automaticamente, nem depois de uma falha de rede (RNF-23).
+// automaticamente, nem depois de uma falha de rede, para não ser feito duas vezes.
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

@@ -5,7 +5,7 @@ import { createDirectRequestService } from "./fixtures/services.ts";
 import { loginViaUi } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-08 — Responder a solicitações diretas (RF-F007-09, RF-F007-01, RF-F007-02; RNF-08)
+// TS-WEB-08 — Responder a solicitações diretas
 //
 // O Prestador é criado neste teste, por isso só tem as duas solicitações preparadas pela API. As
 // listas estão ordenadas da mais recente para a mais antiga: a primeira é a do segundo serviço criado.
@@ -37,7 +37,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       }
     });
 
-    await test.step("1. Abrir o início do Prestador (W30)", async () => {
+    await test.step("1. Abrir o início do Prestador", async () => {
       await loginViaUi(page, provider.email, provider.password);
       await expect(page).toHaveURL(/\/prestador$/);
       await expect(page.getByRole("link", { name: /2 solicitações pendentes/ })).toBeVisible();
@@ -73,7 +73,7 @@ test.describe("TS-WEB-08 Responder a solicitações diretas", () => {
       expect(proposalRequests).toBe(1);
     });
 
-    await test.step("5. Voltar ao início (W30)", async () => {
+    await test.step("5. Voltar ao início", async () => {
       await page.getByRole("link", { name: "LocalHub" }).click();
       await expect(page).toHaveURL(/\/prestador$/);
       await expect(page.getByRole("link", { name: /1 solicitação pendente/ })).toBeVisible();

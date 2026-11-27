@@ -8,7 +8,7 @@ type Props = Omit<ComponentProps<"button">, "className"> & {
   to?: string; // com destino, é uma ligação do router com o aspeto de botão (ex.: «Criar conta»)
 };
 
-// Botão com o aspeto do protótipo: principal (verde), secundário (contorno), de perigo (vermelho,
+// Botão principal (verde), secundário (contorno), de perigo (vermelho,
 // cheio ou só com contorno) ou só texto
 export function Button({ variant = "primary", to, type = "button", ...rest }: Props) {
   if (to !== undefined) {

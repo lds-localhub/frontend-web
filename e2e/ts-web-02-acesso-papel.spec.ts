@@ -3,7 +3,7 @@ import { createProviderWithProfile } from "./fixtures/providers.ts";
 import { loginViaUi, openWithSession } from "./fixtures/session.ts";
 import { expect, test } from "./fixtures/test.ts";
 
-// TS-WEB-02 — Credenciais erradas e acesso por papel (RF-F001-03)
+// TS-WEB-02 — Credenciais erradas e acesso por papel
 
 test.describe("TS-WEB-02 Credenciais erradas e acesso por papel", () => {
   test("credenciais erradas no início de sessão e guardas das páginas por papel", async ({

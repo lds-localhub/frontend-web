@@ -19,7 +19,7 @@ function messagesOf(result: ReturnType<typeof validate>, field: string): string[
   return result.error.issues.filter((i) => i.path[0] === field).map((i) => i.message);
 }
 
-describe("regra da palavra-passe nova (W23)", () => {
+describe("regra da palavra-passe nova", () => {
   it.each([
     ["8 caracteres, com letra e algarismo", "Nova2027"],
     ["só minúsculas e algarismos", "abcdefg1"],

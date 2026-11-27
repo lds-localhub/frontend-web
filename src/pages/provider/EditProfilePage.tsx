@@ -38,7 +38,7 @@ export function EditProfilePage() {
   // da morada e do raio do perfil
   const edit = useMutation({
     mutationFn: (body: ProfileInput) =>
-      api<unknown>("/profiles/me", { method: "PUT", body: JSON.stringify(body) }), // E14
+      api<unknown>("/profiles/me", { method: "PUT", body: JSON.stringify(body) }),
     onSuccess: () =>
       Promise.all([
         qc.invalidateQueries({ queryKey: queryKeys.profiles.all, refetchType: "all" }),

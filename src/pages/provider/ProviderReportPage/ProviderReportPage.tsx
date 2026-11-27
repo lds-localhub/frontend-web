@@ -24,7 +24,7 @@ export function ProviderReportPage() {
 
   const report = useQuery({
     queryKey: queryKeys.reports.provider(params),
-    queryFn: () => api<ProviderReport>(`/reports/provider?${toQueryString(params)}`), // E34
+    queryFn: () => api<ProviderReport>(`/reports/provider?${toQueryString(params)}`),
     placeholderData: keepPreviousData,
   });
 
