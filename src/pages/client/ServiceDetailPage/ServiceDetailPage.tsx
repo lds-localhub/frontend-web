@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import type { ServiceDetail } from "@/api/types";
@@ -53,14 +53,15 @@ function showActionError(e: unknown) {
   }
 }
 
-// W15 (solicitações diretas) e W18 (aberto a propostas): um só componente; o proposalModel escolhe a
-// secção de baixo. As decisões do Cliente pedem confirmação (W41); a avaliação abre uma janela (W19).
+// Detalhe do serviço do Cliente, nas duas modalidades: o proposalModel escolhe a secção de baixo
+// (solicitações ou propostas). As decisões pedem confirmação; a avaliação abre uma janela.
 export function ServiceDetailPage() {
   const id = parseId(useParams().serviceId);
   const navigate = useNavigate();
+  const location = useLocation();
   const qc = useQueryClient();
   const { data: me } = useMe();
-  // O E22 só é usado aqui, por isso a query fica no componente, sem hook (7.1)
+  // O detalhe só é pedido nesta página, por isso a query fica no componente, sem hook
   const service = useQuery({
     queryKey: queryKeys.services.detail(id!),
     queryFn: () => api<ServiceDetail>(`/services/${id}`),
@@ -70,7 +71,7 @@ export function ServiceDetailPage() {
   const [confirming, setConfirming] = useState<Confirming | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
 
-  // O estado do serviço e das propostas; atribuído ou realizado, muda também os relatórios (8.3)
+  // O estado do serviço e das propostas; atribuído ou realizado, muda também os relatórios
   const refreshServices = () =>
     qc.invalidateQueries({ queryKey: queryKeys.services.all, refetchType: "all" });
   const refreshServicesAndReports = () =>
@@ -88,26 +89,30 @@ export function ServiceDetailPage() {
 
   const accept = useMutation({
     mutationFn: (proposalId: number) =>
-      api<unknown>(`/proposals/${proposalId}/accept`, { method: "POST" }), // E28
+      api<unknown>(`/proposals/${proposalId}/accept`, { method: "POST" }),
     onSuccess: refreshServicesAndReports,
     onError: onActionError(refreshServicesAndReports),
   });
   const decline = useMutation({
     mutationFn: (proposalId: number) =>
-      api<unknown>(`/proposals/${proposalId}/decline`, { method: "POST" }), // E29
+      api<unknown>(`/proposals/${proposalId}/decline`, { method: "POST" }),
     onSuccess: refreshServices,
     onError: onActionError(refreshServices),
   });
   const complete = useMutation({
-    mutationFn: () => api<unknown>(`/services/${id}/complete`, { method: "POST" }), // E31
+    mutationFn: () => api<unknown>(`/services/${id}/complete`, { method: "POST" }),
     onSuccess: refreshServicesAndReports,
     onError: onActionError(refreshServicesAndReports),
   });
-  const cancel = useCancelService(); // E30
+  const cancel = useCancelService();
   const pending = accept.isPending || decline.isPending || complete.isPending || cancel.isPending;
 
+  // Volta à página de onde veio (a lista com o mesmo filtro e página, ou o início); aberto
+  // diretamente, sem página anterior na aplicação, vai para os serviços
+  const handleBackClick = () => (location.key === "default" ? navigate("/servicos") : navigate(-1));
+
   if (id === null) {
-    return <NotFoundPage />; // ID inválido no URL (8.1)
+    return <NotFoundPage />; // ID inválido no URL
   }
   if (service.isPending) {
     return <Loading />;
@@ -150,7 +155,7 @@ export function ServiceDetailPage() {
         }
       : undefined;
 
-  // Título, texto, botão e ação da confirmação aberta (textos das confirmações, 12.6). A janela fecha
+  // Título, texto, botão e ação da confirmação aberta A janela fecha
   // quando a ação termina, com sucesso ou com erro.
   const close = { onSettled: () => setConfirming(null) };
   const confirmationOf = (c: Confirming) => {
@@ -204,7 +209,7 @@ export function ServiceDetailPage() {
   return (
     <div className={styles.page}>
       <title>{`${s.title} · LocalHub`}</title>
-      <BackLink onClick={() => navigate("/servicos")}>Os meus serviços</BackLink>
+      <BackLink onClick={handleBackClick}>Os meus serviços</BackLink>
       <ServiceOverview
         service={s}
         currentUserId={me?.userId}
