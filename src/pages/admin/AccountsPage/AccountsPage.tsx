@@ -119,7 +119,7 @@ export function AccountsPage() {
   const hasFilters = params.role !== undefined || params.status !== undefined;
 
   const columns: Column<Account>[] = [
-    { header: "Nome", cell: (a) => a.name, rowHeader: true },
+    { header: "Nome", cell: (a) => a.name },
     { header: "E-mail", cell: (a) => a.email },
     { header: "Papel", cell: (a) => roleLabels[a.role] },
     {

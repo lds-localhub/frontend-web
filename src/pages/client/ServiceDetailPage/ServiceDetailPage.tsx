@@ -1,18 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { api } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
-import type { ServiceDetail } from "@/api/types";
+import type { ServiceDetail, ServiceStatus } from "@/api/types";
+import {
+  acceptProposalText,
+  cancelServiceText,
+  completeServiceText,
+  declineProposalText,
+} from "@/components/services/serviceConfirmTexts";
 import { BackLink } from "@/components/ui/BackLink";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Loading } from "@/components/ui/Loading";
+import { toast } from "@/components/ui/Toast";
+import { useCancelService } from "@/hooks/useCancelService";
 import { useMe } from "@/hooks/useMe";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
-import { isApiError } from "@/utils/errors";
+import { getErrorMessage, isApiError } from "@/utils/errors";
 import { parseId } from "@/utils/parseId";
 import { DirectRequestCard } from "./DirectRequestCard";
 import { ProposalCard } from "./ProposalCard";
+import { ReviewDialog } from "./ReviewDialog";
 import { ServiceOverview } from "./ServiceOverview";
 import styles from "./ServiceDetailPage.module.css";
 
@@ -24,21 +35,102 @@ function acceptedProviderOf(service: ServiceDetail): string | undefined {
   return (request ?? proposal)?.professionalProfile.name;
 }
 
-// W15 (solicitações diretas) e W18 (aberto a propostas): um só componente; o proposalModel escolhe a
-// secção de baixo. Na tarefa B é só de consulta; as ações (E28 a E32) ficam para a tarefa C.
+// Nome do Prestador de uma proposta, para o título da confirmação
+function providerOfProposal(service: ServiceDetail, proposalId: number): string {
+  const request = service.directRequests.find((r) => r.proposal?.proposalId === proposalId);
+  const proposal = service.proposals.find((p) => p.proposalId === proposalId);
+  return (request ?? proposal)?.professionalProfile.name ?? "";
+}
+
+// Decisão à espera de confirmação: aceitar ou recusar uma proposta, cancelar ou marcar como realizado
+// (o cancelar guarda o estado do serviço, porque o texto depende dele e o serviço muda ao cancelar)
+type Confirming =
+  | { action: "accept" | "decline"; proposalId: number }
+  | { action: "cancel"; status: ServiceStatus }
+  | { action: "complete" };
+
+// Mensagem de qualquer erro da ação, exceto o 401 (sessão terminada, tratado no cliente da API).
+// As decisões não têm formulário, por isso um 400 ou erros de campo também aparecem aqui.
+function showActionError(e: unknown) {
+  if (!isApiError(e) || e.status !== 401) {
+    toast(getErrorMessage(e));
+  }
+}
+
+// Detalhe do serviço do Cliente, nas duas modalidades: o proposalModel escolhe a secção de baixo
+// (solicitações ou propostas). As decisões pedem confirmação; a avaliação abre uma janela.
 export function ServiceDetailPage() {
+  // Um componente por serviço: ao passar de um serviço para outro sem mudar de página (ex.: com o
+  // «voltar» do browser), as janelas abertas não passam para o outro serviço
+  const { serviceId } = useParams();
+  return <ServiceDetail key={serviceId} />;
+}
+
+function ServiceDetail() {
   const id = parseId(useParams().serviceId);
   const navigate = useNavigate();
+  const location = useLocation();
+  const qc = useQueryClient();
   const { data: me } = useMe();
-  // O E22 só é usado aqui, por isso a query fica no componente, sem hook (7.1)
+  // O detalhe só é pedido nesta página, por isso a query fica no componente, sem hook
   const service = useQuery({
     queryKey: queryKeys.services.detail(id!),
     queryFn: () => api<ServiceDetail>(`/services/${id}`),
     enabled: id !== null,
   });
 
+  // A decisão a confirmar não se apaga ao fechar, para a janela não ficar vazia enquanto fecha
+  const [confirming, setConfirming] = useState<Confirming | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const openConfirm = (c: Confirming) => {
+    setConfirming(c);
+    setDialogOpen(true);
+  };
+  const [reviewOpen, setReviewOpen] = useState(false);
+
+  // O estado do serviço e das propostas; atribuído ou realizado, muda também os relatórios
+  const refreshServices = () =>
+    qc.invalidateQueries({ queryKey: queryKeys.services.all, refetchType: "all" });
+  const refreshServicesAndReports = () =>
+    Promise.all([
+      refreshServices(),
+      qc.invalidateQueries({ queryKey: queryKeys.reports.all, refetchType: "all" }),
+    ]);
+  // Estado diferente no servidor (ex.: o Prestador cancelou entretanto): atualiza o ecrã
+  const onActionError = (refresh: () => Promise<unknown>) => (e: unknown) => {
+    showActionError(e);
+    if (isApiError(e) && e.status === 409) {
+      return refresh();
+    }
+  };
+
+  const accept = useMutation({
+    mutationFn: (proposalId: number) =>
+      api<unknown>(`/proposals/${proposalId}/accept`, { method: "POST" }),
+    onSuccess: refreshServicesAndReports,
+    onError: onActionError(refreshServicesAndReports),
+  });
+  const decline = useMutation({
+    mutationFn: (proposalId: number) =>
+      api<unknown>(`/proposals/${proposalId}/decline`, { method: "POST" }),
+    onSuccess: refreshServices,
+    onError: onActionError(refreshServices),
+  });
+  const complete = useMutation({
+    mutationFn: () => api<unknown>(`/services/${id}/complete`, { method: "POST" }),
+    onSuccess: refreshServicesAndReports,
+    onError: onActionError(refreshServicesAndReports),
+  });
+  const cancel = useCancelService();
+  const pending = accept.isPending || decline.isPending || complete.isPending || cancel.isPending;
+
+  // Aberto a partir de «Os meus serviços», volta a essa lista com o mesmo filtro e página; aberto
+  // de outro sítio (início, criar serviço, link direto), vai para a lista
+  const fromList = (location.state as { fromList?: boolean } | null)?.fromList === true;
+  const handleBackClick = () => (fromList ? navigate(-1) : navigate("/servicos"));
+
   if (id === null) {
-    return <NotFoundPage />; // ID inválido no URL (8.1)
+    return <NotFoundPage />; // ID inválido no URL
   }
   if (service.isPending) {
     return <Loading />;
@@ -71,14 +163,79 @@ export function ServiceDetailPage() {
   const voidedByCancellationAt =
     last?.newStatus === "CANCELLED" && last.previousStatus === "OPEN" ? last.changedAt : undefined;
 
+  // Só com o serviço aberto se aceitam ou recusam propostas
+  const decision =
+    s.status === "OPEN"
+      ? {
+          onAccept: (proposalId: number) => openConfirm({ action: "accept", proposalId }),
+          onDecline: (proposalId: number) => openConfirm({ action: "decline", proposalId }),
+          disabled: pending,
+        }
+      : undefined;
+
+  // Título, texto, botão e ação da confirmação aberta A janela fecha
+  // quando a ação termina, com sucesso ou com erro.
+  const close = { onSettled: () => setDialogOpen(false) };
+  const confirmationOf = (c: Confirming) => {
+    switch (c.action) {
+      case "accept":
+        return {
+          title: `Aceitar a proposta de ${providerOfProposal(s, c.proposalId)}?`,
+          text: acceptProposalText(s.proposalModel),
+          confirmLabel: "Confirmar",
+          danger: false,
+          run: () =>
+            accept.mutate(c.proposalId, { ...close, onSuccess: () => toast("Proposta aceite.") }),
+        };
+      case "decline":
+        return {
+          title: `Recusar a proposta de ${providerOfProposal(s, c.proposalId)}?`,
+          text: declineProposalText,
+          confirmLabel: "Recusar",
+          danger: true,
+          run: () =>
+            decline.mutate(c.proposalId, {
+              ...close,
+              onSuccess: () => toast("Proposta recusada."),
+            }),
+        };
+      case "complete":
+        return {
+          title: `Marcar o serviço «${s.title}» como realizado?`,
+          text: completeServiceText,
+          confirmLabel: "Marcar como realizado",
+          danger: false,
+          run: () =>
+            complete.mutate(undefined, {
+              ...close,
+              onSuccess: () => toast("Serviço marcado como realizado."),
+            }),
+        };
+      case "cancel":
+        return {
+          title: `Cancelar o serviço «${s.title}»?`,
+          text: cancelServiceText(c.status),
+          confirmLabel: "Cancelar serviço",
+          danger: true,
+          run: () =>
+            cancel.mutate(s.serviceId, { ...close, onSuccess: () => toast("Serviço cancelado.") }),
+        };
+    }
+  };
+  const dialog = confirming && confirmationOf(confirming);
+
   return (
     <div className={styles.page}>
       <title>{`${s.title} · LocalHub`}</title>
-      <BackLink onClick={() => navigate("/servicos")}>Os meus serviços</BackLink>
+      <BackLink onClick={handleBackClick}>Os meus serviços</BackLink>
       <ServiceOverview
         service={s}
         currentUserId={me?.userId}
         acceptedProviderName={acceptedProviderName}
+        onCancel={() => openConfirm({ action: "cancel", status: s.status })}
+        onComplete={() => openConfirm({ action: "complete" })}
+        onReview={() => setReviewOpen(true)}
+        disabled={pending}
       />
 
       {s.proposalModel === "DIRECT_REQUEST" ? (
@@ -90,6 +247,7 @@ export function ServiceDetailPage() {
               request={r}
               acceptedProviderName={acceptedProviderName}
               voidedByCancellationAt={voidedByCancellationAt}
+              decision={decision}
             />
           ))}
         </section>
@@ -104,10 +262,31 @@ export function ServiceDetailPage() {
                 key={p.proposalId}
                 proposal={p}
                 voidedByCancellationAt={voidedByCancellationAt}
+                decision={decision}
               />
             ))
           )}
         </section>
+      )}
+
+      <ConfirmDialog
+        open={dialogOpen}
+        title={dialog?.title ?? ""}
+        confirmLabel={dialog?.confirmLabel ?? ""}
+        onConfirm={() => dialog?.run()}
+        onClose={() => setDialogOpen(false)}
+        pending={pending}
+        danger={dialog?.danger}
+      >
+        <p>{dialog?.text}</p>
+      </ConfirmDialog>
+
+      {reviewOpen && (
+        <ReviewDialog
+          serviceId={s.serviceId}
+          providerName={acceptedProviderName ?? "o Prestador"}
+          onClose={() => setReviewOpen(false)}
+        />
       )}
     </div>
   );

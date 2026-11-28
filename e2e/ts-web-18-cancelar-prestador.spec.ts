@@ -41,7 +41,7 @@ test.describe("TS-WEB-18 Cancelar serviços (Prestador)", () => {
       proposalModel: "DIRECT_REQUEST",
     });
 
-    await test.step("1. A partir da lista. Em «As minhas propostas», «Cancelar» num dos serviços", async () => {
+    await test.step("1. A partir da lista. Em «As minhas propostas» (W38), «Cancelar» num dos serviços", async () => {
       await loginViaUi(page, provider.email, provider.password);
       await expect(page).toHaveURL(/\/prestador$/);
       await page

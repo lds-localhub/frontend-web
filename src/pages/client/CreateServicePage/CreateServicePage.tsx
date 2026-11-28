@@ -50,7 +50,9 @@ export function CreateServicePage() {
     // logo, sem «A carregar…» (é pedido outra vez em segundo plano, para ficar atualizado)
     qc.setQueryData(queryKeys.services.detail(service.serviceId), service);
     toast("Serviço criado.");
-    navigate(`/servicos/${service.serviceId}`);
+    // O detalhe substitui o formulário no histórico: voltar atrás não regressa a um formulário já
+    // enviado, que podia criar o serviço outra vez
+    navigate(`/servicos/${service.serviceId}`, { replace: true });
   };
 
   // Sem página anterior na aplicação (formulário aberto diretamente), vai para os serviços

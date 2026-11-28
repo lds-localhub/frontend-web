@@ -16,7 +16,7 @@ test.describe("TS-WEB-17 Rede indisponível", () => {
     const success = page.getByText("Palavra-passe alterada.");
     const save = page.getByRole("button", { name: "Guardar" });
 
-    await test.step("1. Antes do pedido, consulta: relatório sem rede → «Aplicar»", async () => {
+    await test.step("1. Antes do pedido, consulta. Abrir o relatório (W20) com rede; desligar a rede; escolher um período → «Aplicar»", async () => {
       await loginViaUi(page, client.email, client.password);
       await expect(page).toHaveURL(/\/cliente$/);
       await page.getByRole("link", { name: "Relatório", exact: true }).click();
@@ -29,7 +29,7 @@ test.describe("TS-WEB-17 Rede indisponível", () => {
       await expect(networkMessage).toBeVisible({ timeout: 15_000 });
     });
 
-    await test.step("2. Antes do pedido, alteração: alterar a palavra-passe sem rede", async () => {
+    await test.step("2. Antes do pedido, alteração. Ligar a rede; abrir «Alterar palavra-passe» (W23); desligar a rede; preencher e «Guardar»", async () => {
       await context.setOffline(false);
       await page.getByRole("button", { name: /Menu da conta/ }).click();
       await page.getByRole("menuitem", { name: "Alterar palavra-passe" }).click();
@@ -46,7 +46,7 @@ test.describe("TS-WEB-17 Rede indisponível", () => {
       await expect(networkMessage).toBeHidden({ timeout: 15_000 });
     });
 
-    await test.step("3. Durante a operação, alteração: a ligação cai durante o pedido", async () => {
+    await test.step("3. Durante a operação, alteração. Ligar a rede; «Guardar» outra vez, com a ligação a cair durante o pedido (o teste corta esse pedido)", async () => {
       await context.setOffline(false);
       // O pedido sai da aplicação e é cortado antes de chegar ao backend
       await page.route("**/api/users/me/password", (route) => route.abort("internetdisconnected"));
@@ -56,7 +56,7 @@ test.describe("TS-WEB-17 Rede indisponível", () => {
       await page.unroute("**/api/users/me/password");
     });
 
-    await test.step("4. Sem envio posterior: terminar sessão e entrar com a palavra-passe antiga", async () => {
+    await test.step("4. Sem envio posterior. Com a rede reposta, terminar sessão; iniciar sessão com a palavra-passe Teste2026", async () => {
       await logoutViaUi(page);
       await expect(page).toHaveURL(/\/login$/);
       await loginViaUi(page, client.email, client.password);

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { api, toQueryString } from "@/api/client";
 import { queryKeys } from "@/api/queryKeys";
 import type { Page, ProposalItem, ProposalStatus, ProposalsParams } from "@/api/types";
-import { CancelServiceDialog } from "@/components/proposals/CancelServiceDialog";
+import { CancelServiceDialog } from "@/components/services/CancelServiceDialog";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -50,9 +50,10 @@ export function MyProposalsPage() {
     placeholderData: keepPreviousData,
   });
   const cancel = useCancelService();
-  const [confirmingId, setConfirmingId] = useState<number | null>(null);
-
-  const confirming = proposals.data?.items.find((p) => p.proposalId === confirmingId);
+  // A linha a confirmar fica guardada como estava quando se carregou em «Cancelar», e não se apaga
+  // ao fechar: a janela não muda de texto quando a lista atualiza nem fica vazia enquanto fecha
+  const [confirming, setConfirming] = useState<ProposalItem | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   // Os botões ficam desativados enquanto a lista atualiza ou o cancelamento decorre
   const busy = proposals.isFetching || cancel.isPending;
 
@@ -62,12 +63,12 @@ export function MyProposalsPage() {
     }
     cancel.mutate(confirming.service.serviceId, {
       onSuccess: () => toast("Serviço cancelado."),
-      onSettled: () => setConfirmingId(null),
+      onSettled: () => setConfirmOpen(false),
     });
   };
 
   const columns: Column<ProposalItem>[] = [
-    { header: "Serviço", cell: (p) => p.service.title, rowHeader: true, clamp: true },
+    { header: "Serviço", cell: (p) => p.service.title, clamp: true },
     { header: "Cliente", cell: (p) => p.service.clientName },
     { header: "Categoria", cell: (p) => p.service.serviceCategory.name },
     {
@@ -98,7 +99,10 @@ export function MyProposalsPage() {
             <Button
               variant="danger-outline"
               disabled={busy}
-              onClick={() => setConfirmingId(p.proposalId)}
+              onClick={() => {
+                setConfirming(p);
+                setConfirmOpen(true);
+              }}
             >
               Cancelar
             </Button>
@@ -158,11 +162,11 @@ export function MyProposalsPage() {
       )}
 
       <CancelServiceDialog
-        open={confirming !== undefined}
+        open={confirmOpen}
         serviceTitle={confirming?.service.title ?? ""}
         pending={cancel.isPending}
         onConfirm={handleConfirmCancel}
-        onClose={() => setConfirmingId(null)}
+        onClose={() => setConfirmOpen(false)}
       />
     </div>
   );

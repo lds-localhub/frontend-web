@@ -2,6 +2,7 @@ import type { ServiceDirectRequest } from "@/api/types";
 import { ProposalTerms } from "@/components/proposals/ProposalTerms";
 import { formatDate } from "@/utils/format";
 import { directRequestStatusLabels, directRequestStatusTone } from "@/utils/labels";
+import { ProposalDecision, type ProposalDecisionHandlers } from "./ProposalDecision";
 import { ProviderSide } from "./ProviderSide";
 import styles from "./ResponseCard.module.css";
 
@@ -9,15 +10,17 @@ type Props = {
   request: ServiceDirectRequest;
   acceptedProviderName: string | undefined; // Prestador da proposta aceite no serviço, se houver
   voidedByCancellationAt: string | undefined; // data do cancelamento, se foi cancelado ainda aberto
+  decision?: ProposalDecisionHandlers; // só com o serviço aberto: aceitar e recusar a proposta pendente
 };
 
-// Uma solicitação direta (W15): o Prestador e o estado à esquerda; ao centro a proposta ou, sem
-// proposta, a mensagem do estado (textos do protótipo). Só de consulta: aceitar e recusar ficam para
-// a tarefa C.
+// Uma solicitação direta: o Prestador e o estado à esquerda; ao centro a proposta ou, sem
+// proposta, a mensagem do estado; com a proposta pendente e o serviço aberto,
+// «Aceitar proposta» e «Recusar proposta».
 export function DirectRequestCard({
   request,
   acceptedProviderName,
   voidedByCancellationAt,
+  decision,
 }: Props) {
   const { proposal } = request;
   const dates =
@@ -40,8 +43,10 @@ export function DirectRequestCard({
       : "Ficou sem efeito quando cancelou o serviço.",
   };
 
+  const canDecide = decision !== undefined && proposal?.status === "PENDING";
+
   return (
-    <article className={styles.card}>
+    <article className={styles.card} data-decision={canDecide || undefined}>
       <ProviderSide
         provider={request.professionalProfile}
         status={{
@@ -55,6 +60,7 @@ export function DirectRequestCard({
       ) : (
         <p className={styles.message}>{messages[request.status]}</p>
       )}
+      {canDecide && <ProposalDecision proposalId={proposal.proposalId} {...decision} />}
     </article>
   );
 }

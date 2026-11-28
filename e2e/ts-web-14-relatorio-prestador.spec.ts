@@ -80,7 +80,7 @@ test.describe("TS-WEB-14 Relatório do prestador", () => {
       await expect(monthRow).toContainText("5,0");
     };
 
-    await test.step("1. Abrir o relatório do Prestador", async () => {
+    await test.step("1. Abrir o relatório do Prestador (W39)", async () => {
       await openWithSession(page, provider.token);
       await page.goto("/prestador");
       await page.getByRole("link", { name: "Relatório", exact: true }).click();

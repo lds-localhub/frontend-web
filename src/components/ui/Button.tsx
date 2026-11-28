@@ -6,17 +6,18 @@ import styles from "./Button.module.css";
 type Props = Omit<ComponentProps<"button">, "className"> & {
   variant?: "primary" | "secondary" | "danger" | "danger-outline" | "text";
   to?: string; // com destino, é uma ligação do router com o aspeto de botão (ex.: «Criar conta»)
+  state?: unknown; // só com destino: estado da navegação (ex.: de que lista se abriu o detalhe)
 };
 
 // Botão principal (verde), secundário (contorno), de perigo (vermelho,
 // cheio ou só com contorno) ou só texto
-export function Button({ variant = "primary", to, type = "button", ...rest }: Props) {
+export function Button({ variant = "primary", to, state, type = "button", ...rest }: Props) {
   if (to !== undefined) {
     return (
       <BaseButton
         {...rest}
         nativeButton={false}
-        render={<Link to={to} />}
+        render={<Link to={to} state={state} />}
         className={styles.button}
         data-variant={variant}
       />
