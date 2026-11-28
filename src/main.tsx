@@ -5,7 +5,13 @@ import { RouterProvider } from "react-router/dom";
 import { queryClient } from "@/api/queryClient";
 import { ToastProvider } from "@/components/ui/Toast";
 import { router } from "@/routes/router";
-import "@/styles/fonts.css";
+// Tipos de letra servidos pelo próprio site, sem pedidos ao Google Fonts (RGPD).
+// A Bricolage Grotesque é variável com o eixo opsz, para ajustar o desenho ao tamanho dos títulos.
+import "@fontsource/figtree/400.css";
+import "@fontsource/figtree/500.css";
+import "@fontsource/figtree/600.css";
+import "@fontsource/figtree/700.css";
+import "@fontsource-variable/bricolage-grotesque/opsz.css";
 import "@/styles/tokens.css";
 import "@/styles/base.css";
 

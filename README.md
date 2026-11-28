@@ -60,14 +60,16 @@ A aplicação fica disponível em `http://localhost:5173`.
 
 ## Tipos de letra
 
-Os tipos de letra estão incluídos no projeto, em `src/assets/fonts`, e são servidos pelo próprio site. Assim, o browser não faz pedidos ao Google Fonts, que receberia o endereço IP de cada utilizador sem consentimento (RGPD). As declarações `@font-face` estão em `src/styles/fonts.css`.
+Os tipos de letra vêm dos pacotes npm do [Fontsource](https://fontsource.org), importados em `src/main.tsx`. No build, o Vite copia os ficheiros `.woff2` para `dist/` e o próprio site serve-os. Assim, o browser não faz pedidos ao Google Fonts, que receberia o endereço IP de cada utilizador sem consentimento (RGPD).
 
-| Tipo de letra       | Pesos               | Uso     | Origem                                                                              |
-| ------------------- | ------------------- | ------- | ----------------------------------------------------------------------------------- |
-| Figtree             | 400, 500, 600 e 700 | Texto   | The Figtree Project Authors (https://github.com/erikdkennedy/figtree)               |
-| Bricolage Grotesque | 600 e 700           | Títulos | The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage) |
+| Tipo de letra       | Pacote                                     | Pesos                                   | Uso     | Autores                                                                             |
+| ------------------- | ------------------------------------------ | --------------------------------------- | ------- | ----------------------------------------------------------------------------------- |
+| Figtree             | `@fontsource/figtree`                      | 400, 500, 600 e 700                     | Texto   | The Figtree Project Authors (https://github.com/erikdkennedy/figtree)               |
+| Bricolage Grotesque | `@fontsource-variable/bricolage-grotesque` | Variável (600 e 700 em uso), com `opsz` | Títulos | The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage) |
 
-Os ficheiros são os mesmos usados no `frontend-mobile` (`assets/fonts`). Os dois tipos de letra são distribuídos com a licença SIL Open Font License 1.1, cujo texto está ao lado dos ficheiros (`OFL-Figtree.txt` e `OFL-BricolageGrotesque.txt`).
+A Bricolage Grotesque é usada como fonte variável com o eixo do tamanho ótico (`opsz`), como era servida pelo Google Fonts: o browser ajusta o desenho de cada título ao seu tamanho. Por isso, o nome da família em `tokens.css` é «Bricolage Grotesque Variable».
+
+Os dois tipos de letra são distribuídos com a licença SIL Open Font License 1.1, cujo texto está no ficheiro `LICENSE` de cada pacote (`node_modules/@fontsource/figtree/LICENSE` e `node_modules/@fontsource-variable/bricolage-grotesque/LICENSE`). O `frontend-mobile` usa os mesmos tipos de letra, incluídos em `assets/fonts`.
 
 ## Scripts
 
@@ -104,7 +106,7 @@ src/
     admin/           páginas do Administrador
   styles/            CSS global (tokens.css com as cores do protótipo e base.css)
   utils/             funções sem React
-  assets/            imagens importadas no código e tipos de letra (fonts/)
+  assets/            imagens importadas no código
 ```
 
 Os imports de outra pasta usam o alias `@/` (`src/`).
